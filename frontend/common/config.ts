@@ -10,14 +10,14 @@ const local = {
 
 const development = {
   ...local,
-  // APP_URL: `https://electroswap.vercel.app/`,
-  // API_URL: `https://electro-api.herokuapp.com/`,
+  // APP_URL: `https://batteryswap.vercel.app/`,
+  // API_URL: `https://battery-api.herokuapp.com/`,
 };
 
 const production = {
   ...development,
-  APP_URL: `https://electroswap.vercel.app/`,
-  API_URL: `https://electro-api.herokuapp.com/`,
+  APP_URL: `https://batteryswap.vercel.app/`,
+  API_URL: `https://battery-api.herokuapp.com/`,
 };
 
 const configs = { local, development, production };
