@@ -143,3 +143,53 @@ class SignUpView(views.APIView):
     #         },
     #         status=status.HTTP_202_ACCEPTED,
     #     )
+
+
+
+class Orders(views.APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            print(request.data)
+            battery = Battery.objects.get(pk=request.data.get("battery"))
+            station = Station.objects.get(pk=request.data.get("station"))
+            user = User.objects.get(pk=request.user.pk)
+
+            station.batteries.remove(battery)
+            station.booked_batteries.add(battery)
+            station.save()
+
+            order = Order.objects.create(
+                battery=battery,
+                station=station,
+                expiry_time=datetime.datetime.now() + datetime.timedelta(days=1),
+                is_paid=True,
+            )
+            order.save()
+
+            user.orders.add(order)
+            user.save()
+
+            return Response(
+                data={"success": True, "order_pk": order.pk}, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            print(e)
+            return Response(
+                data={"success": False},
+                status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+            )
+
+    def get(self, request, *args, **kwargs):
+        try:
+            orders_data = []
+            for order in request.user.orders.all():
+                orders_data.append(get_order_data(order))
+            return Response(
+                status=status.HTTP_200_OK, data={"success": True, "orders": orders_data}
+            )
+        except Exception as e:
+            print(e)
+            return Response(
+                data={"success": False},
+                status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+            )
