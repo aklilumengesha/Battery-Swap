@@ -33,22 +33,28 @@ class SignInView(views.APIView):
             # if user.is_email_verified:
             login(request, user)
             meta_data = {}
-            if user.user_type == "consumer":
-                consumer = Consumer.objects.get(user=user)
-                meta_data = {
-                    "vehicle": {
-                        "name": consumer.vehicle.name,
-                        "pk": consumer.vehicle.pk,
+            
+            try:
+                if user.user_type == "consumer":
+                    consumer = Consumer.objects.get(user=user)
+                    meta_data = {
+                        "vehicle": {
+                            "name": consumer.vehicle.name,
+                            "pk": consumer.vehicle.pk,
+                        }
                     }
-                }
-            else:
-                producer = Producer.objects.get(user=user)
-                meta_data = {
-                    "company": {
-                        "name": producer.company.name,
-                        "pk": producer.company.pk,
+                else:
+                    producer = Producer.objects.get(user=user)
+                    meta_data = {
+                        "company": {
+                            "name": producer.company.name,
+                            "pk": producer.company.pk,
+                        }
                     }
-                }
+            except (Consumer.DoesNotExist, Producer.DoesNotExist):
+                # Handle superuser or users without Consumer/Producer profile
+                meta_data = {}
+            
             return Response(
                 data={
                     "success": True,
@@ -89,26 +95,32 @@ class SignUpView(views.APIView):
         if serializer.is_valid():
             user = serializer.save()
             meta_data = {}
-            if user.user_type == "consumer":
-                consumer = Consumer.objects.get(user=user)
-                meta_data = {
-                    "vehicle": {
-                        "name": consumer.vehicle.name,
-                        "pk": consumer.vehicle.pk,
+            
+            try:
+                if user.user_type == "consumer":
+                    consumer = Consumer.objects.get(user=user)
+                    meta_data = {
+                        "vehicle": {
+                            "name": consumer.vehicle.name,
+                            "pk": consumer.vehicle.pk,
+                        }
                     }
-                }
-            else:
-                producer = Producer.objects.get(user=user)
-                meta_data = {
-                    "company": {
-                        "name": producer.company.name,
-                        "pk": producer.company.pk,
+                else:
+                    producer = Producer.objects.get(user=user)
+                    meta_data = {
+                        "company": {
+                            "name": producer.company.name,
+                            "pk": producer.company.pk,
+                        }
                     }
-                }
+            except (Consumer.DoesNotExist, Producer.DoesNotExist):
+                # Handle users without Consumer/Producer profile
+                meta_data = {}
+            
             return Response(
                 data={
                     "success": True,
-                    "message": f"Welcome back, {user.name}",
+                    "message": f"Welcome, {user.name}",
                     "tokens": generate_token_pairs(user),
                     "user": {
                         "pk": user.pk,
