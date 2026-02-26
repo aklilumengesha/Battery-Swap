@@ -34,8 +34,14 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 AUTH_USER_MODEL = "user.User"
 
 CORS_ORIGIN_ALLOW_ALL = False
-ALLOWED_HOSTS = ["localhost", ".herokuapp.com"]
-CORS_ORIGIN_WHITELIST = (config.APP_URL,)
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".herokuapp.com"]
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+]
+CORS_ALLOW_CREDENTIALS = True
 
 WSGI_APPLICATION = "batteryswap.wsgi.application"
 ROOT_URLCONF = "batteryswap.urls"
