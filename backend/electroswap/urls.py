@@ -1,4 +1,4 @@
-"""electroswap URL Configuration"""
+"""batteryswap URL Configuration"""
 
 from django.contrib import admin
 from django.shortcuts import render
