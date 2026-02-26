@@ -31,7 +31,7 @@ const App = ({ Component, pageProps }) => {
   return (
     <Provider store={store}>
       <ThemeContextProvider>
-        <MetaTags title="ElectroSwap" desc="Swap your batteries" />
+        <MetaTags title="BatterySwap" desc="Swap your batteries" />
         <AuthLayout>
           <Component {...{ ...pageProps, location }} />
         </AuthLayout>
