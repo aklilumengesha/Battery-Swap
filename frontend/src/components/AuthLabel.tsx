@@ -8,7 +8,7 @@ const AuthLabel = () => {
     >
       {/* <div className="flex flex-col items-center justify-center h-full w-full"> */}
       <img src="/static/logo.svg" alt="logo" />
-      <h1 className="text-[40px]">ElectroSwap</h1>
+      <h1 className="text-[40px]">BatterySwap</h1>
       <h4 className="text-sm uppercase tracking-[0.2rem]">Swap on the go</h4>
       {/* </div> */}
       <img
