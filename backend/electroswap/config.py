@@ -25,8 +25,8 @@ development = {
 
 production = {
     "ENV": "production",
-    "APP_URL": "https://electroswap.vercel.app",
-    "API_URL": "https://electroswapapi.herokuapp.com/",
+    "APP_URL": "https://batteryswap.vercel.app",
+    "API_URL": "https://batteryswapapi.herokuapp.com/",
     "RAZORPAY_ID": "rzp_test_oh38vXeImszCBC",
     "RAZORPAY_SECRET": "q3tr1pWtMHgd9F1Beles5Nwx",
 }
