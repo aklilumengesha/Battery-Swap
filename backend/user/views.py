@@ -75,3 +75,71 @@ class SignInView(views.APIView):
             },
             status=status.HTTP_401_UNAUTHORIZED,
         )
+
+
+
+class SignUpView(views.APIView):
+    # permission_classes = [
+    #     IsAuthenticated,
+    # ]
+
+    def post(self, request, *args, **kwargs):
+        # try:
+        serializer = SignupSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            meta_data = {}
+            if user.user_type == "consumer":
+                consumer = Consumer.objects.get(user=user)
+                meta_data = {
+                    "vehicle": {
+                        "name": consumer.vehicle.name,
+                        "pk": consumer.vehicle.pk,
+                    }
+                }
+            else:
+                producer = Producer.objects.get(user=user)
+                meta_data = {
+                    "company": {
+                        "name": producer.company.name,
+                        "pk": producer.company.pk,
+                    }
+                }
+            return Response(
+                data={
+                    "success": True,
+                    "message": f"Welcome back, {user.name}",
+                    "tokens": generate_token_pairs(user),
+                    "user": {
+                        "pk": user.pk,
+                        "user_type": user.user_type,
+                        "meta_data": meta_data,
+                    },
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        msg = ""
+        for err in serializer.errors.values():
+            for val in err:
+                if msg == "":
+                    msg = val
+        print(serializer.errors)
+        return Response(
+            data={
+                "success": False,
+                "message": msg,
+                "error": serializer.errors,
+            },
+            status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+        )
+
+    # except Exception as error:
+    #     print(error)
+    #     return Response(
+    #         data={
+    #             "success": False,
+    #             "message": "Sever failure. Please try again later",
+    #             "error": str(error),
+    #         },
+    #         status=status.HTTP_202_ACCEPTED,
+    #     )
