@@ -193,3 +193,46 @@ class Orders(views.APIView):
                 data={"success": False},
                 status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
             )
+
+
+
+class CollectOrder(views.APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            order = Order.objects.get(pk=kwargs["pk"])
+            order.is_collected = True
+            order.save()
+            return Response(data={"success": True}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response(
+                data={"success": False},
+                status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+            )
+
+
+class GetOrder(views.APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            order_data = {}
+            found = False
+            for order in request.user.orders.all():
+                if order.pk == kwargs["pk"]:
+                    found = True
+                    order_data = get_order_data(order)
+            if found:
+                return Response(
+                    status=status.HTTP_200_OK,
+                    data={"success": True, "order": order_data},
+                )
+            else:
+                return Response(
+                    status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+                    data={"success": False},
+                )
+        except Exception as e:
+            print(e)
+            return Response(
+                data={"success": False},
+                status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+            )
