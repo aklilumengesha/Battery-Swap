@@ -1,3 +1,3 @@
 # MiniProject-Backend
 
-The backend of ElectroSwap resides here.
+The backend of BatterySwap resides here.
