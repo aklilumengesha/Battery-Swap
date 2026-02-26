@@ -13,7 +13,7 @@ const Signup = () => {
   const [userType, setuserType] = useState(userTypes.consumer.key);
   const [name, setname] = useState(null);
   const [email, setemail] = useState(null);
-  const [vehicle, setvehicle] = useState(null);
+  const [vehicle, setvehicle] = useState("");
   const [password, setpassword] = useState(null);
   const dispatch = useDispatch();
 

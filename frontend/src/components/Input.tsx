@@ -38,8 +38,8 @@ const Input = ({
         {label}
       </label>
       {type === "select" ? (
-        <select {...{ ...inputProps }}>
-          <option disabled value="">
+        <select {...{ ...inputProps }} defaultValue="">
+          <option value="" disabled>
             {placeholder}
           </option>
           {options?.map((opt) => (
