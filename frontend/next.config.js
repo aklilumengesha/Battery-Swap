@@ -17,6 +17,9 @@ module.exports = withPWA({
     skipWaiting: true,
   },
   reactStrictMode: true,
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   sassOptions: {
     includePaths: [path.join(__dirname, "src/styles")],
     prependData: `@import "variables.css";`,
