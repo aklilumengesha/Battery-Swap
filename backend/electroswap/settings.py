@@ -1,4 +1,4 @@
-"""Django settings for electroswap project."""
+"""Django settings for batteryswap project."""
 from electroswap import config
 import os
 from pathlib import Path
