@@ -2,7 +2,7 @@ rm -r ./battery/__pycache__
 rm -r ./consumer/__pycache__
 rm -r ./producer/__pycache__
 rm -r ./user/__pycache__
-rm -r ./electroswap/__pycache__
+rm -r ./batteryswap/__pycache__
 rm -r ./battery/migrations
 rm -r ./consumer/migrations
 rm -r ./producer/migrations

@@ -1,5 +1,5 @@
 """Django settings for batteryswap project."""
-from electroswap import config
+from batteryswap import config
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -37,8 +37,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 ALLOWED_HOSTS = ["localhost", ".herokuapp.com"]
 CORS_ORIGIN_WHITELIST = (config.APP_URL,)
 
-WSGI_APPLICATION = "electroswap.wsgi.application"
-ROOT_URLCONF = "electroswap.urls"
+WSGI_APPLICATION = "batteryswap.wsgi.application"
+ROOT_URLCONF = "batteryswap.urls"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 INSTALLED_APPS = [

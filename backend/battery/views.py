@@ -1,4 +1,4 @@
-from electroswap import config
+from batteryswap import config
 import razorpay
 from rest_framework import generics, views, status
 from rest_framework.response import Response
