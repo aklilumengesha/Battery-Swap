@@ -106,3 +106,47 @@ class FindStations(views.APIView):
             data={"success": False, "stations": []},
             status=status.HTTP_401_UNAUTHORIZED,
         )
+
+
+
+class GetStation(views.APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            station = Station.objects.get(pk=kwargs["pk"])
+            return Response(
+                data={
+                    "success": True,
+                    "station": get_station_data(
+                        station,
+                        float(request.query_params.get("latitude")),
+                        float(request.query_params.get("longitude")),
+                    ),
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Station.DoesNotExist:
+            return Response(
+                data={"success": False},
+                status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+            )
+
+
+class Payments(views.APIView):
+    def get(self, request, *args, **kwargs):
+        return Response(data={})
+
+    def post(self, request, *args, **kwargs):
+        client = razorpay.Client(auth=(config.RAZORPAY_ID, config.RAZORPAY_SECRET))
+        DATA = {
+            "amount": int(request.data.get("amount")),
+            "currency": "INR",
+            "receipt": "receipt#1",
+            "notes": {"vehicle": "Vehicle", "station": "Station"},
+        }
+        client.order.create(data=DATA)
+        return Response(data={})
+
+
+class ManageStation(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = StationSerializer
+    queryset = Station.objects.all()
