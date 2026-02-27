@@ -14,10 +14,19 @@ import {
 import { routes } from "../../../routes";
 
 const actions = {
-  handleListStations: (latitude, longitude) => async (dispatch) => {
+  handleListStations: (latitude, longitude) => async (dispatch, getState) => {
     dispatch(actionCreators.setLoadingList(true));
     try {
-      const res = await findNearbyStations({ latitude, longitude });
+      const { auth } = getState();
+      const userId = auth?.user?.pk;
+      
+      if (!userId) {
+        message.error("Please login to view stations");
+        dispatch(actionCreators.setLoadingList(false));
+        return;
+      }
+      
+      const res = await findNearbyStations(userId, { latitude, longitude });
       if (res.status === 200) {
         dispatch(actionCreators.setStationList(res.data.stations));
       } else {
