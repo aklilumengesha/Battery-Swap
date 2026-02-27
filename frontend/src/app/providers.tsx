@@ -1,9 +1,7 @@
 "use client";
 
-import { Provider } from "react-redux";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { store } from "../redux";
 import { queryClient } from "../lib/react-query";
 import { ThemeContextProvider } from "../contexts";
 import AuthLayout from "../components/layout/AuthLayout";
@@ -23,11 +21,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <ThemeContextProvider>
-          <AuthLayout location={location}>{children}</AuthLayout>
-        </ThemeContextProvider>
-      </Provider>
+      <ThemeContextProvider>
+        <AuthLayout location={location}>{children}</AuthLayout>
+      </ThemeContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
