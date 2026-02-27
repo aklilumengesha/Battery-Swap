@@ -1,4 +1,4 @@
-import { config } from "../../common/config";
+import { config } from "../../../common/config";
 import { getFreshHeaders } from "./utils";
 
 interface RequestOptions {
