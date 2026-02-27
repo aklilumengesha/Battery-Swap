@@ -169,7 +169,7 @@ const Signin = () => {
             <div className="text-center pt-4">
               <Link href={routes.SIGNUP}>
                 <span className="text-gray-600 hover:text-black transition-colors cursor-pointer">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <span className="font-semibold">Sign Up</span>
                 </span>
               </Link>

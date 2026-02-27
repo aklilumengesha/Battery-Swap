@@ -7,6 +7,11 @@ from user.models import Order, User
 from consumer.models import Consumer
 from producer.models import Company, Producer
 from battery.models import Battery, Station, Vehicle
+from battery.websocket_utils import (
+    broadcast_battery_booked,
+    broadcast_battery_collected,
+    notify_booking_ready,
+)
 
 
 from user.serializers import SignupSerializer, UserSerializer
@@ -181,6 +186,9 @@ class Orders(views.APIView):
             user.orders.add(order)
             user.save()
 
+            # Broadcast battery booked event via WebSocket
+            broadcast_battery_booked(station, battery, user)
+
             return Response(
                 data={"success": True, "order_pk": order.pk}, status=status.HTTP_200_OK
             )
@@ -212,8 +220,19 @@ class CollectOrder(views.APIView):
     def get(self, request, *args, **kwargs):
         try:
             order = Order.objects.get(pk=kwargs["pk"])
+            station = order.station
+            battery = order.battery
+            
             order.is_collected = True
             order.save()
+            
+            # Move battery from booked to available (or remove from station)
+            station.booked_batteries.remove(battery)
+            station.save()
+            
+            # Broadcast battery collected event via WebSocket
+            broadcast_battery_collected(station, battery)
+            
             return Response(data={"success": True}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)

@@ -3,18 +3,17 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 
-const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
+const QrReader = dynamic(() => import("react-qr-reader").then(mod => mod.QrReader), { ssr: false });
 
 const QR = () => {
   const [result, setResult] = useState("");
 
-  const handleError = (error: any) => {
-    // Error handling for QR scanner
-  };
-
-  const handleScan = (data: any) => {
-    if (data) {
-      setResult(data);
+  const handleResult = (result: any, error: any) => {
+    if (result) {
+      setResult(result?.text);
+    }
+    if (error) {
+      // Error handling for QR scanner
     }
   };
 
@@ -23,10 +22,8 @@ const QR = () => {
       <h1 className="text-2xl font-bold mb-6">Scan QR Code</h1>
       <div className="w-full max-w-md">
         <QrReader
-          delay={300}
-          onError={handleError}
-          onScan={handleScan}
-          style={{ width: "100%" }}
+          onResult={handleResult}
+          constraints={{ facingMode: "environment" }}
         />
       </div>
       {result && (

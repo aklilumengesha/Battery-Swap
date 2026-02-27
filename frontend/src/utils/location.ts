@@ -40,31 +40,34 @@ const getViaLocationiq = (setLocation) => {
   );
 };
 
-export const get_distance_btw = (lat1, lon1) => {
+export const get_distance_btw = (lat1: number, lon1: number, currLat: number, currLon: number): string => {
   // deg -> rad
-
-  lon1 = lon1 * (Math.PI / 180);
-  currLon = currLon * (Math.PI / 180);
-  lat1 = lat1 * (Math.PI / 180);
-  currLat = currLat * (Math.PI / 180);
+  let lon1Rad = lon1 * (Math.PI / 180);
+  let currLonRad = currLon * (Math.PI / 180);
+  let lat1Rad = lat1 * (Math.PI / 180);
+  let currLatRad = currLat * (Math.PI / 180);
 
   // Haversine formula
-  dlon = currLon - lon1;
-  dlat = currLat - lat1;
-  c =
+  const dlon = currLonRad - lon1Rad;
+  const dlat = currLatRad - lat1Rad;
+  const c =
     2 *
     Math.asin(
       Math.sqrt(
-        sin(dlat / 2) ** 2 +
-          Math.cos(lat1) * Math.cos(currLat) * Math.sin(dlon / 2) ** 2
+        Math.sin(dlat / 2) ** 2 +
+          Math.cos(lat1Rad) * Math.cos(currLatRad) * Math.sin(dlon / 2) ** 2
       )
     );
 
   // radius of earth = 6371 km or 3956 miles
-  d = c * 6371 * 1000;
+  const d = c * 6371 * 1000;
 
-  if (d > 1000) distance = String(d / 1000) + " km";
-  else distance = String(d) + " m";
+  let distance: string;
+  if (d > 1000) {
+    distance = String(d / 1000) + " km";
+  } else {
+    distance = String(d) + " m";
+  }
   return distance;
 };
 

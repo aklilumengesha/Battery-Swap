@@ -28,12 +28,18 @@ export const Cache = {
   /**
    * Remove an item from session storage
    */
-  removeItem: (key: string): void => 
-    !isSsr && sessionStorage?.removeItem(key),
+  removeItem: (key: string): void => {
+    if (!isSsr) {
+      sessionStorage?.removeItem(key);
+    }
+  },
   
   /**
    * Clear all items from session storage
    */
-  clear: (): void => 
-    !isSsr && sessionStorage?.clear(),
+  clear: (): void => {
+    if (!isSsr) {
+      sessionStorage?.clear();
+    }
+  },
 };

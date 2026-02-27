@@ -6,6 +6,7 @@ from rest_framework.response import Response
 # from rest_framework.permissions import IsAuthenticated
 
 from battery.utils import get_battery_data, get_station_data
+from battery.websocket_utils import broadcast_battery_added
 from consumer.models import Consumer
 from battery.models import Battery, Station, Vehicle
 from user.models import User
@@ -61,8 +62,15 @@ class ManageStations(generics.ListCreateAPIView):
 class ManageStationBatteries(views.APIView):
     def put(self, request, *args, **kwargs):
         station = Station.objects.get(pk=kwargs["pk"])
-        station.batteries.add(request.data.get("newBattery"))
+        battery_id = request.data.get("newBattery")
+        battery = Battery.objects.get(pk=battery_id)
+        
+        station.batteries.add(battery)
         station.save()
+        
+        # Broadcast battery added event via WebSocket
+        broadcast_battery_added(station, battery)
+        
         return Response(status=status.HTTP_200_OK, data={"success": True})
 
     # def get_queryset(self):

@@ -90,7 +90,7 @@ const Signup = () => {
           {/* User Type Toggle */}
           <div className="mb-6">
             <label className="text-sm font-medium text-gray-700 mb-2 block">
-              I'm a
+              I&apos;m a
             </label>
             <div className="flex gap-3">
               <button

@@ -86,7 +86,7 @@ export const useAuthQuery = () => {
       const res = await UsersService.signup({
         name: data.name,
         email: data.email,
-        vehicle: data.vehicle,
+        vehicle: String(data.vehicle),
         password: data.password,
         user_type: data.userType,
       });

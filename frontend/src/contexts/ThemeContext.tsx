@@ -1,16 +1,23 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, ReactNode } from "react";
 
-export const ThemeContext = createContext();
+interface ThemeContextType {
+  themeMode: string;
+  setThemeMode: (mode: string) => void;
+}
 
-export const ThemeContextProvider = ({ children }) => {
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
   const [themeMode, setThemeMode] = useState("lightMode");
 
   useEffect(() => {
     const prevMode = localStorage.getItem("themeMode");
-    setDarkTheme(prevMode);
+    if (prevMode) {
+      setDarkTheme(prevMode);
+    }
   }, []);
 
-  const setDarkTheme = (themeMode) => {
+  const setDarkTheme = (themeMode: string) => {
     setThemeMode(themeMode);
     document.body.classList.add(themeMode);
     localStorage.setItem("themeMode", themeMode);

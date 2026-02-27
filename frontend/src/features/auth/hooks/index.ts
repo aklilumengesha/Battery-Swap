@@ -1,5 +1,5 @@
 /**
  * Auth Hooks Barrel Export
+ * React Query implementation
  */
-export { useAuth } from "./useAuth";
 export { useAuthQuery } from "./useAuthQuery";

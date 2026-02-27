@@ -22,7 +22,7 @@ class AppDocument extends Document {
         <body className="lightMode">
           <Main />
           <NextScript />
-          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+          <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
         </body>
       </Html>
     );

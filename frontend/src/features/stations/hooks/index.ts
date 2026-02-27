@@ -1,7 +1,6 @@
 /**
  * Stations Hooks Module
- * Barrel export for stations custom hooks
+ * React Query implementation
  */
 
-export * from "./useStations";
 export * from "./useStationsQuery";
