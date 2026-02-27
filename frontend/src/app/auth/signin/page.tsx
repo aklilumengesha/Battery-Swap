@@ -33,7 +33,7 @@ const Signin = () => {
       return;
     }
     
-    signin({ email, password });
+    signin({ email, password, userType });
   };
 
   return (

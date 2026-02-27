@@ -21,6 +21,7 @@ interface SignupData {
 interface SigninData {
   email: string;
   password: string;
+  userType?: string;
 }
 
 interface UpdateProfileData {
@@ -51,10 +52,10 @@ export const useAuthQuery = () => {
   } = useQuery({
     queryKey: queryKeys.auth.profile(),
     queryFn: async () => {
-      const res = await UsersService.getProfile();
+      const res = await UsersService.getConsumer();
       if (res.data.success) {
         const user = res.data.user;
-        Cache.setItem("user", user);
+        Cache.setItem({ user });
         return user;
       }
       throw new Error(res.data.message || "Failed to fetch profile");
@@ -82,17 +83,30 @@ export const useAuthQuery = () => {
   // Mutation: Sign up
   const signupMutation = useMutation({
     mutationFn: async (data: SignupData) => {
-      const res = await UsersService.signup(data);
-      if (res.data.success) {
-        return res.data;
+      const res = await UsersService.signup({
+        name: data.name,
+        email: data.email,
+        vehicle: data.vehicle,
+        password: data.password,
+        user_type: data.userType,
+      });
+      if (res.data.success && res.data.tokens) {
+        return {
+          user: res.data.user,
+          access: res.data.tokens.access_token,
+          refresh: res.data.tokens.refresh_token,
+          message: res.data.message,
+        };
       }
       throw new Error(res.data.message || "Signup failed");
     },
     onSuccess: (data) => {
-      message.success("Account created successfully!");
-      Cache.setItem("accessToken", data.access);
-      Cache.setItem("refreshToken", data.refresh);
-      Cache.setItem("user", data.user);
+      message.success(data.message || "Account created successfully!");
+      Cache.setItem({
+        accessToken: data.access,
+        refreshToken: data.refresh,
+        user: data.user,
+      });
       
       // Invalidate and refetch user data
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
@@ -109,16 +123,23 @@ export const useAuthQuery = () => {
   const signinMutation = useMutation({
     mutationFn: async (data: SigninData) => {
       const res = await UsersService.signin(data);
-      if (res.data.success) {
-        return res.data;
+      if (res.data.success && res.data.tokens) {
+        return {
+          user: res.data.user,
+          access: res.data.tokens.access_token,
+          refresh: res.data.tokens.refresh_token,
+          message: res.data.message,
+        };
       }
       throw new Error(res.data.message || "Signin failed");
     },
     onSuccess: (data) => {
-      message.success("Signed in successfully!");
-      Cache.setItem("accessToken", data.access);
-      Cache.setItem("refreshToken", data.refresh);
-      Cache.setItem("user", data.user);
+      message.success(data.message || "Signed in successfully!");
+      Cache.setItem({
+        accessToken: data.access,
+        refreshToken: data.refresh,
+        user: data.user,
+      });
       
       // Invalidate and refetch user data
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
@@ -134,7 +155,7 @@ export const useAuthQuery = () => {
   // Mutation: Update profile
   const updateProfileMutation = useMutation({
     mutationFn: async (data: UpdateProfileData) => {
-      const res = await UsersService.updateProfile(data);
+      const res = await UsersService.updateConsumer(data);
       if (res.data.success) {
         return res.data.user;
       }
@@ -142,7 +163,7 @@ export const useAuthQuery = () => {
     },
     onSuccess: (user) => {
       message.success("Profile updated successfully!");
-      Cache.setItem("user", user);
+      Cache.setItem({ user });
       
       // Invalidate and refetch profile
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile() });
