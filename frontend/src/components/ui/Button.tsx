@@ -1,18 +1,35 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
 import Loader from "./Loader";
 
-const Button = ({
+interface ButtonProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  type?: "solid" | "gas";
+  loading?: boolean;
+  disabled?: boolean;
+  link?: string;
+}
+
+/**
+ * Button Component
+ * Reusable button with loading state and optional link wrapper
+ */
+const Button: React.FC<ButtonProps> = ({
   children,
-  className,
+  className = "",
   onClick = () => {},
-  type,
-  loading,
+  type = "solid",
+  loading = false,
   disabled = false,
   link = "",
 }) => {
-  const Wrapper = ({ children }) =>
+  const Wrapper = ({ children }: { children: React.ReactNode }) =>
     link ? <Link href={link}>{children}</Link> : <>{children}</>;
+  
   return (
     <Wrapper>
       <button
@@ -30,6 +47,7 @@ const Button = ({
             : "cursor-pointer"
         }`}
         onClick={loading || disabled ? () => {} : onClick}
+        disabled={disabled || loading}
       >
         {loading && <Loader size="small" className="absolute left-1/4" />}
         {children}

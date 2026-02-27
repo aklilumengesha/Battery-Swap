@@ -1,6 +1,20 @@
 import React from "react";
 
-const Loader = ({ size = "normal", className = "", color = "themeColor" }) => {
+interface LoaderProps {
+  size?: "small" | "normal" | "large";
+  className?: string;
+  color?: string;
+}
+
+/**
+ * Loader Component
+ * Animated loading spinner
+ */
+const Loader: React.FC<LoaderProps> = ({ 
+  size = "normal", 
+  className = "", 
+  color = "themeColor" 
+}) => {
   return (
     <div
       className={`${className} fill-${color} ${
@@ -15,12 +29,10 @@ const Loader = ({ size = "normal", className = "", color = "themeColor" }) => {
         version="1.1"
         id="L7"
         xmlns="http://www.w3.org/2000/svg"
-        //   xmlns:xlink="http://www.w3.org/1999/xlink"
         x="0px"
         y="0px"
         viewBox="0 0 100 100"
-        enable-background="new 0 0 100 100"
-        //   xml:space="preserve"
+        enableBackground="new 0 0 100 100"
       >
         <path
           fill="#fff"

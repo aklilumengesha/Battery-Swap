@@ -1,7 +1,28 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
 
-const Input = ({
+interface InputProps {
+  name?: string;
+  helperLink?: {
+    label: string;
+    link: string;
+  };
+  label: string;
+  placeholder: string;
+  value?: string;
+  validationMsg?: string;
+  type?: string;
+  onChange?: (val: string) => void;
+  options?: any[];
+}
+
+/**
+ * Input Component
+ * Reusable input field with validation and helper link support
+ */
+const Input: React.FC<InputProps> = ({
   name = "",
   helperLink,
   label,
@@ -9,7 +30,7 @@ const Input = ({
   value,
   validationMsg = "",
   type = "text",
-  onChange = (val) => {},
+  onChange = () => {},
   options = [],
 }) => {
   const inputProps = {
@@ -18,7 +39,8 @@ const Input = ({
     type: type,
     value: value,
     placeholder: placeholder,
-    onChange: (e) => onChange(e.target.value),
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => 
+      onChange(e.target.value),
     className: `outline-none bg-white h-[45px] w-full ${
       validationMsg
         ? "mb-0 mt-1 border-[#ff6347] active:border-[#ff6347] focus:border-[#ff6347]"

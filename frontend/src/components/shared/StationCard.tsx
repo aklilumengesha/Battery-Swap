@@ -1,9 +1,18 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
 import Link from "next/link";
-import { routes } from "../routes";
+import { routes } from "../../routes";
 
-const BatteryCard = ({ station, time }) => {
+interface StationCardProps {
+  station: any;
+  time?: any;
+}
+
+/**
+ * StationCard Component
+ * Displays station information with distance and map link
+ */
+const StationCard: React.FC<StationCardProps> = ({ station, time }) => {
   return (
     <div className="flex flex-col justify-between cursor-pointer p-4 mx-5 my-4 rounded-lg shadow-md min-h-[100px]">
       <Link href={routes.STATION(station?.pk)}>
@@ -17,6 +26,7 @@ const BatteryCard = ({ station, time }) => {
         </time>
         <a
           target="_blank"
+          rel="noopener noreferrer"
           href={`https://maps.google.com/?q=${station?.latitude},${station?.longitude}`}
           className="flex items-center justify-center"
         >
@@ -28,4 +38,4 @@ const BatteryCard = ({ station, time }) => {
   );
 };
 
-export default BatteryCard;
+export default StationCard;
