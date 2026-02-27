@@ -14,8 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
-    vehicle = serializers.IntegerField()
-    company = serializers.IntegerField()
+    vehicle = serializers.IntegerField(required=False, allow_null=True)
+    company = serializers.IntegerField(required=False, allow_null=True)
 
     def create(self, validated_data, *args):
         print(args)
@@ -31,15 +31,21 @@ class SignupSerializer(serializers.ModelSerializer):
         user.save()
         if validated_data["user_type"] == "consumer":
             try:
+                vehicle_id = validated_data.get("vehicle")
+                if not vehicle_id:
+                    raise serializers.ValidationError({"vehicle": "Vehicle is required for consumers"})
                 consumer = Consumer.objects.create(user=user)
-                consumer.vehicle = Vehicle.objects.get(pk=validated_data["vehicle"])
+                consumer.vehicle = Vehicle.objects.get(pk=vehicle_id)
                 consumer.save()
             except Exception as e:
                 print(e)
         elif validated_data["user_type"] == "producer":
             try:
+                company_id = validated_data.get("company")
+                if not company_id:
+                    raise serializers.ValidationError({"company": "Company is required for producers"})
                 producer = Producer.objects.create(user=user)
-                producer.company = Company.objects.get(pk=validated_data["company"])
+                producer.company = Company.objects.get(pk=company_id)
                 producer.save()
             except Exception as e:
                 print(e)

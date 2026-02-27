@@ -18,13 +18,12 @@ const Input = ({
     type: type,
     value: value,
     placeholder: placeholder,
-    defaultValue: value,
     onChange: (e) => onChange(e.target.value),
-    className: `outline-none bg-white h-[45px] w-full $,
-    validationMsg
-      ? "mb-0 mt-1 border-[#ff6347] active:border-[#ff6347] focus:border-[#ff6347]"
-      : "my-1 border-[#cacaca] active:border-themeColor focus:border-themeColor"
-  } my-1 px-4 border-[1.5px] rounded-xl`,
+    className: `outline-none bg-white h-[45px] w-full ${
+      validationMsg
+        ? "mb-0 mt-1 border-[#ff6347] active:border-[#ff6347] focus:border-[#ff6347]"
+        : "my-1 border-[#cacaca] active:border-themeColor focus:border-themeColor"
+    } my-1 px-4 border-[1.5px] rounded-xl`,
   };
 
   return (
@@ -38,7 +37,7 @@ const Input = ({
         {label}
       </label>
       {type === "select" ? (
-        <select {...{ ...inputProps }} defaultValue="">
+        <select {...inputProps} value={value || ""}>
           <option value="" disabled>
             {placeholder}
           </option>
@@ -49,7 +48,7 @@ const Input = ({
           ))}
         </select>
       ) : (
-        <input {...{ ...inputProps }} />
+        <input {...inputProps} />
       )}
       {validationMsg && (
         <p className="text-[#ff6347] text-sm ml-1">{validationMsg}</p>

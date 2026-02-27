@@ -23,33 +23,52 @@ const Signup = () => {
 
   const handleSubmit = () => {
     message.config({ maxCount: 2 });
-    if (!userType || !name || !email || !password || !vehicle) {
-      message.error(
-        `${
-          !name
-            ? "Name"
-            : !email
-            ? "Email"
-            : !vehicle
-            ? "Vehicle"
-            : !password
-            ? "Password"
-            : "User type"
-        } cannot be left blank`
-      );
-    } else if (validator.name(name)) {
-      message.error("Provide a valid name");
-    } else if (validator.email(email)) {
-      message.error("Provide a valid email");
-    } else if (validator.string(vehicle)) {
-      message.error("Provide a valid vehicle");
-    } else if (validator.password(password)) {
-      message.error("Provide a valid password");
-    } else {
-      dispatch(
-        authActions.handleSignup({ name, email, vehicle, password, userType })
-      );
+    
+    // Debug: Log all values
+    console.log("Form values:", { name, email, vehicle, password, userType });
+    
+    // Check for empty fields
+    if (!name) {
+      message.error("Name cannot be left blank");
+      return;
     }
+    if (!email) {
+      message.error("Email cannot be left blank");
+      return;
+    }
+    if (!vehicle || vehicle === "") {
+      message.error("Please select a vehicle");
+      return;
+    }
+    if (!password) {
+      message.error("Password cannot be left blank");
+      return;
+    }
+    
+    // Validate field formats
+    const nameError = validator.name(name);
+    if (nameError) {
+      message.error(nameError);
+      return;
+    }
+    
+    const emailError = validator.email(email);
+    if (emailError) {
+      message.error(emailError);
+      return;
+    }
+    
+    const passwordError = validator.password(password);
+    if (passwordError) {
+      message.error(passwordError);
+      return;
+    }
+    
+    // All validations passed, submit the form
+    console.log("Submitting signup with:", { name, email, vehicle, password, userType });
+    dispatch(
+      authActions.handleSignup({ name, email, vehicle, password, userType })
+    );
   };
 
   return (
@@ -108,7 +127,8 @@ const Signup = () => {
             validationMsg={validator.string(vehicle)}
             label={`Vehicle`}
             name={`vehicle`}
-            placeholder={`Enter you vehcile`}
+            placeholder={`Select your vehicle`}
+            value={vehicle}
             onChange={(val) => setvehicle(val)}
             type="select"
             options={vehicles}
