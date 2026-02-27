@@ -3,7 +3,7 @@
 import { Provider } from "react-redux";
 import { store } from "../redux";
 import { ThemeContextProvider } from "../contexts";
-import { AuthLayout } from "../layouts";
+import AuthLayout from "../components/layout/AuthLayout";
 import { useEffect, useState } from "react";
 import { getLocation } from "../utils/location";
 
