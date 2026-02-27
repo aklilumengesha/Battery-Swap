@@ -3,15 +3,13 @@
 import { message } from "antd";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { userTypes } from "../../../../common/constants";
-import { authActions } from "../../../redux/auth";
+import { useAuth } from "../../../features/auth";
 import { routes } from "../../../routes";
 import { validator } from "../../../utils/validators";
 
 const Signin = () => {
-  const { isAuthenticating } = useSelector((state: any) => state.auth);
-  const dispatch = useDispatch();
+  const { isAuthenticating, signin } = useAuth();
   const [email, setemail] = useState("");
   const [userType, setuserType] = useState(userTypes.consumer.key);
   const [password, setpassword] = useState("");
@@ -35,7 +33,7 @@ const Signin = () => {
       return;
     }
     
-    dispatch(authActions.handleSignin({ email, password }) as any);
+    signin({ email, password });
   };
 
   return (

@@ -2,9 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { BarLayout } from "../../../layouts";
-import { useDispatch, useSelector } from "react-redux";
-import { stationsActions } from "../../../redux/stations";
+import BarLayout from "../../../components/layout/BarLayout";
+import { useStations } from "../../../features/stations";
 import { Spin } from "antd";
 import FeatherIcon from "feather-icons-react";
 import { getLocation } from "../../../utils/location";
@@ -36,10 +35,7 @@ const CompanyCell = ({ battery, isSelected, onClick = () => {} }: any) => {
 
 const Station = () => {
   const params = useParams();
-  const { station, loadingStation, bookingStation } = useSelector(
-    (state: any) => state.stations
-  );
-  const dispatch = useDispatch();
+  const { station, loadingStation, bookingStation, getStation, bookBattery } = useStations();
   const [selectedBattery, setSelectedBattery] = useState<any>(null);
   const [location, setLocation] = useState<any>({ name: "loading..." });
 
@@ -53,25 +49,17 @@ const Station = () => {
   }, []);
 
   useEffect(() => {
-    if (params.id && location?.latitude && location?.longitude) {
-      dispatch(
-        stationsActions.handleGetStation(
-          params.id,
-          location.latitude,
-          location.longitude
-        ) as any
-      );
+    if (params?.id && location?.latitude && location?.longitude) {
+      getStation(params.id as string, location.latitude, location.longitude);
     }
-  }, [params.id, location?.latitude, location?.longitude, dispatch]);
+  }, [params?.id, location?.latitude, location?.longitude]);
 
   const handleBookBattery = () => {
-    if (selectedBattery) {
-      dispatch(
-        stationsActions.handleBookBattery({
-          station: params.id,
-          battery: selectedBattery.pk,
-        }) as any
-      );
+    if (selectedBattery && params?.id) {
+      bookBattery({
+        station: params.id as string,
+        battery: selectedBattery.pk,
+      });
     }
   };
 

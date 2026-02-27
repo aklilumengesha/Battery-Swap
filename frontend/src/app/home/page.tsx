@@ -2,16 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { BatteryCard } from "../../components";
-import { BarLayout } from "../../layouts";
-import { useDispatch, useSelector } from "react-redux";
+import BarLayout from "../../components/layout/BarLayout";
 import { Spin } from "antd";
-import { stationsActions } from "../../redux/stations";
-import ScanButton from "../../components/ScanButton";
+import { useStations } from "../../features/stations";
+import ScanButton from "../../components/shared/ScanButton";
 import { getLocation } from "../../utils/location";
 
 const Home = () => {
-  const { stationList, loadingList } = useSelector((state: any) => state.stations);
-  const dispatch = useDispatch();
+  const { stationList, loadingList, listStations } = useStations();
   const [location, setLocation] = useState<any>({ name: "loading..." });
 
   useEffect(() => {
@@ -25,11 +23,9 @@ const Home = () => {
 
   useEffect(() => {
     if (location?.latitude && location?.longitude) {
-      dispatch(
-        stationsActions.handleListStations(location.latitude, location.longitude) as any
-      );
+      listStations(location.latitude, location.longitude);
     }
-  }, [location?.latitude, location?.longitude, dispatch]);
+  }, [location?.latitude, location?.longitude]);
 
   return (
     <BarLayout location={location}>

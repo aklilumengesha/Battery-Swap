@@ -2,26 +2,24 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { userTypes } from "../../../../common/constants";
-import { authActions } from "../../../redux/auth";
+import { useAuth } from "../../../features/auth";
 import { routes } from "../../../routes";
 import { validator } from "../../../utils/validators";
 import { message } from "antd";
 
 const Signup = () => {
-  const { isAuthenticating, vehicles } = useSelector((state: any) => state.auth);
+  const { isAuthenticating, vehicles, listVehicles, signup } = useAuth();
   const [userType, setuserType] = useState(userTypes.consumer.key);
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [vehicle, setvehicle] = useState("");
   const [password, setpassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(authActions.handleListVehicles() as any);
-  }, [dispatch]);
+    listVehicles();
+  }, []);
 
   const handleSubmit = () => {
     message.config({ maxCount: 2 });
@@ -54,9 +52,7 @@ const Signup = () => {
       return;
     }
     
-    dispatch(
-      authActions.handleSignup({ name, email, vehicle, password, userType }) as any
-    );
+    signup({ name, email, vehicle, password, userType });
   };
 
   return (

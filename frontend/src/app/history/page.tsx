@@ -1,17 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BarLayout } from "../../layouts";
-import { useDispatch, useSelector } from "react-redux";
-import { stationsActions } from "../../redux/stations";
+import BarLayout from "../../components/layout/BarLayout";
+import { useStations } from "../../features/stations";
 import { Spin } from "antd";
 import Link from "next/link";
 import { routes } from "../../routes";
 import { getLocation } from "../../utils/location";
 
 const History = () => {
-  const { bookings, loadingBookings } = useSelector((state: any) => state.stations);
-  const dispatch = useDispatch();
+  const { bookings, loadingBookings, listBookings } = useStations();
   const [location, setLocation] = useState<any>({ name: "loading..." });
 
   useEffect(() => {
@@ -24,8 +22,8 @@ const History = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(stationsActions.handleListBookings() as any);
-  }, [dispatch]);
+    listBookings();
+  }, []);
 
   return (
     <BarLayout location={location}>

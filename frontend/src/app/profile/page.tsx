@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BarLayout } from "../../layouts";
-import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "../../redux/auth";
+import BarLayout from "../../components/layout/BarLayout";
+import { useAuth } from "../../features/auth";
 import { Button } from "../../components";
 import { getLocation } from "../../utils/location";
 
 const Profile = () => {
-  const { user } = useSelector((state: any) => state.auth);
-  const dispatch = useDispatch();
+  const { user, signout } = useAuth();
   const [location, setLocation] = useState<any>({ name: "loading..." });
 
   useEffect(() => {
@@ -22,7 +20,7 @@ const Profile = () => {
   }, []);
 
   const handleLogout = () => {
-    dispatch(authActions.handleSignout() as any);
+    signout();
   };
 
   return (

@@ -2,9 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { BarLayout } from "../../../layouts";
-import { useDispatch, useSelector } from "react-redux";
-import { stationsActions } from "../../../redux/stations";
+import BarLayout from "../../../components/layout/BarLayout";
+import { useStations } from "../../../features/stations";
 import { Spin } from "antd";
 import FeatherIcon from "feather-icons-react";
 import { getLocation } from "../../../utils/location";
@@ -20,10 +19,7 @@ const TableCell = ({ label, value }: { label: string; value: string }) => {
 
 const Order = () => {
   const params = useParams();
-  const { booking, station, loadingBooking, loadingStation } = useSelector(
-    (state: any) => state.stations
-  );
-  const dispatch = useDispatch();
+  const { booking, station, loadingBooking, loadingStation, getBooking } = useStations();
   const [location, setLocation] = useState<any>({ name: "loading..." });
 
   useEffect(() => {
@@ -36,16 +32,10 @@ const Order = () => {
   }, []);
 
   useEffect(() => {
-    if (params.id && location?.latitude && location?.longitude) {
-      dispatch(
-        stationsActions.handleGetBooking(
-          params.id,
-          location.latitude,
-          location.longitude
-        ) as any
-      );
+    if (params?.id && location?.latitude && location?.longitude) {
+      getBooking(params.id as string, location.latitude, location.longitude);
     }
-  }, [params.id, location?.latitude, location?.longitude, dispatch]);
+  }, [params?.id, location?.latitude, location?.longitude]);
 
   return (
     <BarLayout location={location}>
