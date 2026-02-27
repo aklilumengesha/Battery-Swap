@@ -1,4 +1,4 @@
-import { isSsr } from "../../common/constants";
+import { isSsr } from "../../../common/constants";
 
 /**
  * Cache utility for managing session storage
