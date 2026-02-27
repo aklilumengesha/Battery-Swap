@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
+    "@tanstack/react-query": "^5.62.11",
+    "@tanstack/react-query-devtools": "^5.62.11",
     "antd": "^5.12.5",
     "axios": "^1.6.2",
     "feather-icons-react": "^0.7.0",
