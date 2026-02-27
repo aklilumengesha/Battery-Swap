@@ -1,5 +1,6 @@
 import React from "react";
-import { Appbar, Navbar } from "../components";
+import Appbar from "./Appbar";
+import Navbar from "./Navbar";
 
 const BarLayout = ({ children, location }) => {
   return (
