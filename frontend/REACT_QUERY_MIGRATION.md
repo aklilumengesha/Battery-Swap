@@ -161,3 +161,252 @@ If issues arise:
 
 **Status**: Commit 1 Complete ✅
 **Next**: Commit 2 - Create React Query Hooks
+
+
+---
+
+## Commit 2: Create React Query Hooks for Features
+
+### Changes Made
+
+#### 1. Files Created
+
+**Auth Feature:**
+- `src/features/auth/hooks/useAuthQuery.ts` - React Query version of auth hook
+- `src/features/auth/REACT_QUERY_HOOKS.md` - Complete documentation
+
+**Stations Feature:**
+- `src/features/stations/hooks/useStationsQuery.ts` - React Query version of stations hook
+- `src/features/stations/REACT_QUERY_HOOKS.md` - Complete documentation
+
+#### 2. Files Modified
+
+- `src/features/auth/hooks/index.ts` - Added useAuthQuery export
+- `src/features/stations/hooks/index.ts` - Added useStationsQuery exports
+
+### New Hooks Overview
+
+#### useAuthQuery
+
+React Query implementation of authentication:
+
+```typescript
+import { useAuthQuery } from '@/features/auth';
+
+const {
+  // State
+  user,
+  isAuthenticated,
+  profile,
+  profileLoading,
+  vehicles,
+  vehiclesLoading,
+  isSigningUp,
+  isSigningIn,
+  isUpdatingProfile,
+  
+  // Actions
+  signup,
+  signin,
+  signout,
+  updateProfile,
+  getProfile,
+  refetchProfile,
+} = useAuthQuery();
+```
+
+**Features:**
+- Automatic profile caching (10 minutes)
+- Vehicles caching (30 minutes)
+- Optimistic updates
+- Automatic error handling
+- Success notifications
+
+#### useStationsQuery
+
+React Query implementation of stations and bookings:
+
+```typescript
+import {
+  useNearbyStations,
+  useStation,
+  useBookings,
+  useBooking,
+  useStationsQuery
+} from '@/features/stations';
+
+// Convenience hooks
+const { data: stations, isLoading } = useNearbyStations(latitude, longitude);
+const { data: station, isLoading } = useStation(id, latitude, longitude);
+const { data: bookings, isLoading } = useBookings();
+const { data, isLoading } = useBooking(id, latitude, longitude);
+
+// Or use main hook
+const { bookBattery, isBooking } = useStationsQuery();
+```
+
+**Features:**
+- Location-based caching
+- Automatic refetching (1-2 minutes)
+- Smart query enabling
+- Dependent queries support
+- Optimistic booking updates
+
+### Key Improvements
+
+#### 1. Less Boilerplate
+
+**Before (Redux):**
+```typescript
+// 15+ lines
+const { stationList, loadingList } = useSelector(state => state.stations);
+const dispatch = useDispatch();
+
+useEffect(() => {
+  if (latitude && longitude) {
+    dispatch(stationsActions.handleListStations(latitude, longitude));
+  }
+}, [latitude, longitude, dispatch]);
+```
+
+**After (React Query):**
+```typescript
+// 3 lines
+const { data: stationList, isLoading: loadingList } = useNearbyStations(
+  latitude,
+  longitude
+);
+```
+
+#### 2. Automatic Caching
+
+- Profile: 10 minutes
+- Vehicles: 30 minutes
+- Stations: 2 minutes (location-based)
+- Bookings: 1 minute
+
+#### 3. Better TypeScript
+
+- Full type inference
+- Type-safe mutations
+- Proper error types
+
+#### 4. Smart Features
+
+- Automatic background refetching
+- Request deduplication
+- Optimistic updates
+- Query enabling/disabling
+
+### Usage Examples
+
+#### Auth Example
+
+```typescript
+import { useAuthQuery } from '@/features/auth';
+
+function SigninPage() {
+  const { signin, isSigningIn } = useAuthQuery();
+  
+  const handleSubmit = () => {
+    signin({ email, password });
+    // Automatically redirects on success
+    // Shows error message on failure
+  };
+
+  return (
+    <button onClick={handleSubmit} disabled={isSigningIn}>
+      {isSigningIn ? 'Signing in...' : 'Sign In'}
+    </button>
+  );
+}
+```
+
+#### Stations Example
+
+```typescript
+import { useNearbyStations, useStationsQuery } from '@/features/stations';
+
+function HomePage() {
+  const { data: stations, isLoading } = useNearbyStations(latitude, longitude);
+  const { bookBattery, isBooking } = useStationsQuery();
+
+  if (isLoading) return <Loader />;
+
+  return (
+    <div>
+      {stations?.map(station => (
+        <StationCard key={station.pk} station={station} />
+      ))}
+    </div>
+  );
+}
+```
+
+### Current State
+
+**Both Redux and React Query hooks are now available:**
+- Redux hooks: `useAuth`, `useStations` (still working)
+- React Query hooks: `useAuthQuery`, `useStationsQuery` (ready to use)
+
+**Pages still use Redux hooks** - No breaking changes yet!
+
+**Next Steps:**
+- Commit 3: Remove Redux Provider and store
+- Future: Migrate pages to use React Query hooks (optional)
+
+### Testing
+
+After pulling these changes:
+
+1. **Verify both hooks work:**
+   ```typescript
+   // Old (still works)
+   const { user } = useAuth();
+   
+   // New (also works)
+   const { user } = useAuthQuery();
+   ```
+
+2. **Test React Query DevTools:**
+   - Open app in browser
+   - Click React Query icon (bottom-right)
+   - Should see no queries yet (not used in pages)
+
+3. **No functionality broken:**
+   - All pages still work with Redux
+   - No console errors
+   - App runs normally
+
+### Documentation
+
+Complete documentation available:
+- `src/features/auth/REACT_QUERY_HOOKS.md` - Auth hooks guide
+- `src/features/stations/REACT_QUERY_HOOKS.md` - Stations hooks guide
+- `src/lib/README.md` - React Query configuration
+
+### Benefits Summary
+
+| Feature | Redux | React Query |
+|---------|-------|-------------|
+| Code Lines | 100% | 30% |
+| Caching | Manual | Automatic |
+| Loading States | Manual | Automatic |
+| Error Handling | Manual | Automatic |
+| TypeScript | Good | Excellent |
+| DevTools | Basic | Advanced |
+| Background Refetch | No | Yes |
+| Optimistic Updates | Manual | Built-in |
+
+### Rollback Plan
+
+If issues arise:
+1. Simply don't use the new hooks
+2. Continue using Redux hooks
+3. Remove new hook files if desired
+4. No breaking changes to existing code
+
+---
+
+**Status**: Commit 2 Complete ✅
+**Next**: Commit 3 - Remove Redux Store
