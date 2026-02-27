@@ -2,7 +2,7 @@ import moment from "moment";
 import FeatherIcon from "feather-icons-react";
 import React from "react";
 import Link from "next/link";
-import { routes } from "../routes";
+import { routes } from "../../routes";
 
 const HistoryCard = ({ item }) => {
   return (
