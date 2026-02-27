@@ -1,26 +1,18 @@
 const path = require("path");
-const withPWA = require("next-pwa");
 
-// module.exports = {
-//   reactStrictMode: true,
-
-//   sassOptions: {
-//     includePaths: [path.join(__dirname, "src/styles")],
-//     prependData: `@import "variables.css";`,
-//   },
-// };
-
-module.exports = withPWA({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-})({
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: false,
+  },
+  images: {
+    domains: ['images.unsplash.com'],
   },
   sassOptions: {
     includePaths: [path.join(__dirname, "src/styles")],
     prependData: `@import "variables.css";`,
   },
-});
+};
+
+module.exports = nextConfig;

@@ -7,7 +7,6 @@ import {
 } from "../../../../infrastructure/api/user";
 import { logger } from "../../../utils/logger";
 import { actionCreators } from "./creators";
-import router from "next/router";
 import { routes } from "../../../routes";
 import { Cache } from "../../../../infrastructure/common/cache";
 import { listVehicles } from "../../../../infrastructure/api/vehicles";
@@ -47,7 +46,7 @@ const actions = {
           accessToken: res.data.tokens.access_token,
           refreshToken: res.data.tokens.refresh_token,
         });
-        router.push(routes.HOME);
+        window.location.href = routes.HOME;
       } else {
         message.error(res.data.message);
       }
@@ -75,7 +74,7 @@ const actions = {
           accessToken: res.data.tokens.access_token,
           refreshToken: res.data.tokens.refresh_token,
         });
-        router.push(routes.HOME);
+        window.location.href = routes.HOME;
         notification.success({ message: res.data.message });
       } else if (res.status === 401) {
         message.error("Invalid credentials");
@@ -89,6 +88,12 @@ const actions = {
       dispatch(actionCreators.setIsAuthenticating(false));
       dispatch(actionCreators.setIsSigningIn(false));
     }
+  },
+
+  handleSignout: () => (dispatch) => {
+    Cache.clear();
+    dispatch(actionCreators.setUser(null));
+    window.location.href = routes.SIGNIN;
   },
 
   handleGetProfile:
@@ -119,7 +124,7 @@ const actions = {
       console.log({ res });
       if (res.data.success) {
         message.success("Profile updated");
-        router.push(routes.HOME);
+        window.location.href = routes.HOME;
       } else {
         message.error("Couldn't update profile.");
       }

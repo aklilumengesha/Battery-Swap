@@ -1,7 +1,7 @@
 import { message, notification } from "antd";
 import { logger } from "../../../utils/logger";
 import { actionCreators } from "./creators";
-import router from "next/router";
+import { routes } from "../../../routes";
 import {
   findNearbyStations,
   getStation,
@@ -11,7 +11,6 @@ import {
   getOrder,
   listOrders,
 } from "../../../../infrastructure/api/user";
-import { routes } from "../../../routes";
 
 const actions = {
   handleListStations: (latitude, longitude) => async (dispatch, getState) => {
@@ -70,7 +69,7 @@ const actions = {
           description:
             "You can now visit the station and collect your battery.",
         });
-        router.push(routes.ORDER_DETAILS(res.data.order_pk));
+        window.location.href = routes.ORDER_DETAILS(res.data.order_pk);
       } else {
         notification.error({
           message: "Booking Failed!",

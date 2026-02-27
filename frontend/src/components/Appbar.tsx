@@ -1,12 +1,14 @@
+"use client";
+
 import React from "react";
 import FeatherIcon from "feather-icons-react";
 import Link from "next/link";
 import { routes } from "../routes";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
-const MenuItem = ({ label, icon, route }) => {
-  const router = useRouter();
-  const isActive = route === router.pathname;
+const MenuItem = ({ label, icon, route }: { label: string; icon: string; route: string }) => {
+  const pathname = usePathname();
+  const isActive = route === pathname;
   return (
     <Link href={route}>
       <div
