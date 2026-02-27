@@ -2,15 +2,7 @@ import { message, notification } from "antd";
 import { logger } from "../../../utils/logger";
 import { actionCreators } from "./creators";
 import { routes } from "../../../routes";
-import {
-  findNearbyStations,
-  getStation,
-} from "../../../../infrastructure/api/station";
-import {
-  bookBattery,
-  getOrder,
-  listOrders,
-} from "../../../../infrastructure/api/user";
+import { StationsService, UsersService } from "../../../services";
 
 const actions = {
   handleListStations: (latitude, longitude) => async (dispatch, getState) => {
@@ -25,7 +17,7 @@ const actions = {
         return;
       }
       
-      const res = await findNearbyStations(userId, { latitude, longitude });
+      const res = await StationsService.findNearbyStations(userId, { latitude, longitude });
       if (res.status === 200) {
         dispatch(actionCreators.setStationList(res.data.stations));
       } else {
@@ -42,7 +34,7 @@ const actions = {
   handleGetStation: (id, latitude, longitude) => async (dispatch) => {
     dispatch(actionCreators.setLoadingStation(true));
     try {
-      const res = await getStation(id, { latitude, longitude });
+      const res = await StationsService.getStation(id, { latitude, longitude });
       if (res.status === 200) {
         dispatch(actionCreators.setStation(res.data.station));
       } else {
@@ -59,7 +51,7 @@ const actions = {
   handleBookBattery: (data) => async (dispatch) => {
     dispatch(actionCreators.setBookingStation(true));
     try {
-      const res = await bookBattery({
+      const res = await UsersService.bookBattery({
         station: data?.station ?? "",
         battery: data?.battery ?? "",
       });
@@ -90,7 +82,7 @@ const actions = {
   handleListBookings: () => async (dispatch) => {
     dispatch(actionCreators.setLoadingBookings(true));
     try {
-      const res = await listOrders();
+      const res = await UsersService.listOrders();
       if (res.data.success) {
         dispatch(actionCreators.setBookings(res.data.orders));
       }
@@ -105,11 +97,11 @@ const actions = {
     dispatch(actionCreators.setLoadingBooking(true));
     dispatch(actionCreators.setLoadingStation(true));
     try {
-      const orderRes = await getOrder(id, { latitude, longitude });
+      const orderRes = await UsersService.getOrder(id, { latitude, longitude });
       if (orderRes.data.success) {
         dispatch(actionCreators.setBooking(orderRes.data.order));
       }
-      const stationRes = await getStation(orderRes.data?.order?.station?.pk, {
+      const stationRes = await StationsService.getStation(orderRes.data?.order?.station?.pk, {
         latitude,
         longitude,
       });

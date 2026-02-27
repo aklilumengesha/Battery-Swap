@@ -1,15 +1,8 @@
 import { message, notification } from "antd";
-import {
-  getConsumer,
-  signin,
-  signup,
-  updateConsumer,
-} from "../../../../infrastructure/api/user";
 import { logger } from "../../../utils/logger";
 import { actionCreators } from "./creators";
 import { routes } from "../../../routes";
-import { Cache } from "../../../../infrastructure/common/cache";
-import { listVehicles } from "../../../../infrastructure/api/vehicles";
+import { Cache, UsersService, VehiclesService } from "../../../services";
 
 const actions = {
   handleSetUser: (user) => (dispatch) => {
@@ -18,7 +11,7 @@ const actions = {
 
   handleListVehicles: () => async (dispatch) => {
     try {
-      const res = await listVehicles();
+      const res = await VehiclesService.listVehicles();
       if (res.status === 200) {
         console.log(res.data);
         dispatch(actionCreators.setVehicles(res.data));
@@ -32,7 +25,7 @@ const actions = {
     dispatch(actionCreators.setIsAuthenticating(true));
     dispatch(actionCreators.setIsSigningUp(true));
     try {
-      const res = await signup({
+      const res = await UsersService.signup({
         name: data?.name ?? "",
         email: data?.email ?? "",
         vehicle: data?.vehicle ?? "",
@@ -63,7 +56,7 @@ const actions = {
     dispatch(actionCreators.setIsAuthenticating(true));
     dispatch(actionCreators.setIsSigningIn(true));
     try {
-      const res = await signin({
+      const res = await UsersService.signin({
         email: data?.email ?? "",
         password: data?.password ?? "",
       });
@@ -101,7 +94,7 @@ const actions = {
     async (dispatch) => {
       dispatch(actionCreators.setProfileLoading(true));
       try {
-        const res = await getConsumer();
+        const res = await UsersService.getConsumer();
         if (res.data.success) {
           dispatch(actionCreators.setProfile(res.data.user));
           callback(res.data.user);
@@ -116,7 +109,7 @@ const actions = {
   handleUpdateProfile: (data) => async (dispatch) => {
     dispatch(actionCreators.setProfileUpdating(true));
     try {
-      const res = await updateConsumer({
+      const res = await UsersService.updateConsumer({
         name: data?.name ?? "",
         phone: data?.phone ?? "",
         vehicle: data?.vehicle ?? "",
