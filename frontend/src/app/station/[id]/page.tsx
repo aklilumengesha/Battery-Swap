@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import BarLayout from "../../../components/layout/BarLayout";
-import { useStations } from "../../../features/stations";
+import { useStation, useStationsQuery } from "../../../features/stations";
 import { Spin } from "antd";
 import FeatherIcon from "feather-icons-react";
 import { getLocation } from "../../../utils/location";
@@ -35,9 +35,15 @@ const CompanyCell = ({ battery, isSelected, onClick = () => {} }: any) => {
 
 const Station = () => {
   const params = useParams();
-  const { station, loadingStation, bookingStation, getStation, bookBattery } = useStations();
   const [selectedBattery, setSelectedBattery] = useState<any>(null);
   const [location, setLocation] = useState<any>({ name: "loading..." });
+
+  const { data: station, isLoading: loadingStation } = useStation(
+    params?.id as string,
+    location?.latitude,
+    location?.longitude
+  );
+  const { bookBattery, isBooking: bookingStation } = useStationsQuery();
 
   useEffect(() => {
     const savedLocation = localStorage.getItem("location");
@@ -48,11 +54,7 @@ const Station = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (params?.id && location?.latitude && location?.longitude) {
-      getStation(params.id as string, location.latitude, location.longitude);
-    }
-  }, [params?.id, location?.latitude, location?.longitude]);
+  // React Query automatically fetches station when location is available
 
   const handleBookBattery = () => {
     if (selectedBattery && params?.id) {

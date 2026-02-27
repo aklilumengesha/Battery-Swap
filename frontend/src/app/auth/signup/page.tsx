@@ -3,13 +3,13 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { userTypes } from "../../../../common/constants";
-import { useAuth } from "../../../features/auth";
+import { useAuthQuery } from "../../../features/auth";
 import { routes } from "../../../routes";
 import { validator } from "../../../utils/validators";
 import { message } from "antd";
 
 const Signup = () => {
-  const { isAuthenticating, vehicles, listVehicles, signup } = useAuth();
+  const { isSigningUp, vehicles, vehiclesLoading, signup } = useAuthQuery();
   const [userType, setuserType] = useState(userTypes.consumer.key);
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
@@ -17,9 +17,7 @@ const Signup = () => {
   const [password, setpassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  useEffect(() => {
-    listVehicles();
-  }, []);
+  // React Query automatically fetches vehicles, no manual call needed
 
   const handleSubmit = () => {
     message.config({ maxCount: 2 });
@@ -174,10 +172,10 @@ const Signup = () => {
 
             <button
               onClick={handleSubmit}
-              disabled={isAuthenticating}
+              disabled={isSigningUp}
               className="w-full bg-black text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             >
-              {isAuthenticating ? "Creating Account..." : "CREATE AN ACCOUNT"}
+              {isSigningUp ? "Creating Account..." : "CREATE AN ACCOUNT"}
             </button>
 
             <p className="text-sm text-gray-500 text-center">

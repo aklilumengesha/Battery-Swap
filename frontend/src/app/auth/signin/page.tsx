@@ -4,12 +4,12 @@ import { message } from "antd";
 import Link from "next/link";
 import React, { useState } from "react";
 import { userTypes } from "../../../../common/constants";
-import { useAuth } from "../../../features/auth";
+import { useAuthQuery } from "../../../features/auth";
 import { routes } from "../../../routes";
 import { validator } from "../../../utils/validators";
 
 const Signin = () => {
-  const { isAuthenticating, signin } = useAuth();
+  const { isSigningIn, signin } = useAuthQuery();
   const [email, setemail] = useState("");
   const [userType, setuserType] = useState(userTypes.consumer.key);
   const [password, setpassword] = useState("");
@@ -133,10 +133,10 @@ const Signin = () => {
 
             <button
               onClick={handleSubmit}
-              disabled={isAuthenticating}
+              disabled={isSigningIn}
               className="w-full bg-black text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             >
-              {isAuthenticating ? "Signing In..." : "SIGN IN"}
+              {isSigningIn ? "Signing In..." : "SIGN IN"}
             </button>
 
             <div className="relative my-6">

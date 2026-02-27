@@ -1,15 +1,15 @@
 /**
  * Auth Feature Module
- * Complete authentication feature with store, actions, selectors, and hooks
+ * React Query implementation for authentication
  */
 
-// Store
-export * from "./store";
-export { default as authReducer } from "./store/authSlice";
+// React Query Hooks (Active)
+export { useAuthQuery } from "./hooks/useAuthQuery";
 
-// Hooks
-export * from "./hooks";
-
-// Re-export for convenience
-export { authActions } from "./store/authActions";
-export { useAuth } from "./hooks/useAuth";
+// Redux code preserved for reference but not exported
+// See REDUX_LEGACY_NOTE.md for details
+// Uncomment below to rollback to Redux:
+// export * from "./store";
+// export { default as authReducer } from "./store/authSlice";
+// export { authActions } from "./store/authActions";
+// export { useAuth } from "./hooks/useAuth";

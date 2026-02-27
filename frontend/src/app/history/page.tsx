@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import BarLayout from "../../components/layout/BarLayout";
-import { useStations } from "../../features/stations";
+import { useBookings } from "../../features/stations";
 import { Spin } from "antd";
 import Link from "next/link";
 import { routes } from "../../routes";
 import { getLocation } from "../../utils/location";
 
 const History = () => {
-  const { bookings, loadingBookings, listBookings } = useStations();
+  const { data: bookings, isLoading: loadingBookings } = useBookings();
   const [location, setLocation] = useState<any>({ name: "loading..." });
 
   useEffect(() => {
@@ -21,9 +21,7 @@ const History = () => {
     }
   }, []);
 
-  useEffect(() => {
-    listBookings();
-  }, []);
+  // React Query automatically fetches bookings, no manual call needed
 
   return (
     <BarLayout location={location}>

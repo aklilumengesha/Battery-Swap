@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { routes } from "../../routes";
 import { message, Row, Spin } from "antd";
-import { useAuth } from "../../features/auth";
+import { useAuthQuery } from "../../features/auth";
 import { Cache } from "../../services/api/cache";
 
 const AuthLayout = ({ children, location }: any) => {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
-  const { setUser } = useAuth();
+  const { user } = useAuthQuery();
   const router = useRouter();
   const pathname = usePathname();
   const publicRoutes = [routes.SIGNUP, routes.SIGNIN, routes.INITIAL];
@@ -24,12 +24,8 @@ const AuthLayout = ({ children, location }: any) => {
       message.config({ maxCount: 1 });
       message.error("Login to continue!");
       router.push(routes.INITIAL);
-    } else {
-      const user = Cache.getItem("user");
-      if (user) {
-        setUser(user);
-      }
     }
+    // User is automatically loaded from cache by useAuthQuery
     stopLoading();
   }, [pathname]);
 

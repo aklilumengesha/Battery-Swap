@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import BarLayout from "../../components/layout/BarLayout";
-import { useAuth } from "../../features/auth";
+import { useAuthQuery } from "../../features/auth";
 import { Button } from "../../components";
 import { getLocation } from "../../utils/location";
 
 const Profile = () => {
-  const { user, signout } = useAuth();
+  const { user, signout } = useAuthQuery();
   const [location, setLocation] = useState<any>({ name: "loading..." });
 
   useEffect(() => {

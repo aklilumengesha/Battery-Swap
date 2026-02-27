@@ -1,6 +1,6 @@
 import React from "react";
 import FeatherIcon from "feather-icons-react";
-import { useSelector } from "react-redux";
+import { useAuthQuery } from "../../features/auth";
 
 const NavbarItem = ({ text, icon, className = "" }) => {
   return (
@@ -16,7 +16,7 @@ const NavbarItem = ({ text, icon, className = "" }) => {
 };
 
 const Navbar = ({ location }) => {
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAuthQuery();
   return (
     <div className="flex justify-between items-center bg-themeLightColor h-14 px-4">
       <NavbarItem text={location?.name} icon="map-pin" />
