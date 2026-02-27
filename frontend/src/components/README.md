@@ -10,6 +10,7 @@ components/
 │   ├── Button.tsx        # Reusable button with loading state
 │   ├── Input.tsx         # Form input with validation
 │   ├── Loader.tsx        # Loading spinner
+│   ├── StationSkeleton.tsx # Loading skeleton for stations
 │   └── index.ts          # UI components barrel export
 ├── layout/                # Layout and navigation components
 │   ├── AuthLayout.tsx    # Authentication layout wrapper
@@ -44,10 +45,22 @@ Atomic, reusable UI elements with no business logic.
 
 **Examples:**
 ```typescript
-import { Button, Input, Loader } from '@/components/ui';
+import { Button, Input, Loader, StationSkeleton, StationSkeletonList } from '@/components/ui';
 
 <Button type="solid" loading={isLoading} onClick={handleClick}>
   Submit
+</Button>
+
+<Input placeholder="Email" value={email} onChange={setEmail} />
+
+<Loader />
+
+{/* Loading skeleton for single station */}
+<StationSkeleton />
+
+{/* Loading skeleton for multiple stations */}
+<StationSkeletonList count={5} />
+```
 </Button>
 
 <Input
