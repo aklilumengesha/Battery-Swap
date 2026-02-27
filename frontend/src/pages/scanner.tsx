@@ -11,13 +11,12 @@ const QR = () => {
   const router = useRouter();
 
   const handleError = (error) => {
-    console.log("error", error);
+    // Error handling for QR scanner
   };
 
   const handleScan = (data) => {
     if (data) {
       setResult(data);
-      console.log(data);
     }
   };
 

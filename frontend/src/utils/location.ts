@@ -33,7 +33,6 @@ const locErrorHandler = (error, setLocation) => {
 };
 
 const getViaLocationiq = (setLocation) => {
-  console.warn("Fetching location...");
   navigator.geolocation.getCurrentPosition(
     (pos) => locSuccessHandler(pos, setLocation),
     (error) => locErrorHandler(error, setLocation),

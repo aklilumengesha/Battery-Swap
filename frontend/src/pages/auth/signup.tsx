@@ -24,9 +24,6 @@ const Signup = () => {
   const handleSubmit = () => {
     message.config({ maxCount: 2 });
     
-    // Debug: Log all values
-    console.log("Form values:", { name, email, vehicle, password, userType });
-    
     // Check for empty fields
     if (!name) {
       message.error("Name cannot be left blank");
@@ -65,7 +62,6 @@ const Signup = () => {
     }
     
     // All validations passed, submit the form
-    console.log("Submitting signup with:", { name, email, vehicle, password, userType });
     dispatch(
       authActions.handleSignup({ name, email, vehicle, password, userType })
     );

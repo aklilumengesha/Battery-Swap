@@ -22,7 +22,6 @@ const AuthLayout = ({ children }) => {
       message.warn("Login to continue!");
       router.push(routes.INITIAL);
     } else {
-      console.log({ userl: Cache.getItem("user") });
       dispatch(authActions.handleSetUser(Cache.getItem("user")));
     }
     stopLoading();
