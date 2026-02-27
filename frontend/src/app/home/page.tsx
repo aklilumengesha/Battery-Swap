@@ -1,16 +1,22 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BatteryCard } from "../../components";
+import { BatteryCard, StationSkeletonList } from "../../components";
 import BarLayout from "../../components/layout/BarLayout";
-import { Spin } from "antd";
-import { useStations } from "../../features/stations";
+import { useNearbyStations } from "../../features/stations";
 import ScanButton from "../../components/shared/ScanButton";
 import { getLocation } from "../../utils/location";
 
 const Home = () => {
-  const { stationList, loadingList, listStations } = useStations();
-  const [location, setLocation] = useState<any>({ name: "loading..." });
+  const [location, setLocation] = useState<{ latitude?: number; longitude?: number; name: string }>({ 
+    name: "loading..." 
+  });
+
+  // Fetch stations using React Query
+  const { data: stationList, isLoading: loadingList } = useNearbyStations(
+    location?.latitude,
+    location?.longitude
+  );
 
   useEffect(() => {
     const savedLocation = localStorage.getItem("location");
@@ -21,28 +27,20 @@ const Home = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (location?.latitude && location?.longitude) {
-      listStations(location.latitude, location.longitude);
-    }
-  }, [location?.latitude, location?.longitude]);
-
   return (
     <BarLayout location={location}>
       {!location?.latitude || !location?.longitude ? (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <Spin tip="Getting your location..." />
+        <div className="text-center py-8">
+          <p className="text-gray-600">Getting your location...</p>
         </div>
       ) : loadingList ? (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <Spin tip="Loading stations..." />
-        </div>
+        <StationSkeletonList count={5} />
       ) : stationList && stationList.length > 0 ? (
         stationList.map((station: any, i: number) => (
-          <BatteryCard station={station} key={i} />
+          <BatteryCard station={station} key={station.pk || i} />
         ))
       ) : (
-        <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+        <div className="text-center py-8 text-gray-600">
           No stations found nearby
         </div>
       )}
