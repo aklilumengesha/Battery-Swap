@@ -94,3 +94,33 @@ class MySubscriptionView(views.APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class SubscriptionStatusView(views.APIView):
+    """
+    GET /api/subscription-status/
+    Get detailed subscription status including usage
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        from subscription.utils import get_subscription_status
+        
+        try:
+            status_data = get_subscription_status(request.user)
+            
+            return Response(
+                {
+                    'success': True,
+                    'status': status_data
+                },
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {
+                    'success': False,
+                    'message': str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

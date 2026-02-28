@@ -13,6 +13,7 @@ from battery.websocket_utils import (
     broadcast_battery_collected,
     notify_booking_ready,
 )
+from subscription.utils import can_create_order, get_subscription_status
 
 
 from user.serializers import SignupSerializer, UserSerializer
@@ -169,6 +170,19 @@ class Orders(views.APIView):
     
     def post(self, request, *args, **kwargs):
         try:
+            # Check subscription and swap limit BEFORE creating order
+            can_create, error_message = can_create_order(request.user)
+            
+            if not can_create:
+                return Response(
+                    data={
+                        "success": False,
+                        "message": error_message,
+                        "error_code": "SUBSCRIPTION_LIMIT_EXCEEDED"
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
             print(request.data)
             battery = Battery.objects.get(pk=request.data.get("battery"))
             station = Station.objects.get(pk=request.data.get("station"))
@@ -191,9 +205,17 @@ class Orders(views.APIView):
 
             # Broadcast battery booked event via WebSocket
             broadcast_battery_booked(station, battery, user)
+            
+            # Get updated subscription status
+            subscription_status = get_subscription_status(user)
 
             return Response(
-                data={"success": True, "order_pk": order.pk}, status=status.HTTP_200_OK
+                data={
+                    "success": True,
+                    "order_pk": order.pk,
+                    "subscription_status": subscription_status
+                },
+                status=status.HTTP_200_OK
             )
         except Exception as e:
             print(e)
