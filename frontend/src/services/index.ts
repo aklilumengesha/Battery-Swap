@@ -10,3 +10,4 @@ export { Cache, ReqHeader, getFreshHeaders, get, post, patch, put, del } from ".
 export * as StationsService from "./stations.service";
 export * as UsersService from "./users.service";
 export * as VehiclesService from "./vehicles.service";
+export * as SubscriptionService from "./subscription.service";

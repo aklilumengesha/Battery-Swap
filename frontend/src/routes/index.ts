@@ -7,6 +7,7 @@ export const routes = {
   PROFILE: "/profile",
   HISTORY: "/history",
   SCANNER: "/scanner",
+  PRICING: "/pricing",
   ORDER_DETAILS: (id) => `/order/${id}`,
   ORDER_SUCCESS: "/order/success",
   ORDER_FAILURE: "/order/failure",
