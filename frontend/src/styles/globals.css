@@ -176,6 +176,24 @@
   .esTrans {
     transition: all var(--transition-base);
   }
+
+  /* Glassmorphism navigation */
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.08),
+      0 2px 8px 0 rgba(0, 0, 0, 0.04);
+  }
+
+  .glass-gradient {
+    background: linear-gradient(
+      135deg,
+      rgba(3, 192, 182, 0.03) 0%,
+      rgba(99, 102, 241, 0.03) 100%
+    );
+  }
 }
 
 /* ===== Utility Classes ===== */
@@ -194,6 +212,23 @@
   /* Smooth scrolling */
   .scroll-smooth {
     scroll-behavior: smooth;
+  }
+
+  /* Glassmorphism utilities */
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-border {
+    border: 1px solid rgba(255, 255, 255, 0.6);
   }
 }
 
