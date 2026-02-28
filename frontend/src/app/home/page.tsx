@@ -13,7 +13,7 @@ const Home = () => {
   });
 
   // Fetch stations using React Query
-  const { data: stationList, isLoading: loadingList } = useNearbyStations(
+  const { data: stationList, isLoading: loadingList, error } = useNearbyStations(
     location?.latitude,
     location?.longitude
   );
@@ -35,6 +35,11 @@ const Home = () => {
         </div>
       ) : loadingList ? (
         <StationSkeletonList count={5} />
+      ) : error ? (
+        <div className="text-center py-8">
+          <p className="text-red-600 mb-2">Error loading stations</p>
+          <p className="text-gray-600 text-sm">{(error as Error).message}</p>
+        </div>
       ) : stationList && stationList.length > 0 ? (
         stationList.map((station: any, i: number) => (
           <BatteryCard station={station} key={station.pk || i} />

@@ -58,10 +58,12 @@ export const useAuthQuery = () => {
         Cache.setItem({ user });
         return user;
       }
-      throw new Error(res.data.message || "Failed to fetch profile");
+      // If profile fetch fails, return cached user
+      return cachedUser;
     },
-    enabled: isAuthenticated, // Only fetch if authenticated
+    enabled: false, // Disable automatic fetching - only fetch manually when needed
     staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: false, // Don't retry on failure
   });
 
   // Query: List vehicles

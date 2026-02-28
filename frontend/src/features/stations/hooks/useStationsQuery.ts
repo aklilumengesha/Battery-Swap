@@ -36,26 +36,35 @@ export const useStationsQuery = () => {
     return useQuery({
       queryKey: queryKeys.stations.list(latitude || 0, longitude || 0),
       queryFn: async () => {
-        const userId = getUserId();
-        if (!userId) {
-          throw new Error("Please login to view stations");
-        }
         if (!latitude || !longitude) {
           throw new Error("Location required");
         }
 
-        const res = await StationsService.findNearbyStations(userId, {
+        const res = await StationsService.findNearbyStations({
           latitude,
           longitude,
         });
         
-        if (res.status === 200) {
+        if (res.status === 200 && res.data.success) {
           return res.data.stations || [];
         }
+        
+        // Handle error responses
+        if (res.status === 404) {
+          throw new Error(res.data.message || "Consumer profile not found");
+        }
+        if (res.status === 403) {
+          throw new Error(res.data.message || "Access denied");
+        }
+        if (res.status === 401) {
+          throw new Error("Please login to view stations");
+        }
+        
         throw new Error(res.data.message || "Failed to fetch stations");
       },
-      enabled: !!latitude && !!longitude && !!getUserId(),
+      enabled: !!latitude && !!longitude,
       staleTime: 2 * 60 * 1000, // 2 minutes (location-based data)
+      retry: 1, // Retry once on failure
     });
   };
 

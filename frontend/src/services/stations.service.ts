@@ -11,12 +11,11 @@ interface StationParams {
 }
 
 /**
- * Find nearby stations for a user
- * @param userId - User ID
+ * Find nearby stations for authenticated user
  * @param params - Location parameters (latitude, longitude)
  */
-export const findNearbyStations = (userId: string | number, params: StationParams) => 
-  get(`power/stations/find/${userId}/`, params);
+export const findNearbyStations = (params: StationParams) => 
+  get(`power/stations/find/`, params);
 
 /**
  * Get station details by ID

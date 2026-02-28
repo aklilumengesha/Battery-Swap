@@ -3,7 +3,7 @@ import razorpay
 from rest_framework import generics, views, status
 from rest_framework.response import Response
 
-# from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 from battery.utils import get_battery_data, get_station_data
 from battery.websocket_utils import broadcast_battery_added
@@ -80,44 +80,70 @@ class ManageStationBatteries(views.APIView):
 
 
 class FindStations(views.APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, *args, **kwargs):
-        stations = Station.objects.all()
-        user = User.objects.get(pk=kwargs["pk"])
-        if user.user_type == "consumer":
+        user = request.user
+        
+        # Check if user is a consumer
+        if user.user_type != "consumer":
+            return Response(
+                data={"success": False, "message": "Only consumers can view stations", "stations": []},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
+        # Get consumer profile
+        try:
             consumer = Consumer.objects.get(user=user)
-            try:
-                latitude = request.query_params.get("latitude", 10.0484417)
-                longitude = request.query_params.get("longitude", 76.3310651)
-                if latitude == "undefined":
-                    latitude = 10.0484417
-                if longitude == "undefined":
-                    longitude = 76.3310651
-                stations_data = []
-                batteries = Battery.objects.filter(vehicle=consumer.vehicle)
-                for station in stations:
-                    if any(battery in batteries for battery in station.batteries.all()):
-                        stations_data.append(
-                            get_station_data(station, float(latitude), float(longitude))
-                        )
-                stations_data.sort(key=lambda station: station["distance"])
-                return Response(
-                    data={"success": True, "stations": stations_data},
-                    status=status.HTTP_200_OK,
+        except Consumer.DoesNotExist:
+            return Response(
+                data={"success": False, "message": "Consumer profile not found. Please complete your profile.", "stations": []},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        
+        # Get location parameters
+        try:
+            latitude = request.query_params.get("latitude", 10.0484417)
+            longitude = request.query_params.get("longitude", 76.3310651)
+            if latitude == "undefined":
+                latitude = 10.0484417
+            if longitude == "undefined":
+                longitude = 76.3310651
+            latitude = float(latitude)
+            longitude = float(longitude)
+        except (ValueError, TypeError):
+            return Response(
+                data={"success": False, "message": "Invalid location parameters", "stations": []},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        # Get all stations
+        stations = Station.objects.all()
+        
+        # Filter stations by vehicle compatibility
+        batteries = Battery.objects.filter(vehicle=consumer.vehicle)
+        stations_data = []
+        
+        for station in stations:
+            # Check if station has batteries compatible with user's vehicle
+            if any(battery in batteries for battery in station.batteries.all()):
+                stations_data.append(
+                    get_station_data(station, latitude, longitude)
                 )
-            except Battery.DoesNotExist:
-                return Response(
-                    data={"success": False, "stations": []},
-                    status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
-                )
+        
+        # Sort by distance
+        stations_data.sort(key=lambda station: station["distance"])
+        
         return Response(
-            data={"success": False, "stations": []},
-            status=status.HTTP_401_UNAUTHORIZED,
+            data={"success": True, "stations": stations_data},
+            status=status.HTTP_200_OK,
         )
 
 
 
 class GetStation(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, *args, **kwargs):
         try:
             station = Station.objects.get(pk=kwargs["pk"])

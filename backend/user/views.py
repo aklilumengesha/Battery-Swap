@@ -1,6 +1,7 @@
 import datetime
 from rest_framework import views, status, generics
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import authenticate, login
 from user.models import Order, User
@@ -164,6 +165,8 @@ class SignUpView(views.APIView):
 
 
 class Orders(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request, *args, **kwargs):
         try:
             print(request.data)
@@ -217,6 +220,8 @@ class Orders(views.APIView):
 
 
 class CollectOrder(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, *args, **kwargs):
         try:
             order = Order.objects.get(pk=kwargs["pk"])
@@ -243,6 +248,8 @@ class CollectOrder(views.APIView):
 
 
 class GetOrder(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, *args, **kwargs):
         try:
             order_data = {}
