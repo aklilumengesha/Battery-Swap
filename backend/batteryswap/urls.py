@@ -16,4 +16,5 @@ urlpatterns = [
     path("consumer/", include("consumer.urls")),
     path("producer/", include("producer.urls")),
     path("power/", include("battery.urls")),
+    path("api/", include("subscription.urls")),
 ]

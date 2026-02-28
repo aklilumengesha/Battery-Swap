@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "consumer",
     "producer",
     "battery",
+    "subscription",
 ]
 
 MIDDLEWARE = [
