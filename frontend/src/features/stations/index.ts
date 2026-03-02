@@ -12,6 +12,9 @@ export {
   useBooking,
 } from "./hooks/useStationsQuery";
 
+// WebSocket Hook
+export { useStationWebSocket } from "./hooks/useStationWebSocket";
+
 // Redux code preserved for reference but not exported
 // See ../REDUX_LEGACY_NOTE.md for details
 // Uncomment below to rollback to Redux:
