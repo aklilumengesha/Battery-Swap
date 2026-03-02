@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import FeatherIcon from "feather-icons-react";
 import Link from "next/link";
 import { routes } from "../../routes";
-import { AvailabilityBadge } from "../ui/AvailabilityBadge";
+import AvailabilityBadge from "../ui/AvailabilityBadge";
 import styles from "./StationCard.module.css";
 
 interface StationCardProps {

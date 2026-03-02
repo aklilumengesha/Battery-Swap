@@ -5,7 +5,7 @@ interface AvailabilityBadgeProps {
   availableCount: number;
 }
 
-export const AvailabilityBadge: React.FC<AvailabilityBadgeProps> = ({ availableCount }) => {
+const AvailabilityBadge: React.FC<AvailabilityBadgeProps> = ({ availableCount }) => {
   const isAvailable = availableCount > 0;
 
   return (
@@ -17,3 +17,5 @@ export const AvailabilityBadge: React.FC<AvailabilityBadgeProps> = ({ availableC
     </span>
   );
 };
+
+export default AvailabilityBadge;
