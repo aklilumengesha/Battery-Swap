@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BatteryCard, StationSkeletonList, SubscriptionBanner } from "../../components";
+import { MapPreview } from "../../components/map";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useNearbyStations, useBookings } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
@@ -211,6 +212,41 @@ const Home = () => {
             swapLimit={10}
           />
         </div>
+
+        {/* Map Preview - Show stations on map */}
+        {location?.latitude && location?.longitude && (
+          <div className="animate-scale-in" style={{ animationDelay: "500ms" }}>
+            {loadingList ? (
+              <div className="h-[220px] rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg border border-gray-200 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+                  <p className="text-sm text-gray-600 font-medium">Loading map preview...</p>
+                </div>
+              </div>
+            ) : stationList && stationList.length > 0 ? (
+              <MapPreview
+                stations={stationList.map((station: any) => ({
+                  id: station.pk,
+                  name: station.name,
+                  latitude: station.latitude,
+                  longitude: station.longitude,
+                  address: station.address,
+                }))}
+                userLocation={{
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                }}
+                onViewFullMap={() => {
+                  // Scroll to stations section
+                  const stationsSection = document.getElementById('stations-section');
+                  if (stationsSection) {
+                    stationsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              />
+            ) : null}
+          </div>
+        )}
 
         {/* Stations Section - Redesigned */}
         <div id="stations-section" className="pt-6 border-t border-gray-200">
