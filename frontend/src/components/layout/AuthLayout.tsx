@@ -14,7 +14,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const publicRoutes = [routes.SIGNUP, routes.SIGNIN, routes.INITIAL];
 
-  const stopLoading = () => setTimeout(() => setIsAuthenticating(false), 1000);
+  const stopLoading = () => {
+    setTimeout(() => setIsAuthenticating(false), 1000);
+  };
 
   useEffect(() => {
     const hasAccessToken = Cache.checkItem("accessToken");
@@ -25,14 +27,15 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       message.error("Login to continue!");
       router.push(routes.INITIAL);
     }
-    // User is automatically loaded from cache by useAuthQuery
     stopLoading();
   }, [pathname]);
 
   if (isAuthenticating)
     return (
       <Row align="middle" justify="center" style={{ minHeight: "100vh" }}>
-        <Spin tip="Authenticating..." />
+        <Spin>
+          <span>Authenticating...</span>
+        </Spin>
       </Row>
     );
   
