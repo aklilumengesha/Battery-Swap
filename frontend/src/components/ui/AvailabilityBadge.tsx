@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import styles from './AvailabilityBadge.module.css';
 
@@ -5,7 +7,7 @@ interface AvailabilityBadgeProps {
   availableCount: number;
 }
 
-const AvailabilityBadge: React.FC<AvailabilityBadgeProps> = ({ availableCount }) => {
+const AvailabilityBadge = ({ availableCount }: AvailabilityBadgeProps) => {
   const isAvailable = availableCount > 0;
 
   return (
