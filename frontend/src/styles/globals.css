@@ -6,6 +6,9 @@
 /* Import design tokens */
 @import './design-tokens.css';
 
+/* Import Leaflet CSS */
+@import 'leaflet/dist/leaflet.css';
+
 /* Tailwind directives */
 @tailwind base;
 @tailwind components;
