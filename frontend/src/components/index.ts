@@ -22,6 +22,7 @@ export { default as Navbar } from "./layout/Navbar";
 export { default as AuthLayout } from "./layout/AuthLayout";
 export { default as BarLayout } from "./layout/BarLayout";
 export { default as LeafLayout } from "./layout/LeafLayout";
+export { default as DashboardLayout } from "./layout/DashboardLayout";
 export { default as StationCard } from "./shared/StationCard";
 export { default as HistoryCard } from "./shared/HistoryCard";
 export { default as BatteryCard } from "./shared/StationCard";

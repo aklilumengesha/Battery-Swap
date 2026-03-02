@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { BatteryCard, StationSkeletonList } from "../../components";
-import BarLayout from "../../components/layout/BarLayout";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useNearbyStations, useBookings } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
 import ScanButton from "../../components/shared/ScanButton";
@@ -54,7 +54,7 @@ const Home = () => {
   };
 
   return (
-    <BarLayout location={location}>
+    <DashboardLayout title="Home" location={location}>
       <div className="space-y-6 pb-24">
         {/* Hero Section */}
         <div className="bg-gradient-to-br from-black via-gray-900 to-gray-800 rounded-2xl p-6 text-white shadow-xl">
@@ -174,7 +174,7 @@ const Home = () => {
       </div>
       
       <ScanButton />
-    </BarLayout>
+    </DashboardLayout>
   );
 };
 
