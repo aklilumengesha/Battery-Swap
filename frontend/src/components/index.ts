@@ -29,3 +29,4 @@ export { default as BatteryCard } from "./shared/StationCard";
 export { default as ScanButton } from "./shared/ScanButton";
 export { default as MetaTags } from "./shared/MetaTags";
 export { default as AuthLabel } from "./shared/AuthLabel";
+export { default as SubscriptionBanner } from "./shared/SubscriptionBanner";

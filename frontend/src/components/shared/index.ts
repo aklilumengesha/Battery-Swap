@@ -7,6 +7,7 @@ export { default as HistoryCard } from "./HistoryCard";
 export { default as ScanButton } from "./ScanButton";
 export { default as MetaTags } from "./MetaTags";
 export { default as AuthLabel } from "./AuthLabel";
+export { default as SubscriptionBanner } from "./SubscriptionBanner";
 
 // Legacy export for backward compatibility
 export { default as BatteryCard } from "./StationCard";

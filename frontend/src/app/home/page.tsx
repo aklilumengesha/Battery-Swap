@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BatteryCard, StationSkeletonList } from "../../components";
+import { BatteryCard, StationSkeletonList, SubscriptionBanner } from "../../components";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useNearbyStations, useBookings } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
@@ -193,6 +193,13 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        {/* Subscription Status Banner */}
+        <SubscriptionBanner
+          planName="Basic Plan"
+          swapsRemaining={8}
+          swapLimit={10}
+        />
 
         {/* Stations Section */}
         <div id="stations-section">
