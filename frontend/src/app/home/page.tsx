@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { BatteryCard, StationSkeletonList, SubscriptionBanner } from "../../components";
-import { MapPreview } from "../../components/map";
 import { useNearbyStations, useBookings, useStationWebSocket } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
 import ScanButton from "../../components/shared/ScanButton";
@@ -19,6 +19,11 @@ import {
   SearchOutlined,
   CreditCardOutlined
 } from "@ant-design/icons";
+
+const MapPreview = dynamic(() => import('../../components/map/MapPreview'), {
+  ssr: false,
+  loading: () => <div style={{height:'300px',background:'#f5f5f5'}}>Loading map...</div>
+});
 
 const Home = () => {
   const router = useRouter();
