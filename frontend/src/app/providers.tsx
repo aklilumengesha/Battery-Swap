@@ -22,7 +22,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeContextProvider>
-        <AuthLayout location={location}>{children}</AuthLayout>
+        <AuthLayout>{children}</AuthLayout>
       </ThemeContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

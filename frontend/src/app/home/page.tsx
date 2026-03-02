@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BatteryCard, StationSkeletonList, SubscriptionBanner } from "../../components";
 import { MapPreview } from "../../components/map";
-import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useNearbyStations, useBookings, useStationWebSocket } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
 import ScanButton from "../../components/shared/ScanButton";
 import { getLocation } from "../../utils/location";
 import { routes } from "../../routes";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import { 
   ThunderboltFilled,
   EnvironmentOutlined,
@@ -38,7 +38,7 @@ const Home = () => {
   const { data: bookings = [] } = useBookings();
 
   // Connect to WebSocket for real-time availability updates
-  const { isConnected } = useStationWebSocket({
+  useStationWebSocket({
     enabled: !!stationList && stationList.length > 0,
   });
 
@@ -274,7 +274,7 @@ const Home = () => {
                 <EnvironmentOutlined className="text-5xl text-gray-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Getting your location</h3>
-              <p className="text-gray-600 mb-1">We're detecting your current position</p>
+              <p className="text-gray-600 mb-1">We&apos;re detecting your current position</p>
               <p className="text-sm text-gray-500">Please enable location services to continue</p>
             </div>
           ) : loadingList ? (
@@ -312,7 +312,7 @@ const Home = () => {
                 <ThunderboltFilled className="text-5xl text-gray-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No stations nearby</h3>
-              <p className="text-gray-600 mb-1">We couldn't find any battery swap stations in your area</p>
+              <p className="text-gray-600 mb-1">We couldn&apos;t find any battery swap stations in your area</p>
               <p className="text-sm text-gray-500 mb-6">Try refreshing your location or check back later</p>
               <button 
                 onClick={() => {

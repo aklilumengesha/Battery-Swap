@@ -7,7 +7,7 @@ import { message, Row, Spin } from "antd";
 import { useAuthQuery } from "../../features/auth";
 import { Cache } from "../../services/api/cache";
 
-const AuthLayout = ({ children, location }: any) => {
+const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const { user } = useAuthQuery();
   const router = useRouter();
@@ -36,7 +36,7 @@ const AuthLayout = ({ children, location }: any) => {
       </Row>
     );
   
-  return <>{React.cloneElement(children as React.ReactElement, { location })}</>;
+  return <>{children}</>;
 };
 
 export default AuthLayout;

@@ -195,7 +195,7 @@ const PricingPage = () => {
                 What happens if I exceed my swap limit?
               </h3>
               <p className="text-gray-600">
-                You'll need to upgrade to a higher plan or wait until your next billing cycle to continue swapping.
+                You&apos;ll need to upgrade to a higher plan or wait until your next billing cycle to continue swapping.
               </p>
             </div>
             <div className="bg-white rounded-xl p-6 shadow-sm">
