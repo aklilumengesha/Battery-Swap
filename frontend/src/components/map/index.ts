@@ -5,3 +5,4 @@
 
 export { default as MapWrapper } from "./MapWrapper";
 export { default as StationMap } from "./StationMap";
+export { default as MapPreview } from "./MapPreviewWrapper";
