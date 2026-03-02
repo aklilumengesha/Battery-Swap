@@ -201,62 +201,74 @@ const Home = () => {
           swapLimit={10}
         />
 
-        {/* Stations Section */}
-        <div id="stations-section">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Available Stations</h2>
+        {/* Stations Section - Redesigned */}
+        <div id="stations-section" className="pt-6 border-t border-gray-200">
+          {/* Section Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Available Stations</h2>
+              <p className="text-sm text-gray-500 mt-1">Find and book nearby charging stations</p>
+            </div>
             {nearbyStationsCount > 0 && (
-              <span className="text-sm text-gray-500">{nearbyStationsCount} found</span>
+              <div className="bg-gray-100 px-3 py-1.5 rounded-full">
+                <span className="text-sm font-semibold text-gray-700">{nearbyStationsCount} found</span>
+              </div>
             )}
           </div>
 
           {!location?.latitude || !location?.longitude ? (
-            <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-gray-100">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <EnvironmentOutlined className="text-3xl text-gray-400" />
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-12 text-center shadow-sm border border-gray-200">
+              <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                <EnvironmentOutlined className="text-5xl text-gray-400" />
               </div>
-              <p className="text-gray-600 mb-2">Getting your location...</p>
-              <p className="text-sm text-gray-400">Please enable location services</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Getting your location</h3>
+              <p className="text-gray-600 mb-1">We're detecting your current position</p>
+              <p className="text-sm text-gray-500">Please enable location services to continue</p>
             </div>
           ) : loadingList ? (
             <StationSkeletonList count={5} />
           ) : error ? (
-            <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-red-100">
-              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ClockCircleOutlined className="text-3xl text-red-400" />
+            <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-12 text-center shadow-sm border border-red-100">
+              <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                <ClockCircleOutlined className="text-5xl text-red-400" />
               </div>
-              <p className="text-red-600 font-medium mb-2">Unable to load stations</p>
-              <p className="text-gray-600 text-sm mb-4">{(error as Error).message}</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Unable to load stations</h3>
+              <p className="text-gray-600 mb-6">{(error as Error).message}</p>
               <button 
                 onClick={() => window.location.reload()}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl"
               >
                 Try Again
                 <ArrowRightOutlined />
               </button>
             </div>
           ) : stationList && stationList.length > 0 ? (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {stationList.map((station: any, i: number) => (
-                <BatteryCard station={station} key={station.pk || i} />
+                <div
+                  key={station.pk || i}
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${i * 50}ms` }}
+                >
+                  <BatteryCard station={station} />
+                </div>
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-gray-100">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ThunderboltFilled className="text-3xl text-gray-400" />
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-12 text-center shadow-sm border border-gray-200">
+              <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                <ThunderboltFilled className="text-5xl text-gray-400" />
               </div>
-              <p className="text-gray-900 font-medium mb-2">No stations nearby</p>
-              <p className="text-gray-600 text-sm mb-4">
-                We couldn't find any battery swap stations in your area
-              </p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No stations nearby</h3>
+              <p className="text-gray-600 mb-1">We couldn't find any battery swap stations in your area</p>
+              <p className="text-sm text-gray-500 mb-6">Try refreshing your location or check back later</p>
               <button 
                 onClick={() => {
                   if ("geolocation" in navigator) {
                     getLocation((data: any) => setLocation(data));
                   }
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl"
               >
                 <ReloadOutlined />
                 Refresh Location
