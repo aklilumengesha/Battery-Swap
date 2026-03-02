@@ -11,3 +11,4 @@ export * as StationsService from "./stations.service";
 export * as UsersService from "./users.service";
 export * as VehiclesService from "./vehicles.service";
 export * as SubscriptionService from "./subscription.service";
+export * as WebSocketService from "./websocket.service";

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import BarLayout from "../../../components/layout/BarLayout";
-import { useStation, useStationsQuery } from "../../../features/stations";
+import { useStation, useStationsQuery, useStationWebSocket } from "../../../features/stations";
 import { Spin } from "antd";
 import FeatherIcon from "feather-icons-react";
 import { getLocation } from "../../../utils/location";
@@ -44,6 +44,11 @@ const Station = () => {
     location?.longitude
   );
   const { bookBattery, isBooking: bookingStation } = useStationsQuery();
+
+  // Connect to WebSocket for real-time availability updates
+  useStationWebSocket({
+    enabled: !!station,
+  });
 
   useEffect(() => {
     const savedLocation = localStorage.getItem("location");

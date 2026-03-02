@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { BatteryCard, StationSkeletonList, SubscriptionBanner } from "../../components";
 import { MapPreview } from "../../components/map";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { useNearbyStations, useBookings } from "../../features/stations";
+import { useNearbyStations, useBookings, useStationWebSocket } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
 import ScanButton from "../../components/shared/ScanButton";
 import { getLocation } from "../../utils/location";
@@ -36,6 +36,11 @@ const Home = () => {
 
   // Fetch bookings for stats
   const { data: bookings = [] } = useBookings();
+
+  // Connect to WebSocket for real-time availability updates
+  const { isConnected } = useStationWebSocket({
+    enabled: !!stationList && stationList.length > 0,
+  });
 
   useEffect(() => {
     const savedLocation = localStorage.getItem("location");

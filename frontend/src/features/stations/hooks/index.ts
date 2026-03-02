@@ -4,3 +4,4 @@
  */
 
 export * from "./useStationsQuery";
+export * from "./useStationWebSocket";
