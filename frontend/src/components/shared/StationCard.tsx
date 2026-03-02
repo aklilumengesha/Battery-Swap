@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FeatherIcon from "feather-icons-react";
 import Link from "next/link";
 import { routes } from "../../routes";
+import { AvailabilityBadge } from "../ui/AvailabilityBadge";
+import styles from "./StationCard.module.css";
 
 interface StationCardProps {
   station: any;
@@ -13,8 +15,26 @@ interface StationCardProps {
  * Displays station information with distance and map link
  */
 const StationCard: React.FC<StationCardProps> = ({ station, time }) => {
+  const [isHighlighted, setIsHighlighted] = useState(false);
+  const prevAvailableRef = useRef<number | undefined>(undefined);
+  const availableCount = station?.available_batteries ?? station?.batteries?.length ?? 0;
+
+  useEffect(() => {
+    // Trigger highlight flash when availability changes
+    if (prevAvailableRef.current !== undefined && prevAvailableRef.current !== availableCount) {
+      setIsHighlighted(true);
+      const timer = setTimeout(() => setIsHighlighted(false), 600);
+      return () => clearTimeout(timer);
+    }
+    prevAvailableRef.current = availableCount;
+  }, [availableCount]);
+
   return (
-    <div className="flex flex-col justify-between cursor-pointer p-4 mx-5 my-4 rounded-lg shadow-md min-h-[100px]">
+    <div className={`${styles.card} ${isHighlighted ? styles.highlighted : ''}`}>
+      <div className={styles.badgeContainer}>
+        <AvailabilityBadge availableCount={availableCount} />
+      </div>
+      
       <Link href={routes.STATION(station?.pk)}>
         <h3 className="font-semibold">{station?.name}</h3>
       </Link>
