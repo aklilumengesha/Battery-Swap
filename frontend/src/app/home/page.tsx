@@ -122,34 +122,74 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-3 gap-3">
+        {/* Stats Row - Redesigned */}
+        <div className="grid grid-cols-3 gap-4">
           {/* Nearby Stations */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div className="flex flex-col">
-              <span className="text-gray-500 text-xs mb-1">Nearby</span>
-              <span className="text-2xl font-bold text-gray-900">{nearbyStationsCount}</span>
-              <span className="text-gray-600 text-xs mt-1">Stations</span>
+          <div className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="flex flex-col items-center text-center">
+              {/* Icon */}
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <EnvironmentOutlined className="text-white text-xl" />
+              </div>
+              
+              {/* Value */}
+              <span className="text-3xl font-bold text-gray-900 mb-1">
+                {nearbyStationsCount}
+              </span>
+              
+              {/* Label */}
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Nearby
+              </span>
+              <span className="text-xs text-gray-400 mt-0.5">
+                Stations
+              </span>
             </div>
           </div>
 
           {/* Active Booking */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div className="flex flex-col">
-              <span className="text-gray-500 text-xs mb-1">Active</span>
-              <span className="text-2xl font-bold text-gray-900">
+          <div className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="flex flex-col items-center text-center">
+              {/* Icon */}
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <ClockCircleOutlined className="text-white text-xl" />
+              </div>
+              
+              {/* Value */}
+              <span className="text-3xl font-bold text-gray-900 mb-1">
                 {activeBooking ? "1" : "0"}
               </span>
-              <span className="text-gray-600 text-xs mt-1">Booking</span>
+              
+              {/* Label */}
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Active
+              </span>
+              <span className="text-xs text-gray-400 mt-0.5">
+                Booking
+              </span>
             </div>
           </div>
 
           {/* Total Swaps */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div className="flex flex-col">
-              <span className="text-gray-500 text-xs mb-1">Total</span>
-              <span className="text-2xl font-bold text-gray-900">{totalSwaps}</span>
-              <span className="text-gray-600 text-xs mt-1">Swaps</span>
+          <div className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="flex flex-col items-center text-center">
+              {/* Icon */}
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <ThunderboltFilled className="text-white text-xl" />
+              </div>
+              
+              {/* Value */}
+              <span className="text-3xl font-bold text-gray-900 mb-1">
+                {totalSwaps}
+              </span>
+              
+              {/* Label */}
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Total
+              </span>
+              <span className="text-xs text-gray-400 mt-0.5">
+                Swaps
+              </span>
             </div>
           </div>
         </div>
