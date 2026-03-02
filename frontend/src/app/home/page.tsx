@@ -1,21 +1,26 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { BatteryCard, StationSkeletonList } from "../../components";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useNearbyStations, useBookings } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
 import ScanButton from "../../components/shared/ScanButton";
 import { getLocation } from "../../utils/location";
+import { routes } from "../../routes";
 import { 
   ThunderboltFilled,
   EnvironmentOutlined,
   ClockCircleOutlined,
   ReloadOutlined,
-  ArrowRightOutlined
+  ArrowRightOutlined,
+  SearchOutlined,
+  CreditCardOutlined
 } from "@ant-design/icons";
 
 const Home = () => {
+  const router = useRouter();
   const [location, setLocation] = useState<{ latitude?: number; longitude?: number; name: string }>({ 
     name: "loading..." 
   });
@@ -56,23 +61,64 @@ const Home = () => {
   return (
     <DashboardLayout title="Home" location={location}>
       <div className="space-y-6 pb-24">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-br from-black via-gray-900 to-gray-800 rounded-2xl p-6 text-white shadow-xl">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <p className="text-gray-300 text-sm mb-1">{getGreeting()}</p>
-              <h1 className="text-2xl font-bold">{user?.name || "Welcome"}</h1>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-full p-3">
-              <ThunderboltFilled className="text-xl" />
-            </div>
-          </div>
+        {/* Hero Section - Redesigned */}
+        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-8 md:p-10 text-white shadow-2xl overflow-hidden">
+          {/* Radial glow effect */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-indigo-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl"></div>
           
-          <div className="flex items-center gap-2 text-gray-300">
-            <EnvironmentOutlined className="text-base" />
-            <span className="text-sm">
-              {location?.name || "Detecting location..."}
-            </span>
+          <div className="relative z-10">
+            {/* Top section with greeting and icon */}
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex-1">
+                <p className="text-gray-400 text-sm font-medium mb-2">{getGreeting()}</p>
+                <h1 className="text-3xl md:text-4xl font-bold mb-1">
+                  {user?.name || "Welcome"}
+                </h1>
+                <p className="text-gray-300 text-base">Ready to power your journey?</p>
+              </div>
+              
+              {/* Icon with radial glow */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl"></div>
+                <div className="relative bg-white/10 backdrop-blur-md rounded-full p-4 border border-white/20">
+                  <ThunderboltFilled className="text-2xl" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Location */}
+            <div className="flex items-center gap-2 text-gray-300 mb-8">
+              <EnvironmentOutlined className="text-lg" />
+              <span className="text-sm font-medium">
+                {location?.name || "Detecting location..."}
+              </span>
+            </div>
+
+            {/* Quick Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => {
+                  // Scroll to stations section
+                  const stationsSection = document.getElementById('stations-section');
+                  if (stationsSection) {
+                    stationsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="flex-1 bg-white text-gray-900 px-6 py-3.5 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group"
+              >
+                <SearchOutlined className="text-lg group-hover:scale-110 transition-transform" />
+                Find Station
+              </button>
+              
+              <button
+                onClick={() => router.push(routes.PRICING)}
+                className="flex-1 bg-white/10 backdrop-blur-sm text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-white/20 transition-all duration-200 border border-white/20 flex items-center justify-center gap-2 group"
+              >
+                <CreditCardOutlined className="text-lg group-hover:scale-110 transition-transform" />
+                View Plan
+              </button>
+            </div>
           </div>
         </div>
 
@@ -109,7 +155,7 @@ const Home = () => {
         </div>
 
         {/* Stations Section */}
-        <div>
+        <div id="stations-section">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Available Stations</h2>
             {nearbyStationsCount > 0 && (
