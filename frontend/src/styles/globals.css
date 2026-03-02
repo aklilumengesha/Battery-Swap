@@ -177,7 +177,21 @@
     transition: all var(--transition-base);
   }
 
-  /* Glassmorphism navigation */
+  /* Glassmorphism navigation - Enhanced */
+  .glass-nav-enhanced {
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+  }
+
+  /* Enhanced shadow for navigation */
+  .shadow-nav {
+    box-shadow: 
+      0 -2px 16px 0 rgba(0, 0, 0, 0.06),
+      0 8px 32px 0 rgba(0, 0, 0, 0.08),
+      0 2px 8px 0 rgba(0, 0, 0, 0.04);
+  }
+
+  /* Legacy glass-nav for backward compatibility */
   .glass-nav {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px);
