@@ -61,8 +61,8 @@ const Home = () => {
   return (
     <DashboardLayout title="Home" location={location}>
       <div className="space-y-6 pb-24">
-        {/* Hero Section - Redesigned */}
-        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-8 md:p-10 text-white shadow-2xl overflow-hidden">
+        {/* Hero Section - Redesigned with fade-in animation */}
+        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-8 md:p-10 text-white shadow-2xl overflow-hidden animate-fade-in">
           {/* Radial glow effect */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-transparent rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-indigo-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl"></div>
@@ -122,10 +122,13 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Stats Row - Redesigned */}
+        {/* Stats Row - Redesigned with stagger animation */}
         <div className="grid grid-cols-3 gap-4">
           {/* Nearby Stations */}
-          <div className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <div 
+            className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-scale-in"
+            style={{ animationDelay: "100ms" }}
+          >
             <div className="flex flex-col items-center text-center">
               {/* Icon */}
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -148,7 +151,10 @@ const Home = () => {
           </div>
 
           {/* Active Booking */}
-          <div className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <div 
+            className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-scale-in"
+            style={{ animationDelay: "200ms" }}
+          >
             <div className="flex flex-col items-center text-center">
               {/* Icon */}
               <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -171,7 +177,10 @@ const Home = () => {
           </div>
 
           {/* Total Swaps */}
-          <div className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <div 
+            className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-scale-in"
+            style={{ animationDelay: "300ms" }}
+          >
             <div className="flex flex-col items-center text-center">
               {/* Icon */}
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -194,12 +203,14 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Subscription Status Banner */}
-        <SubscriptionBanner
-          planName="Basic Plan"
-          swapsRemaining={8}
-          swapLimit={10}
-        />
+        {/* Subscription Status Banner with scale-in animation */}
+        <div className="animate-scale-in" style={{ animationDelay: "400ms" }}>
+          <SubscriptionBanner
+            planName="Basic Plan"
+            swapsRemaining={8}
+            swapLimit={10}
+          />
+        </div>
 
         {/* Stations Section - Redesigned */}
         <div id="stations-section" className="pt-6 border-t border-gray-200">
