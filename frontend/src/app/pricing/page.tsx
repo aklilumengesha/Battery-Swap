@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { 
   CheckCircleFilled, 
@@ -9,11 +9,21 @@ import {
   RocketFilled,
   LoadingOutlined,
   MinusOutlined,
-  DownOutlined
+  DownOutlined,
+  CloseOutlined,
+  ArrowRightOutlined,
+  CheckOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons";
 import { usePlans, useSubscriptionQuery, useMySubscription } from "../../features/subscription";
 import { useAuthQuery } from "../../features/auth";
 import { routes } from "../../routes";
+
+interface SelectedPlan {
+  id: number;
+  name: string;
+  price: string;
+}
 
 const PricingPage = () => {
   const router = useRouter();
@@ -21,19 +31,103 @@ const PricingPage = () => {
   const { data: currentSubscription } = useMySubscription();
   const { isAuthenticated } = useAuthQuery();
   const { subscribe, isSubscribing } = useSubscriptionQuery();
-  const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
+  
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<SelectedPlan | null>(null);
+  const [duration, setDuration] = useState<1 | 3 | 6 | 12>(1);
+  const [subscriptionSuccess, setSubscriptionSuccess] = useState(false);
+  const [subscriptionError, setSubscriptionError] = useState<string | null>(null);
 
-  const handleSubscribe = (planId: number) => {
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showModal && !isSubscribing) {
+        handleCloseModal();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [showModal, isSubscribing]);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showModal]);
+
+  const handlePlanClick = (plan: any) => {
+    // Check if user is logged in
     if (!isAuthenticated) {
-      router.push(routes.SIGNIN);
+      router.push(`${routes.SIGNIN}?returnUrl=${encodeURIComponent('/pricing')}`);
       return;
     }
 
-    setSelectedPlanId(planId);
-    const durationMonths = billingCycle === 'yearly' ? 12 : 1;
-    subscribe({ planId, durationMonths });
+    // Don't allow subscribing to current plan
+    if (isCurrentPlan(plan.id)) {
+      return;
+    }
+
+    // Open modal with selected plan
+    setSelectedPlan({
+      id: plan.id,
+      name: plan.name,
+      price: plan.price,
+    });
+    setDuration(1);
+    setSubscriptionSuccess(false);
+    setSubscriptionError(null);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    if (isSubscribing) return; // Prevent closing during subscription
+    setShowModal(false);
+    setTimeout(() => {
+      setSelectedPlan(null);
+      setDuration(1);
+      setSubscriptionSuccess(false);
+      setSubscriptionError(null);
+    }, 300); // Wait for animation
+  };
+
+  const handleConfirmSubscription = async () => {
+    if (!selectedPlan) return;
+
+    setSubscriptionError(null);
+    
+    try {
+      await new Promise<void>((resolve, reject) => {
+        subscribe(
+          { planId: selectedPlan.id, durationMonths: duration },
+          {
+            onSuccess: () => {
+              setSubscriptionSuccess(true);
+              // Redirect after 2 seconds
+              setTimeout(() => {
+                router.push(routes.MY_PLAN);
+              }, 2000);
+              resolve();
+            },
+            onError: (error: Error) => {
+              setSubscriptionError(error.message || "Failed to subscribe. Please try again.");
+              reject(error);
+            },
+          }
+        );
+      });
+    } catch (error) {
+      // Error already handled in onError
+    }
   };
 
   // Get plan icon based on name
@@ -62,6 +156,34 @@ const PricingPage = () => {
       return (price * 12 * 0.8).toFixed(2); // 20% discount
     }
     return price.toFixed(2);
+  };
+
+  // Calculate total price based on duration
+  const calculateTotalPrice = (monthlyPrice: string, months: number) => {
+    const price = parseFloat(monthlyPrice);
+    let total = price * months;
+    
+    // Apply discounts
+    if (months === 3) total *= 0.95; // 5% off
+    if (months === 6) total *= 0.90; // 10% off
+    if (months === 12) total *= 0.80; // 20% off
+    
+    return total.toFixed(2);
+  };
+
+  // Get discount percentage
+  const getDiscount = (months: number) => {
+    if (months === 3) return 5;
+    if (months === 6) return 10;
+    if (months === 12) return 20;
+    return 0;
+  };
+
+  // Get current plan name
+  const getCurrentPlanName = () => {
+    if (!currentSubscription) return null;
+    const plan = plans.find((p: any) => p.id === currentSubscription.plan);
+    return plan?.name || "Unknown Plan";
   };
 
   // FAQ data
@@ -177,7 +299,6 @@ const PricingPage = () => {
           {plans.map((plan: any) => {
             const mostPopular = isMostPopular(plan.name);
             const currentPlan = isCurrentPlan(plan.id);
-            const isSubscribingPlan = isSubscribing && selectedPlanId === plan.id;
             const features = getFeatures(plan);
 
             return (
@@ -256,8 +377,8 @@ const PricingPage = () => {
 
                 {/* CTA Button */}
                 <button
-                  onClick={() => handleSubscribe(plan.id)}
-                  disabled={isSubscribingPlan || currentPlan}
+                  onClick={() => handlePlanClick(plan)}
+                  disabled={currentPlan}
                   className={`w-full py-3.5 px-6 rounded-xl font-semibold transition-all duration-200 ${
                     currentPlan
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -266,16 +387,7 @@ const PricingPage = () => {
                       : 'bg-white text-gray-900 border-2 border-gray-900 hover:bg-gray-900 hover:text-white'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  {isSubscribingPlan ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <LoadingOutlined className="animate-spin" />
-                      Subscribing...
-                    </span>
-                  ) : currentPlan ? (
-                    'Current Plan'
-                  ) : (
-                    'Get Started'
-                  )}
+                  {currentPlan ? 'Current Plan' : 'Get Started'}
                 </button>
               </div>
             );
@@ -340,6 +452,230 @@ const PricingPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {showModal && selectedPlan && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubscribing) {
+              handleCloseModal();
+            }
+          }}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+            {subscriptionSuccess ? (
+              // Success State
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+                  <CheckOutlined className="text-green-600 text-4xl" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  You're all set!
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Successfully subscribed to {selectedPlan.name}
+                </p>
+                <div className="flex items-center justify-center gap-2 text-gray-500">
+                  <LoadingOutlined className="animate-spin" />
+                  <span>Redirecting to your plan...</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                  <h3 className="text-2xl font-bold text-gray-900">
+                    Confirm Your Plan
+                  </h3>
+                  {!isSubscribing && (
+                    <button
+                      onClick={handleCloseModal}
+                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      <CloseOutlined className="text-gray-500" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-6">
+                  {/* Error Banner */}
+                  {subscriptionError && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+                      <ExclamationCircleOutlined className="text-red-600 text-xl flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="text-red-900 font-semibold mb-1">Subscription Failed</h4>
+                        <p className="text-red-700 text-sm">{subscriptionError}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Plan Upgrade Flow */}
+                  {currentSubscription && (
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-500 mb-1">Current Plan</p>
+                          <p className="font-semibold text-gray-900">{getCurrentPlanName()}</p>
+                        </div>
+                        <ArrowRightOutlined className="text-gray-400 text-xl" />
+                        <div>
+                          <p className="text-sm text-gray-500 mb-1">New Plan</p>
+                          <p className="font-semibold text-gray-900">{selectedPlan.name}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Selected Plan */}
+                  {!currentSubscription && (
+                    <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-100">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center text-white">
+                          {getPlanIcon(selectedPlan.name)}
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-bold text-gray-900">{selectedPlan.name}</h4>
+                          <p className="text-gray-600">${selectedPlan.price}/month</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Duration Selector */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Select Duration
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[1, 3, 6, 12].map((months) => {
+                        const discount = getDiscount(months);
+                        return (
+                          <button
+                            key={months}
+                            onClick={() => setDuration(months as 1 | 3 | 6 | 12)}
+                            disabled={isSubscribing}
+                            className={`relative p-4 rounded-xl border-2 transition-all ${
+                              duration === months
+                                ? 'border-black bg-gray-50'
+                                : 'border-gray-200 hover:border-gray-300'
+                            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                          >
+                            <div className="text-left">
+                              <p className="font-semibold text-gray-900">
+                                {months} {months === 1 ? 'Month' : 'Months'}
+                              </p>
+                              {discount > 0 && (
+                                <span className="inline-block mt-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                                  Save {discount}%
+                                </span>
+                              )}
+                            </div>
+                            {duration === months && (
+                              <div className="absolute top-2 right-2">
+                                <CheckCircleFilled className="text-black text-lg" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Price Summary */}
+                  <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Base Price</span>
+                      <span className="text-gray-900">
+                        ${(parseFloat(selectedPlan.price) * duration).toFixed(2)}
+                      </span>
+                    </div>
+                    {getDiscount(duration) > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-green-600">Discount ({getDiscount(duration)}%)</span>
+                        <span className="text-green-600">
+                          -${(parseFloat(selectedPlan.price) * duration * (getDiscount(duration) / 100)).toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="pt-2 border-t border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-gray-900">Total</span>
+                        <span className="text-2xl font-bold text-gray-900">
+                          ${calculateTotalPrice(selectedPlan.price, duration)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1 text-right">
+                        Billed once for {duration} {duration === 1 ? 'month' : 'months'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="p-6 border-t border-gray-200 flex gap-3">
+                  <button
+                    onClick={handleCloseModal}
+                    disabled={isSubscribing}
+                    className="flex-1 px-6 py-3 rounded-xl font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmSubscription}
+                    disabled={isSubscribing}
+                    className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubscribing ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <LoadingOutlined className="animate-spin" />
+                        Processing...
+                      </span>
+                    ) : (
+                      'Confirm & Subscribe'
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.2s ease-out;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };
