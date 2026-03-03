@@ -127,7 +127,7 @@ const Home = () => {
               </button>
               
               <button
-                onClick={() => router.push(routes.PRICING)}
+                onClick={() => router.push(subscription ? routes.MY_PLAN : routes.PRICING)}
                 className="flex-1 bg-white/10 backdrop-blur-sm text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-white/20 transition-all duration-200 border border-white/20 flex items-center justify-center gap-2 group"
               >
                 <CreditCardOutlined className="text-lg group-hover:scale-110 transition-transform" />

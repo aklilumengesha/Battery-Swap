@@ -3,6 +3,7 @@
 import React from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { useAuthQuery } from "../../features/auth";
+import BottomNav from "./BottomNav";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -60,6 +61,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {children}
       </main>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 };
