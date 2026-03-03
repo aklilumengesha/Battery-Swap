@@ -64,32 +64,44 @@ export const useSubscriptionQuery = () => {
 
   // Mutation: Subscribe to plan
   const subscribeMutation = useMutation({
-    mutationFn: async ({ planId, durationMonths }: { planId: number; durationMonths?: number }) => {
-      const res = await SubscriptionService.subscribe(planId, durationMonths);
+    mutationFn: async ({ 
+      planId, 
+      durationMonths 
+    }: { 
+      planId: number; 
+      durationMonths: number;
+    }) => {
+      const response = await SubscriptionService.subscribe(planId, durationMonths);
       
-      console.log('Subscribe mutation response:', res);
+      // Log to verify shape
+      console.log('[Subscribe] Full response:', response);
+      console.log('[Subscribe] Status:', response.status);
+      console.log('[Subscribe] Data:', response.data);
       
-      const data = res.data;
-      
-      // Handle success shape from backend
-      // Backend returns: { success: true, message: "...", subscription: {...} }
-      if (data?.success === true || data?.subscription) {
-        return data.subscription || data;
+      // Handle 201 Created success
+      if (response.status === 201 || response.status === 200) {
+        return response.data?.subscription || response.data;
       }
       
-      // Handle error shape from backend
-      // Backend returns: { success: false, message: "...", errors: {...} }
-      if (data?.success === false) {
-        throw new Error(data.message || 'Subscription failed');
+      // Handle backend error response
+      if (response.data?.success === false) {
+        throw new Error(
+          response.data?.message || 
+          response.data?.detail ||
+          'Subscription failed'
+        );
       }
       
-      // Check HTTP status as fallback (201 Created = success)
-      if (res.status === 201 && data) {
-        return data.subscription || data;
+      // Handle HTTP error status
+      if (response.status >= 400) {
+        throw new Error(
+          response.data?.detail || 
+          response.data?.message ||
+          `Request failed with status ${response.status}`
+        );
       }
       
-      // Fallback for unexpected shape
-      throw new Error('Unexpected response from server');
+      return response.data;
     },
     onSuccess: (data) => {
       message.success("Successfully subscribed to plan!");
