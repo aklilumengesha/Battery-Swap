@@ -1,9 +1,19 @@
 "use client";
 
-import React from "react";
-import { UserOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  HomeOutlined,
+  CreditCardOutlined,
+  ClockCircleOutlined,
+  UserOutlined,
+  EnvironmentOutlined,
+  ThunderboltFilled,
+} from "@ant-design/icons";
 import { useAuthQuery } from "../../features/auth";
-import BottomNav from "./BottomNav";
+import { useMySubscription } from "../../features/subscription/hooks/useSubscriptionQuery";
+import { routes } from "../../routes";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -21,49 +31,101 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   location 
 }) => {
   const { user } = useAuthQuery();
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+  const { data: subscription } = useMySubscription();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navItems = [
+    { label: 'Home', route: routes.HOME, icon: HomeOutlined },
+    { label: 'My Plan', route: routes.MY_PLAN, icon: CreditCardOutlined },
+    { label: 'History', route: routes.HISTORY, icon: ClockCircleOutlined },
+    { label: 'Profile', route: routes.PROFILE, icon: UserOutlined },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
+      {/* Modern Fixed Top Navbar */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? 'bg-white/95 shadow-md border-b border-gray-200' 
+          : 'bg-white/80 shadow-sm border-b border-gray-100'
+      } backdrop-blur-md`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Page Title */}
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+            {/* LEFT: Brand Logo */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shadow-sm">
+                <ThunderboltFilled className="text-white text-sm" />
+              </div>
+              <span className="font-bold text-lg text-gray-900 tracking-tight">
+                BatterySwap
+              </span>
             </div>
 
-            {/* User Avatar */}
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">
-                  {user?.name || "User"}
-                </p>
-                {location?.name && location.name !== "loading..." && (
-                  <p className="text-xs text-gray-500">{location.name}</p>
-                )}
+            {/* CENTER: Nav Links */}
+            <div className="flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.route;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.route}
+                    href={item.route}
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? 'bg-gray-900 text-white shadow-sm'
+                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    {/* My Plan active subscription dot */}
+                    {item.label === 'My Plan' && (
+                      <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full border-2 border-white ${
+                        subscription?.is_active ? 'bg-green-400' : 'bg-red-400'
+                      }`} />
+                    )}
+                    <Icon className="text-base" />
+                    <span className="hidden sm:block">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* RIGHT: Location + User Avatar */}
+            <div className="flex items-center gap-2">
+              {/* Location pill - hidden on mobile */}
+              <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 text-xs text-gray-500">
+                <EnvironmentOutlined className="text-xs" />
+                <span className="max-w-[100px] truncate">
+                  {location?.name || 'Location'}
+                </span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white shadow-sm">
-                {user?.name ? (
-                  <span className="text-sm font-medium">
-                    {user.name.charAt(0).toUpperCase()}
-                  </span>
-                ) : (
-                  <UserOutlined className="text-base" />
-                )}
+
+              {/* User Avatar */}
+              <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                  {user?.name ? user.name.charAt(0).toUpperCase() : <UserOutlined />}
+                </div>
+                <div className="hidden md:block text-right">
+                  <p className="text-xs font-semibold text-gray-900 leading-none">
+                    {user?.name || 'User'}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Main Content with top padding for fixed navbar */}
+      <main className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {children}
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 };

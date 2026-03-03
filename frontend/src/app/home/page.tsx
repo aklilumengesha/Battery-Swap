@@ -75,7 +75,7 @@ const Home = () => {
 
   return (
     <DashboardLayout title="Home" location={location}>
-      <div className="space-y-6 pb-24">
+      <div className="space-y-6 pb-6">
         {/* Hero Section - Redesigned with fade-in animation */}
         <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-8 md:p-10 text-white shadow-2xl overflow-hidden animate-fade-in">
           {/* Radial glow effect */}
