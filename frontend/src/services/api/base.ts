@@ -22,14 +22,41 @@ const base = async <T = any>(
   const fetchUrl = config.API_URL + url;
   const headers = getFreshHeaders();
   
-  const res = await fetch(fetchUrl, {
-    headers,
-    ...options,
-    body: options.data ? JSON.stringify(options.data) : undefined,
-  });
-  
-  const data = await res.json();
-  return { data, status: res.status };
+  try {
+    console.log(`API Request: ${options.method} ${fetchUrl}`);
+    
+    const res = await fetch(fetchUrl, {
+      headers,
+      ...options,
+      body: options.data ? JSON.stringify(options.data) : undefined,
+    });
+    
+    console.log(`API Response: ${res.status} ${res.statusText}`);
+    
+    // Check content type before parsing
+    const contentType = res.headers.get('content-type');
+    console.log('Content-Type:', contentType);
+    
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await res.text();
+      console.error('Non-JSON response received:', text.substring(0, 200));
+      throw new Error(
+        `API returned HTML instead of JSON. This usually means:\n` +
+        `1. Backend server is not running\n` +
+        `2. Wrong API URL: ${fetchUrl}\n` +
+        `3. Endpoint doesn't exist (404)\n\n` +
+        `Check that Django server is running at: ${config.API_URL}`
+      );
+    }
+    
+    const data = await res.json();
+    console.log('API Response Data:', data);
+    
+    return { data, status: res.status };
+  } catch (error) {
+    console.error('API Request Error:', error);
+    throw error;
+  }
 };
 
 /**

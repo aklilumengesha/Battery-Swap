@@ -27,10 +27,13 @@ interface SelectedPlan {
 
 const PricingPage = () => {
   const router = useRouter();
-  const { data: plans = [], isLoading } = usePlans();
+  const { data: plans = [], isLoading, error } = usePlans();
   const { data: currentSubscription } = useMySubscription();
   const { isAuthenticated } = useAuthQuery();
   const { subscribe, isSubscribing } = useSubscriptionQuery();
+
+  // Debug logging
+  console.log('Pricing Page Debug:', { plans, isLoading, error });
   
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -249,6 +252,48 @@ const PricingPage = () => {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
+          <ExclamationCircleOutlined className="text-red-600 text-5xl mb-4" />
+          <h2 className="text-2xl font-bold text-red-900 mb-2">Failed to Load Plans</h2>
+          <p className="text-red-700 mb-4">
+            {error instanceof Error ? error.message : 'Unable to fetch subscription plans'}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition-all"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!plans || plans.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white border border-gray-200 rounded-2xl p-8 text-center shadow-lg">
+          <ThunderboltFilled className="text-gray-400 text-5xl mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Plans Available</h2>
+          <p className="text-gray-600 mb-4">
+            Subscription plans are not currently available. Please check back later.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all"
+          >
+            Refresh
+          </button>
         </div>
       </div>
     );

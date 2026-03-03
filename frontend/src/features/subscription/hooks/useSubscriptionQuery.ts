@@ -25,13 +25,24 @@ export const useSubscriptionQuery = () => {
     return useQuery({
       queryKey: subscriptionKeys.plans(),
       queryFn: async () => {
-        const res = await SubscriptionService.getPlans();
-        if (res.status === 200) {
-          return res.data.results || res.data || [];
+        try {
+          console.log('Fetching plans from API...');
+          const res = await SubscriptionService.getPlans();
+          console.log('Plans API response:', res);
+          
+          if (res.status === 200) {
+            const plans = res.data.results || res.data || [];
+            console.log('Parsed plans:', plans);
+            return plans;
+          }
+          throw new Error(`Failed to fetch plans: Status ${res.status}`);
+        } catch (error) {
+          console.error('Error fetching plans:', error);
+          throw error;
         }
-        throw new Error("Failed to fetch plans");
       },
       staleTime: 10 * 60 * 1000, // 10 minutes
+      retry: 1, // Retry once on failure
     });
   };
 
