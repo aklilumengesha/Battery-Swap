@@ -1,6 +1,7 @@
 from rest_framework import generics, views, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer
 from subscription.models import SubscriptionPlan, UserSubscription
 from subscription.serializers import (
     SubscriptionPlanSerializer,
@@ -17,6 +18,7 @@ class ListSubscriptionPlans(generics.ListAPIView):
     serializer_class = SubscriptionPlanSerializer
     queryset = SubscriptionPlan.objects.filter(is_active=True)
     permission_classes = []  # Public endpoint
+    renderer_classes = [JSONRenderer]  # Force JSON response
 
 
 class SubscribeView(views.APIView):
@@ -25,6 +27,7 @@ class SubscribeView(views.APIView):
     Create a new subscription for the authenticated user
     """
     permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]  # Force JSON response always
 
     def post(self, request, *args, **kwargs):
         serializer = SubscribeSerializer(
@@ -61,6 +64,7 @@ class MySubscriptionView(views.APIView):
     Get current user's active subscription
     """
     permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]  # Force JSON response
 
     def get(self, request, *args, **kwargs):
         try:
@@ -102,6 +106,7 @@ class SubscriptionStatusView(views.APIView):
     Get detailed subscription status including usage
     """
     permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]  # Force JSON response
 
     def get(self, request, *args, **kwargs):
         from subscription.utils import get_subscription_status

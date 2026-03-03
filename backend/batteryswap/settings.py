@@ -146,12 +146,19 @@ REST_FRAMEWORK = {
         # "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    # Force JSON responses for all API endpoints (no HTML error pages)
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
 }
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
-    "REFRESH_TOKEN_LIFETIME": timedelta(weeks=4),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # 60 minutes for development
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # 7 days
     "USER_ID_FIELD": "pk",
 }
 
