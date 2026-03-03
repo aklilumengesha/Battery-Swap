@@ -17,6 +17,9 @@ interface ApiResponse<T = any> {
  * 
  * IMPORTANT: Uses getFreshHeaders() to ensure JWT token is always current.
  * This is critical for authenticated requests after login.
+ * 
+ * NOTE: This function returns { data, status } for ALL responses (including errors).
+ * It does NOT throw on non-2xx status codes. Error handling is done at the service layer.
  */
 const base = async <T = any>(
   url: string,
@@ -56,6 +59,7 @@ const base = async <T = any>(
     const data = await res.json();
     console.log('API Response Data:', data);
     
+    // Return both data and status - let the caller handle success/error logic
     return { data, status: res.status };
   } catch (error) {
     console.error('API Request Error:', error);

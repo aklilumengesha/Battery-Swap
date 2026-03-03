@@ -67,16 +67,29 @@ export const useSubscriptionQuery = () => {
     mutationFn: async ({ planId, durationMonths }: { planId: number; durationMonths?: number }) => {
       const res = await SubscriptionService.subscribe(planId, durationMonths);
       
-      // Handle both response shapes
+      console.log('Subscribe mutation response:', res);
+      
       const data = res.data;
       
-      // Success cases: check for subscription data or 201 status
-      if (data?.subscription || data?.id || res.status === 201) {
-        return data?.subscription || data;
+      // Handle success shape from backend
+      // Backend returns: { success: true, message: "...", subscription: {...} }
+      if (data?.success === true || data?.subscription) {
+        return data.subscription || data;
       }
       
-      // Error case: throw with appropriate message
-      throw new Error(data?.message || data?.detail || 'Subscription failed');
+      // Handle error shape from backend
+      // Backend returns: { success: false, message: "...", errors: {...} }
+      if (data?.success === false) {
+        throw new Error(data.message || 'Subscription failed');
+      }
+      
+      // Check HTTP status as fallback (201 Created = success)
+      if (res.status === 201 && data) {
+        return data.subscription || data;
+      }
+      
+      // Fallback for unexpected shape
+      throw new Error('Unexpected response from server');
     },
     onSuccess: (data) => {
       message.success("Successfully subscribed to plan!");
