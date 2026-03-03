@@ -26,45 +26,60 @@ const base = async <T = any>(
   options: RequestOptions
 ): Promise<ApiResponse<T>> => {
   const fetchUrl = config.API_URL + url;
-  // Get fresh headers on every request to include current JWT token
   const headers = getFreshHeaders();
   
+  console.log(`[API] ${options.method} ${fetchUrl}`);
+  console.log('[API] Has auth header:', 'Authorization' in headers);
+  
+  let res: Response;
+  
   try {
-    console.log(`API Request: ${options.method} ${fetchUrl}`);
-    
-    const res = await fetch(fetchUrl, {
+    res = await fetch(fetchUrl, {
       headers,
-      ...options,
+      method: options.method,
       body: options.data ? JSON.stringify(options.data) : undefined,
     });
+  } catch (networkError) {
+    // Network level failure - server not reachable
+    throw new Error(
+      `Cannot reach server at ${config.API_URL}. ` +
+      `Make sure Django is running.`
+    );
+  }
+  
+  console.log(`[API] Response: ${res.status} ${res.statusText}`);
+  
+  const contentType = res.headers.get('content-type') || '';
+  console.log('[API] Content-Type:', contentType);
+  
+  // Handle HTML response
+  if (contentType.includes('text/html')) {
+    if (res.status === 404) {
+      throw new Error(`Endpoint not found: ${fetchUrl}`);
+    }
     
-    console.log(`API Response: ${res.status} ${res.statusText}`);
-    
-    // Check content type before parsing
-    const contentType = res.headers.get('content-type');
-    console.log('Content-Type:', contentType);
-    
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await res.text();
-      console.error('Non-JSON response received:', text.substring(0, 200));
+    if (res.status === 401 || res.status === 403) {
       throw new Error(
-        `API returned HTML instead of JSON. This usually means:\n` +
-        `1. Backend server is not running\n` +
-        `2. Wrong API URL: ${fetchUrl}\n` +
-        `3. Endpoint doesn't exist (404)\n\n` +
-        `Check that Django server is running at: ${config.API_URL}`
+        'Authentication failed. Token may be expired. ' +
+        'Please log out and log in again.'
       );
     }
     
-    const data = await res.json();
-    console.log('API Response Data:', data);
+    if (res.status === 500) {
+      throw new Error('Server error (500). Check Django terminal for details.');
+    }
     
-    // Return both data and status - let the caller handle success/error logic
-    return { data, status: res.status };
-  } catch (error) {
-    console.error('API Request Error:', error);
-    throw error;
+    throw new Error(
+      `Server returned HTML (${res.status}). ` +
+      `Endpoint may not exist: ${fetchUrl}`
+    );
   }
+  
+  // Parse JSON
+  const data = await res.json();
+  console.log('[API] Response data:', data);
+  
+  return { data, status: res.status };
 };
 
 /**
