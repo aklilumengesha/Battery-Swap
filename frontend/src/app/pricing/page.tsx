@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { 
   CheckCircleFilled, 
   ThunderboltFilled,
@@ -27,6 +28,7 @@ interface SelectedPlan {
 
 const PricingPage = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: plans = [], isLoading, error } = usePlans();
   const { data: currentSubscription } = useMySubscription();
   const { isAuthenticated, profileLoading } = useAuthQuery();
@@ -138,10 +140,21 @@ const PricingPage = () => {
           {
             onSuccess: () => {
               setSubscriptionSuccess(true);
-              // Redirect after 2 seconds
+              
+              // Invalidate queries immediately
+              queryClient.invalidateQueries({ queryKey: ['subscriptions', 'my-subscription'] });
+              queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+              
+              // Wait 2 seconds for success animation
               setTimeout(() => {
-                router.push(routes.MY_PLAN);
+                // Close modal with animation
+                closeModal();
+                // Wait for modal close animation, then redirect
+                setTimeout(() => {
+                  router.push(routes.MY_PLAN);
+                }, 350);
               }, 2000);
+              
               resolve();
             },
             onError: (error: any) => {
@@ -561,15 +574,46 @@ const PricingPage = () => {
             {subscriptionSuccess ? (
               // Success State
               <div className="p-8 text-center">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
-                  <CheckOutlined className="text-green-600 text-4xl" />
+                {/* Large checkmark with animation */}
+                <div className="relative w-24 h-24 mx-auto mb-6">
+                  <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75"></div>
+                  <div className="relative w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                    <svg
+                      className="w-14 h-14 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  You're all set!
+
+                {/* Success message */}
+                <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                  Subscription Activated!
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  Successfully subscribed to {selectedPlan.name}
+                <p className="text-gray-600 mb-6 text-lg">
+                  Welcome to {selectedPlan.name}
                 </p>
+
+                {/* Progress bar */}
+                <div className="mb-4">
+                  <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-[2000ms] ease-linear"
+                      style={{ width: '100%' }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Redirecting text */}
                 <div className="flex items-center justify-center gap-2 text-gray-500">
                   <LoadingOutlined className="animate-spin" />
                   <span>Redirecting to your plan...</span>
