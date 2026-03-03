@@ -8,6 +8,7 @@ export const routes = {
   HISTORY: "/history",
   SCANNER: "/scanner",
   PRICING: "/pricing",
+  MY_PLAN: "/my-plan",
   ORDER_DETAILS: (id) => `/order/${id}`,
   ORDER_SUCCESS: "/order/success",
   ORDER_FAILURE: "/order/failure",
