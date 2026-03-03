@@ -50,10 +50,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const currentPage = navItems.find(item => pathname === item.route)?.label || title;
 
+  const handleNavClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Modern Fixed Top Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <nav className={`nav-slide-down fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
           ? 'bg-white/95 shadow-md border-b border-gray-200' 
           : 'bg-white/80 shadow-sm border-b border-gray-100'
@@ -79,6 +83,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                   <Link
                     key={item.route}
                     href={item.route}
+                    title={item.label}
+                    onClick={handleNavClick}
                     className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                       isActive
                         ? 'text-gray-900 font-semibold'
