@@ -42,11 +42,12 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
             'start_date',
             'end_date',
             'is_active',
+            'swaps_used',
             'is_expired',
             'created_at',
             'updated_at'
         ]
-        read_only_fields = ['id', 'user', 'start_date', 'end_date', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user', 'start_date', 'end_date', 'swaps_used', 'created_at', 'updated_at']
 
     def get_is_expired(self, obj):
         return obj.is_expired()
@@ -96,7 +97,8 @@ class SubscribeSerializer(serializers.Serializer):
             plan=plan,
             start_date=start_date,
             end_date=end_date,
-            is_active=True
+            is_active=True,
+            swaps_used=0,  # Always start at 0
         )
 
         return subscription
