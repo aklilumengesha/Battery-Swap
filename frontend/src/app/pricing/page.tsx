@@ -380,7 +380,7 @@ const PricingPage = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           {plans.map((plan: any) => {
             const mostPopular = isMostPopular(plan.name);
             const currentPlan = isCurrentPlan(plan.id);

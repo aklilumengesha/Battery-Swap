@@ -7,4 +7,3 @@ export { default as BarLayout } from "./BarLayout";
 export { default as LeafLayout } from "./LeafLayout";
 export { default as DashboardLayout } from "./DashboardLayout";
 export { default as Navbar } from "./Navbar";
-export { default as BottomNav } from "./BottomNav";

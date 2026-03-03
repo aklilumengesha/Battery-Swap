@@ -134,7 +134,7 @@ const MyPlanPage = () => {
           </svg>
 
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            You don't have an active plan
+            You don&apos;t have an active plan
           </h2>
           <p className="text-gray-600 mb-8 text-lg">
             Subscribe to a plan to start swapping batteries and power your journey.
@@ -384,7 +384,7 @@ const MyPlanPage = () => {
               </h3>
               <p className="text-gray-600">
                 Are you sure you want to cancel your {subscription.plan_details?.name} plan?
-                You'll lose access to all features immediately.
+                You&apos;ll lose access to all features immediately.
               </p>
             </div>
 

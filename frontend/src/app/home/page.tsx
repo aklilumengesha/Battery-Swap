@@ -244,26 +244,7 @@ const Home = () => {
                 </div>
               </div>
             ) : stationList && stationList.length > 0 ? (
-              <MapPreview
-                stations={stationList.map((station: any) => ({
-                  id: station.pk,
-                  name: station.name,
-                  latitude: station.latitude,
-                  longitude: station.longitude,
-                  address: station.address,
-                }))}
-                userLocation={{
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-                }}
-                onViewFullMap={() => {
-                  // Scroll to stations section
-                  const stationsSection = document.getElementById('stations-section');
-                  if (stationsSection) {
-                    stationsSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
-              />
+              <MapPreview />
             ) : null}
           </div>
         )}
