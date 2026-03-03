@@ -10,6 +10,7 @@ interface SubscriptionBannerProps {
   swapsRemaining?: number;
   swapLimit?: number;
   onUpgradeClick?: () => void;
+  isLoading?: boolean;
 }
 
 const SubscriptionBanner: React.FC<SubscriptionBannerProps> = ({
@@ -17,6 +18,7 @@ const SubscriptionBanner: React.FC<SubscriptionBannerProps> = ({
   swapsRemaining = 8,
   swapLimit = 10,
   onUpgradeClick,
+  isLoading = false,
 }) => {
   const router = useRouter();
 
@@ -37,6 +39,30 @@ const SubscriptionBanner: React.FC<SubscriptionBannerProps> = ({
     if (percentage > 25) return "bg-yellow-500";
     return "bg-red-500";
   };
+
+  // Show loading skeleton
+  if (isLoading) {
+    return (
+      <div className="relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg border border-purple-100/50 overflow-hidden animate-pulse">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-gray-300 rounded-lg"></div>
+              <div>
+                <div className="h-4 w-24 bg-gray-300 rounded mb-1"></div>
+                <div className="h-3 w-32 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="h-6 w-32 bg-gray-300 rounded mb-2"></div>
+              <div className="w-full bg-gray-200 rounded-full h-2"></div>
+            </div>
+          </div>
+          <div className="w-24 h-10 bg-gray-300 rounded-xl"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg border border-purple-100/50 overflow-hidden">
