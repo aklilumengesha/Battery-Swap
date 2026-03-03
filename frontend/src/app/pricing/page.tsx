@@ -13,7 +13,6 @@ import {
   DownOutlined,
   CloseOutlined,
   ArrowRightOutlined,
-  CheckOutlined,
   ExclamationCircleOutlined
 } from "@ant-design/icons";
 import { usePlans, useSubscriptionQuery, useMySubscription } from "../../features/subscription";
@@ -407,9 +406,9 @@ const PricingPage = () => {
 
                 {/* Current Plan Badge */}
                 {currentPlan && (
-                  <div className="absolute -top-4 right-4 z-10">
-                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
-                      Current Plan
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <span className="bg-green-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold shadow-lg">
+                      Your Current Plan
                     </span>
                   </div>
                 )}
@@ -600,7 +599,7 @@ const PricingPage = () => {
                   Subscription Activated!
                 </h3>
                 <p className="text-gray-600 mb-6 text-lg">
-                  Welcome to {selectedPlan.name}
+                  Redirecting to your plan<span className="animate-pulse">...</span>
                 </p>
 
                 {/* Progress bar */}
@@ -611,12 +610,6 @@ const PricingPage = () => {
                       style={{ width: '100%' }}
                     ></div>
                   </div>
-                </div>
-
-                {/* Redirecting text */}
-                <div className="flex items-center justify-center gap-2 text-gray-500">
-                  <LoadingOutlined className="animate-spin" />
-                  <span>Redirecting to your plan...</span>
                 </div>
               </div>
             ) : (

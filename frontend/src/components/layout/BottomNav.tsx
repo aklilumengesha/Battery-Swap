@@ -7,7 +7,7 @@ import {
   HomeOutlined,
   ClockCircleOutlined,
   UserOutlined,
-  ThunderboltFilled,
+  CreditCardOutlined,
 } from "@ant-design/icons";
 import { routes } from "../../routes";
 import { useMySubscription } from "../../features/subscription";
@@ -15,9 +15,6 @@ import { useMySubscription } from "../../features/subscription";
 const BottomNav = () => {
   const pathname = usePathname();
   const { data: subscription } = useMySubscription();
-
-  // Check if subscription is active
-  const hasActiveSubscription = !!subscription;
 
   const navItems = [
     {
@@ -27,18 +24,18 @@ const BottomNav = () => {
       active: pathname === routes.HOME,
     },
     {
+      label: "My Plan",
+      icon: CreditCardOutlined,
+      href: routes.MY_PLAN,
+      active: pathname === routes.MY_PLAN,
+      showDot: true,
+      dotColor: subscription?.is_active ? "bg-green-400" : "bg-red-400",
+    },
+    {
       label: "History",
       icon: ClockCircleOutlined,
       href: routes.HISTORY,
       active: pathname === routes.HISTORY,
-    },
-    {
-      label: "My Plan",
-      icon: ThunderboltFilled,
-      href: routes.MY_PLAN,
-      active: pathname === routes.MY_PLAN,
-      showDot: true,
-      dotColor: hasActiveSubscription ? "bg-green-500" : "bg-red-500",
     },
     {
       label: "Profile",
@@ -72,7 +69,7 @@ const BottomNav = () => {
                   />
                   {item.showDot && (
                     <span
-                      className={`absolute -top-1 -right-1 w-2.5 h-2.5 ${item.dotColor} rounded-full border-2 border-white`}
+                      className={`absolute -top-1 -right-1 w-2 h-2 ${item.dotColor} rounded-full border-2 border-white`}
                     ></span>
                   )}
                 </div>

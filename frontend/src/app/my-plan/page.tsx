@@ -204,12 +204,20 @@ const MyPlanPage = () => {
                 </div>
               </div>
 
-              <button
-                onClick={() => router.push(routes.PRICING)}
-                className="w-full sm:w-auto bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg"
-              >
-                Upgrade Plan
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => router.push(routes.PRICING)}
+                  className="bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg"
+                >
+                  Change Plan
+                </button>
+                <button
+                  onClick={() => router.push(routes.PRICING)}
+                  className="bg-white text-black border-2 border-black px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all"
+                >
+                  Upgrade
+                </button>
+              </div>
             </div>
 
             {/* Right: Circular Progress */}
