@@ -2,6 +2,11 @@ import axios from "axios";
 import { logger } from "./logger";
 
 const locSuccessHandler = (pos, setLocation) => {
+  if (typeof setLocation !== 'function') {
+    console.error("[Location] setLocation is not a function:", setLocation);
+    return;
+  }
+  
   axios
     .get(
       `https://us1.locationiq.com/v1/reverse.php?key=80c6277b4fd80d&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`
@@ -22,6 +27,12 @@ const locSuccessHandler = (pos, setLocation) => {
 
 const locErrorHandler = (error, setLocation) => {
   logger.error(error, "getViaLocationiq()");
+  
+  if (typeof setLocation !== 'function') {
+    console.error("[Location] setLocation is not a function:", setLocation);
+    return;
+  }
+  
   const location = localStorage.getItem("location");
   if (location) setLocation(JSON.parse(location));
   else
@@ -33,6 +44,11 @@ const locErrorHandler = (error, setLocation) => {
 };
 
 const getViaLocationiq = (setLocation) => {
+  if (typeof setLocation !== 'function') {
+    console.error("[Location] getViaLocationiq called with non-function:", setLocation);
+    return;
+  }
+  
   navigator.geolocation.getCurrentPosition(
     (pos) => locSuccessHandler(pos, setLocation),
     (error) => locErrorHandler(error, setLocation),

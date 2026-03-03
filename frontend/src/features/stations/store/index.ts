@@ -5,5 +5,5 @@
 
 export { default as stationsReducer } from "./stationsSlice";
 export * from "./stationsSlice";
-export * from "./stationsActions";
-export * from "./stationsSelectors";
+
+// Removed stationsActions and stationsSelectors - legacy Redux, replaced by React Query

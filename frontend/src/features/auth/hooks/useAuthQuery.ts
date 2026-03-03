@@ -191,7 +191,7 @@ export const useAuthQuery = () => {
   // Action: Get profile with callback
   const getProfile = async (callback?: (user: any) => void) => {
     const result = await refetchProfile();
-    if (result.data && callback) {
+    if (result.data && callback && typeof callback === 'function') {
       callback(result.data);
     }
   };

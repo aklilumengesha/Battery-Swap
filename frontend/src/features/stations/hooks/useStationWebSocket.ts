@@ -25,12 +25,18 @@ export const useStationWebSocket = (options: UseStationWebSocketOptions = {}) =>
   const { enabled = true, onUpdate } = options;
   const queryClient = useQueryClient();
   const wsManagerRef = useRef<WebSocketManager | null>(null);
+  const onUpdateRef = useRef(onUpdate);
+
+  // Keep onUpdate ref current
+  useEffect(() => {
+    onUpdateRef.current = onUpdate;
+  }, [onUpdate]);
 
   const handleStationUpdate = useCallback(
     (data: StationUpdate) => {
       // Call custom handler if provided
-      if (onUpdate) {
-        onUpdate(data);
+      if (onUpdateRef.current && typeof onUpdateRef.current === 'function') {
+        onUpdateRef.current(data);
       }
 
       // Update React Query cache for nearby stations
@@ -64,7 +70,7 @@ export const useStationWebSocket = (options: UseStationWebSocketOptions = {}) =>
         }
       );
     },
-    [queryClient, onUpdate]
+    [queryClient]
   );
 
   useEffect(() => {

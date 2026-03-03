@@ -66,7 +66,13 @@ export class WebSocketManager {
     this.ws.onmessage = (event) => {
       try {
         const data: StationUpdate = JSON.parse(event.data);
-        this.handlers.forEach((handler) => handler(data));
+        this.handlers.forEach((handler) => {
+          if (typeof handler === 'function') {
+            handler(data);
+          } else {
+            console.error("[WebSocket] Handler is not a function:", handler);
+          }
+        });
       } catch (error) {
         console.error("[WebSocket] Failed to parse message:", error);
       }

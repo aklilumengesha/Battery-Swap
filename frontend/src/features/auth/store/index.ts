@@ -3,5 +3,5 @@
  */
 export { default as authReducer } from "./authSlice";
 export * from "./authSlice";
-export { authActions } from "./authActions";
-export * from "./authSelectors";
+
+// Removed authActions and authSelectors - legacy Redux, replaced by React Query

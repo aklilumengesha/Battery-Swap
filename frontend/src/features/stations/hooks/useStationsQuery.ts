@@ -205,7 +205,18 @@ export const useStationsQuery = () => {
  */
 
 export const useNearbyStations = (latitude?: number, longitude?: number) => {
-  const { useNearbyStations: hook } = useStationsQuery();
+  const result = useStationsQuery();
+  const hook = result.useNearbyStations;
+  
+  if (typeof hook !== 'function') {
+    console.error('[useNearbyStations] hook is not a function!', {
+      hook,
+      typeofHook: typeof hook,
+      result
+    });
+    throw new Error(`useNearbyStations: hook is not a function, got ${typeof hook}`);
+  }
+  
   return hook(latitude, longitude);
 };
 
@@ -214,12 +225,35 @@ export const useStation = (
   latitude?: number,
   longitude?: number
 ) => {
-  const { useStation: hook } = useStationsQuery();
+  const result = useStationsQuery();
+  const hook = result.useStation;
+  
+  if (typeof hook !== 'function') {
+    console.error('[useStation] hook is not a function!', {
+      hook,
+      typeofHook: typeof hook,
+      result
+    });
+    throw new Error(`useStation: hook is not a function, got ${typeof hook}`);
+  }
+  
   return hook(id, latitude, longitude);
 };
 
 export const useBookings = () => {
-  const { useBookings: hook } = useStationsQuery();
+  const result = useStationsQuery();
+  const hook = result.useBookings;
+  
+  if (typeof hook !== 'function') {
+    console.error('[useBookings] hook is not a function!', {
+      hook,
+      typeofHook: typeof hook,
+      result,
+      resultKeys: Object.keys(result)
+    });
+    throw new Error(`useBookings: hook is not a function, got ${typeof hook}`);
+  }
+  
   return hook();
 };
 
@@ -228,6 +262,17 @@ export const useBooking = (
   latitude?: number,
   longitude?: number
 ) => {
-  const { useBooking: hook } = useStationsQuery();
+  const result = useStationsQuery();
+  const hook = result.useBooking;
+  
+  if (typeof hook !== 'function') {
+    console.error('[useBooking] hook is not a function!', {
+      hook,
+      typeofHook: typeof hook,
+      result
+    });
+    throw new Error(`useBooking: hook is not a function, got ${typeof hook}`);
+  }
+  
   return hook(id, latitude, longitude);
 };
