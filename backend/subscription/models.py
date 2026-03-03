@@ -49,6 +49,7 @@ class UserSubscription(models.Model):
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
+    swaps_used = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
