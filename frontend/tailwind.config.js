@@ -9,6 +9,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // Screens - add xs breakpoint
+      screens: {
+        'xs': '400px',
+      },
       // Colors using CSS variables
       colors: {
         primary: {

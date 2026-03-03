@@ -48,6 +48,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     { label: 'Profile', route: routes.PROFILE, icon: UserOutlined },
   ];
 
+  const currentPage = navItems.find(item => pathname === item.route)?.label || title;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Modern Fixed Top Navbar */}
@@ -63,7 +65,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shadow-sm">
                 <ThunderboltFilled className="text-white text-sm" />
               </div>
-              <span className="font-bold text-lg text-gray-900 tracking-tight">
+              <span className="hidden xs:block font-bold text-lg text-gray-900 tracking-tight">
                 BatterySwap
               </span>
             </div>
@@ -79,8 +81,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                     href={item.route}
                     className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? 'bg-gray-900 text-white shadow-sm'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                        ? 'text-gray-900 font-semibold'
+                        : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     {/* My Plan active subscription dot */}
@@ -89,8 +91,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         subscription?.is_active ? 'bg-green-400' : 'bg-red-400'
                       }`} />
                     )}
-                    <Icon className="text-base" />
+                    <Icon className={`text-base transition-transform duration-200 ${
+                      isActive ? 'scale-110' : 'scale-100'
+                    }`} />
                     <span className="hidden sm:block">{item.label}</span>
+                    
+                    {/* Animated bottom indicator */}
+                    <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-gray-900 transition-all duration-300 ${
+                      isActive ? 'w-6 opacity-100' : 'w-0 opacity-0'
+                    }`} />
                   </Link>
                 );
               })}
@@ -122,8 +131,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </nav>
 
-      {/* Main Content with top padding for fixed navbar */}
-      <main className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Breadcrumb */}
+      <div className="pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-0">
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+            {currentPage}
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {children}
       </main>
     </div>
