@@ -40,6 +40,7 @@ const PricingPage = () => {
   
   // Modal state
   const [showModal, setShowModal] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SelectedPlan | null>(null);
   const [duration, setDuration] = useState<1 | 3 | 6 | 12>(1);
   const [subscriptionSuccess, setSubscriptionSuccess] = useState(false);
@@ -58,10 +59,12 @@ const PricingPage = () => {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showModal && !isSubscribing) {
-        handleCloseModal();
+        closeModal();
       }
     };
-    window.addEventListener('keydown', handleEsc);
+    if (showModal) {
+      window.addEventListener('keydown', handleEsc);
+    }
     return () => window.removeEventListener('keydown', handleEsc);
   }, [showModal, isSubscribing]);
 
@@ -101,19 +104,27 @@ const PricingPage = () => {
     setDuration(1);
     setSubscriptionSuccess(false);
     setSubscriptionError(null);
-    setShowModal(true);
+    openModal();
   };
 
-  const handleCloseModal = () => {
+  const openModal = () => {
+    setShowModal(true);
+    setTimeout(() => setModalVisible(true), 10);
+  };
+
+  const closeModal = () => {
     if (isSubscribing) return; // Prevent closing during subscription
-    setShowModal(false);
+    setModalVisible(false);
     setTimeout(() => {
+      setShowModal(false);
       setSelectedPlan(null);
       setDuration(1);
       setSubscriptionSuccess(false);
       setSubscriptionError(null);
-    }, 300); // Wait for animation
+    }, 300); // Match transition duration
   };
+
+  const handleCloseModal = closeModal;
 
   const handleConfirmSubscription = async () => {
     if (!selectedPlan) return;
@@ -519,18 +530,29 @@ const PricingPage = () => {
       {/* Confirmation Modal */}
       {showModal && selectedPlan && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+          className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ${
+            modalVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
           onClick={(e) => {
             if (e.target === e.currentTarget && !isSubscribing) {
-              handleCloseModal();
+              closeModal();
             }
           }}
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+          <div 
+            className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+              modalVisible ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={closeModal}
+          ></div>
 
           {/* Modal */}
-          <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+          <div 
+            className={`relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto z-10 transition-all duration-300 ${
+              modalVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'
+            }`}
+          >
             {subscriptionSuccess ? (
               // Success State
               <div className="p-8 text-center">
@@ -709,36 +731,6 @@ const PricingPage = () => {
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes scale-in {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.2s ease-out;
-        }
-
-        .animate-scale-in {
-          animation: scale-in 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 };
