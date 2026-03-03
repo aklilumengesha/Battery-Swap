@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { BatteryCard, StationSkeletonList, SubscriptionBanner } from "../../components";
 import { useNearbyStations, useBookings, useStationWebSocket } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
+import { useMySubscription } from "../../features/subscription";
 import ScanButton from "../../components/shared/ScanButton";
 import { getLocation } from "../../utils/location";
 import { routes } from "../../routes";
@@ -32,6 +33,9 @@ const Home = () => {
   });
 
   const { user } = useAuthQuery();
+  
+  // Fetch user's subscription
+  const { data: subscription, isLoading: subscriptionLoading } = useMySubscription();
   
   // Fetch stations using React Query
   const { data: stationList, isLoading: loadingList, error } = useNearbyStations(
@@ -216,11 +220,64 @@ const Home = () => {
 
         {/* Subscription Status Banner with scale-in animation */}
         <div className="animate-scale-in" style={{ animationDelay: "400ms" }}>
-          <SubscriptionBanner
-            planName="Basic Plan"
-            swapsRemaining={8}
-            swapLimit={10}
-          />
+          {subscriptionLoading ? (
+            // Loading skeleton for subscription banner
+            <div className="relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg border border-purple-100/50 overflow-hidden animate-pulse">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-gray-300 rounded-lg"></div>
+                    <div>
+                      <div className="h-4 w-24 bg-gray-300 rounded mb-1"></div>
+                      <div className="h-3 w-32 bg-gray-200 rounded"></div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="h-6 w-32 bg-gray-300 rounded mb-2"></div>
+                    <div className="w-full bg-gray-200 rounded-full h-2"></div>
+                  </div>
+                </div>
+                <div className="w-24 h-10 bg-gray-300 rounded-xl"></div>
+              </div>
+            </div>
+          ) : subscription ? (
+            // Show subscription banner with real data
+            <SubscriptionBanner
+              planName={subscription.plan_details?.name || "Unknown Plan"}
+              swapsRemaining={
+                (subscription.plan_details?.swap_limit_per_month || 0) - 
+                (subscription.swaps_used || 0)
+              }
+              swapLimit={subscription.plan_details?.swap_limit_per_month || 0}
+            />
+          ) : (
+            // Fallback: No active subscription
+            <div className="relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 rounded-2xl p-6 shadow-lg border border-gray-200 overflow-hidden">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-gray-300 rounded-lg flex items-center justify-center">
+                      <CreditCardOutlined className="text-gray-500 text-sm" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900">No Active Plan</h3>
+                      <p className="text-xs text-gray-600">Subscribe to start swapping</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-3">
+                    Choose a subscription plan to access battery swap stations and start your journey.
+                  </p>
+                </div>
+                <button
+                  onClick={() => router.push(routes.PRICING)}
+                  className="flex-shrink-0 bg-black text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+                >
+                  View Plans
+                  <ArrowRightOutlined className="text-xs" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Map Preview - Show stations on map */}
