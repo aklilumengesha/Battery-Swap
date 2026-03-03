@@ -4,7 +4,7 @@
  */
 
 // API utilities
-export { Cache, ReqHeader, getFreshHeaders, get, post, patch, put, del } from "./api";
+export { Cache, getFreshHeaders, get, post, patch, put, del } from "./api";
 
 // Service modules
 export * as StationsService from "./stations.service";

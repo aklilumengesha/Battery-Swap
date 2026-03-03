@@ -14,12 +14,16 @@ interface ApiResponse<T = any> {
 /**
  * Base API request handler
  * Handles all HTTP requests with consistent error handling and headers
+ * 
+ * IMPORTANT: Uses getFreshHeaders() to ensure JWT token is always current.
+ * This is critical for authenticated requests after login.
  */
 const base = async <T = any>(
   url: string,
   options: RequestOptions
 ): Promise<ApiResponse<T>> => {
   const fetchUrl = config.API_URL + url;
+  // Get fresh headers on every request to include current JWT token
   const headers = getFreshHeaders();
   
   try {
