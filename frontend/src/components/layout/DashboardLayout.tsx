@@ -48,8 +48,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     { label: 'Profile', route: routes.PROFILE, icon: UserOutlined },
   ];
 
-  const currentPage = navItems.find(item => pathname === item.route)?.label || title;
-
   const handleNavClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -137,17 +135,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </nav>
 
-      {/* Breadcrumb */}
-      <div className="pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-0">
-          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-            {currentPage}
-          </p>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {children}
       </main>
     </div>
