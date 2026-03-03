@@ -29,7 +29,7 @@ const PricingPage = () => {
   const router = useRouter();
   const { data: plans = [], isLoading, error } = usePlans();
   const { data: currentSubscription } = useMySubscription();
-  const { isAuthenticated } = useAuthQuery();
+  const { isAuthenticated, profileLoading } = useAuthQuery();
   const { subscribe, isSubscribing } = useSubscriptionQuery();
 
   // Debug logging
@@ -69,6 +69,9 @@ const PricingPage = () => {
   }, [showModal]);
 
   const handlePlanClick = (plan: any) => {
+    // Guard: Don't do anything while auth state is loading
+    if (profileLoading) return;
+
     // Check if user is logged in
     if (!isAuthenticated) {
       router.push(`${routes.SIGNIN}?returnUrl=${encodeURIComponent('/pricing')}`);
@@ -423,7 +426,7 @@ const PricingPage = () => {
                 {/* CTA Button */}
                 <button
                   onClick={() => handlePlanClick(plan)}
-                  disabled={currentPlan}
+                  disabled={profileLoading || currentPlan}
                   className={`w-full py-3.5 px-6 rounded-xl font-semibold transition-all duration-200 ${
                     currentPlan
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -432,7 +435,13 @@ const PricingPage = () => {
                       : 'bg-white text-gray-900 border-2 border-gray-900 hover:bg-gray-900 hover:text-white'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  {currentPlan ? 'Current Plan' : 'Get Started'}
+                  {profileLoading ? (
+                    <span className="animate-pulse">Loading...</span>
+                  ) : currentPlan ? (
+                    'Current Plan'
+                  ) : (
+                    'Get Started'
+                  )}
                 </button>
               </div>
             );
