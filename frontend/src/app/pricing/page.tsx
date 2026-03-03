@@ -45,6 +45,15 @@ const PricingPage = () => {
   const [subscriptionSuccess, setSubscriptionSuccess] = useState(false);
   const [subscriptionError, setSubscriptionError] = useState<string | null>(null);
 
+  // Clean URL after redirect from signin
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('redirect') && isAuthenticated) {
+      // Clean the URL without reload
+      window.history.replaceState({}, '', '/pricing');
+    }
+  }, [isAuthenticated]);
+
   // Handle ESC key to close modal
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -74,7 +83,7 @@ const PricingPage = () => {
 
     // Check if user is logged in
     if (!isAuthenticated) {
-      router.push(`${routes.SIGNIN}?returnUrl=${encodeURIComponent('/pricing')}`);
+      router.push(`${routes.SIGNIN}?redirect=${encodeURIComponent('/pricing')}`);
       return;
     }
 

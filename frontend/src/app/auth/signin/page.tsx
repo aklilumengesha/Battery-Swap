@@ -3,12 +3,14 @@
 import { message } from "antd";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { userTypes } from "../../../../common/constants";
 import { useAuthQuery } from "../../../features/auth";
 import { routes } from "../../../routes";
 import { validator } from "../../../utils/validators";
 
 const Signin = () => {
+  const router = useRouter();
   const { isSigningIn, signin } = useAuthQuery();
   const [email, setemail] = useState("");
   const [userType, setuserType] = useState(userTypes.consumer.key);
@@ -33,7 +35,17 @@ const Signin = () => {
       return;
     }
     
-    signin({ email, password, userType });
+    signin(
+      { email, password, userType },
+      {
+        onSuccess: () => {
+          // Check for redirect parameter
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get('redirect');
+          router.push(redirect || routes.HOME);
+        }
+      }
+    );
   };
 
   return (
