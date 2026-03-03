@@ -12,10 +12,28 @@ const defaultHeader = { "Content-Type": "application/json" };
  * @returns Headers object with Content-Type and Authorization (if logged in)
  */
 export const getFreshHeaders = (): Record<string, string> => {
-  return Cache.checkItem("accessToken")
-    ? {
-        ...defaultHeader,
-        Authorization: `Bearer ${Cache.getItem("accessToken")}`,
-      }
-    : { ...defaultHeader };
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (Cache.checkItem('accessToken')) {
+    // Cache.getItem uses JSON.parse so token may have 
+    // extra quotes - clean it:
+    let token = Cache.getItem('accessToken');
+    
+    // Remove any surrounding quotes added by JSON.stringify
+    if (typeof token === 'string') {
+      token = token.replace(/^"|"$/g, '').trim();
+    }
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    // Temporary debug - remove after confirming fix:
+    console.log('[Auth] Token preview:', token ? token.substring(0, 40) + '...' : 'MISSING');
+    console.log('[Auth] Header:', headers['Authorization'] ? headers['Authorization'].substring(0, 50) + '...' : 'NOT SET');
+  }
+
+  return headers;
 };
