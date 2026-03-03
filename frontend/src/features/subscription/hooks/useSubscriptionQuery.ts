@@ -66,10 +66,17 @@ export const useSubscriptionQuery = () => {
   const subscribeMutation = useMutation({
     mutationFn: async ({ planId, durationMonths }: { planId: number; durationMonths?: number }) => {
       const res = await SubscriptionService.subscribe(planId, durationMonths);
-      if (res.data.success) {
-        return res.data.subscription;
+      
+      // Handle both response shapes
+      const data = res.data;
+      
+      // Success cases: check for subscription data or 201 status
+      if (data?.subscription || data?.id || res.status === 201) {
+        return data?.subscription || data;
       }
-      throw new Error(res.data.message || "Subscription failed");
+      
+      // Error case: throw with appropriate message
+      throw new Error(data?.message || data?.detail || 'Subscription failed');
     },
     onSuccess: (data) => {
       message.success("Successfully subscribed to plan!");

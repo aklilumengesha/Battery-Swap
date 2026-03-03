@@ -144,8 +144,13 @@ const PricingPage = () => {
               }, 2000);
               resolve();
             },
-            onError: (error: Error) => {
-              setSubscriptionError(error.message || "Failed to subscribe. Please try again.");
+            onError: (error: any) => {
+              // Extract error message from various possible response shapes
+              const msg = error?.response?.data?.detail ||
+                         error?.response?.data?.message ||
+                         error?.message ||
+                         'Failed to subscribe. Please try again.';
+              setSubscriptionError(msg);
               reject(error);
             },
           }
