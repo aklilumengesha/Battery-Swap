@@ -17,11 +17,6 @@ export const getPlans = () =>
  * @param durationMonths - Subscription duration in months (1-12)
  */
 export const subscribe = (planId: number, durationMonths: number = 1) => {
-  console.log('[SubscriptionService] Subscribing:', {
-    plan_id: planId,
-    duration_months: durationMonths
-  });
-  
   return post(`api/subscribe/`, { 
     plan_id: planId, 
     duration_months: durationMonths 

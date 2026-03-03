@@ -29,10 +29,6 @@ export const getFreshHeaders = (): Record<string, string> => {
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
-    
-    // Temporary debug - remove after confirming fix:
-    console.log('[Auth] Token preview:', token ? token.substring(0, 40) + '...' : 'MISSING');
-    console.log('[Auth] Header:', headers['Authorization'] ? headers['Authorization'].substring(0, 50) + '...' : 'NOT SET');
   }
 
   return headers;

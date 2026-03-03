@@ -25,21 +25,13 @@ export const useSubscriptionQuery = () => {
     return useQuery({
       queryKey: subscriptionKeys.plans(),
       queryFn: async () => {
-        try {
-          console.log('Fetching plans from API...');
-          const res = await SubscriptionService.getPlans();
-          console.log('Plans API response:', res);
-          
-          if (res.status === 200) {
-            const plans = res.data.results || res.data || [];
-            console.log('Parsed plans:', plans);
-            return plans;
-          }
-          throw new Error(`Failed to fetch plans: Status ${res.status}`);
-        } catch (error) {
-          console.error('Error fetching plans:', error);
-          throw error;
+        const res = await SubscriptionService.getPlans();
+        
+        if (res.status === 200) {
+          return res.data.results || res.data || [];
         }
+        
+        throw new Error(`Failed to fetch plans: Status ${res.status}`);
       },
       staleTime: 10 * 60 * 1000, // 10 minutes
       retry: 1, // Retry once on failure
@@ -72,11 +64,6 @@ export const useSubscriptionQuery = () => {
       durationMonths: number;
     }) => {
       const response = await SubscriptionService.subscribe(planId, durationMonths);
-      
-      // Log to verify shape
-      console.log('[Subscribe] Full response:', response);
-      console.log('[Subscribe] Status:', response.status);
-      console.log('[Subscribe] Data:', response.data);
       
       // Handle 201 Created success
       if (response.status === 201 || response.status === 200) {

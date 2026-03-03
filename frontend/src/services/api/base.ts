@@ -28,9 +28,6 @@ const base = async <T = any>(
   const fetchUrl = config.API_URL + url;
   const headers = getFreshHeaders();
   
-  console.log(`[API] ${options.method} ${fetchUrl}`);
-  console.log('[API] Has auth header:', 'Authorization' in headers);
-  
   let res: Response;
   
   try {
@@ -47,10 +44,7 @@ const base = async <T = any>(
     );
   }
   
-  console.log(`[API] Response: ${res.status} ${res.statusText}`);
-  
   const contentType = res.headers.get('content-type') || '';
-  console.log('[API] Content-Type:', contentType);
   
   // Handle HTML response
   if (contentType.includes('text/html')) {
@@ -77,7 +71,6 @@ const base = async <T = any>(
   
   // Parse JSON
   const data = await res.json();
-  console.log('[API] Response data:', data);
   
   return { data, status: res.status };
 };
