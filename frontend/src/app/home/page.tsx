@@ -152,19 +152,41 @@ const Home = () => {
               </span>
             </div>
 
-            {/* Quick stats row inside hero */}
+            {/* Stats row */}
             <div className="grid grid-cols-3 gap-2 mb-5">
-              <div className="bg-white/5 rounded-xl p-2.5 text-center border border-white/10">
-                <p className="text-lg font-bold text-white">{nearbyStationsCount}</p>
-                <p className="text-xs text-gray-500">Nearby</p>
+              <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 hover:bg-white/10 transition-colors cursor-default">
+                <p className="text-2xl font-bold text-white mb-0.5">{nearbyStationsCount}</p>
+                <div className="flex items-center justify-center gap-1">
+                  <EnvironmentOutlined className="text-blue-400 text-xs" />
+                  <p className="text-xs text-gray-300 font-medium">Stations</p>
+                </div>
               </div>
-              <div className="bg-white/5 rounded-xl p-2.5 text-center border border-white/10">
-                <p className="text-lg font-bold text-white">{activeBooking ? '1' : '0'}</p>
-                <p className="text-xs text-gray-500">Active</p>
+              <div 
+                onClick={() => activeBooking && router.push(routes.HISTORY)}
+                className={`bg-white/5 rounded-xl p-3 text-center border transition-colors ${
+                  activeBooking 
+                    ? 'border-orange-400/30 bg-orange-500/10 cursor-pointer hover:bg-orange-500/20' 
+                    : 'border-white/10 cursor-default'
+                }`}
+              >
+                <p className={`text-2xl font-bold mb-0.5 ${
+                  activeBooking ? 'text-orange-400' : 'text-white'
+                }`}>
+                  {activeBooking ? '1' : '0'}
+                </p>
+                <div className="flex items-center justify-center gap-1">
+                  <ThunderboltFilled className={`text-xs ${
+                    activeBooking ? 'text-orange-400' : 'text-gray-400'
+                  }`} />
+                  <p className="text-xs text-gray-300 font-medium">Active</p>
+                </div>
               </div>
-              <div className="bg-white/5 rounded-xl p-2.5 text-center border border-white/10">
-                <p className="text-lg font-bold text-white">{totalSwaps}</p>
-                <p className="text-xs text-gray-500">Swaps</p>
+              <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 cursor-default">
+                <p className="text-2xl font-bold text-white mb-0.5">{totalSwaps}</p>
+                <div className="flex items-center justify-center gap-1">
+                  <ClockCircleOutlined className="text-purple-400 text-xs" />
+                  <p className="text-xs text-gray-300 font-medium">Swaps</p>
+                </div>
               </div>
             </div>
 
