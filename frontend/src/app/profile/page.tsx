@@ -20,6 +20,7 @@ const Profile = () => {
   const [phoneValue, setPhoneValue] = useState(user?.phone || '');
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (user?.name) setNameValue(user.name);
@@ -33,14 +34,24 @@ const Profile = () => {
   const handleSave = async () => {
     setSaving(true);
     setSaveSuccess(false);
+    setSaveError('');
     try {
-      await updateProfile({ name: nameValue, phone: phoneValue });
+      await updateProfile({
+        name: nameValue,
+        phone: phoneValue,
+        // Do NOT send vehicle - it is optional
+      });
+      // If we reach here, mutation succeeded
+      // (errors throw and are caught below)
       setSaveSuccess(true);
       setEditing(false);
-      // Clear success after 3 seconds
       setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (err) {
-      console.error('Failed to update profile:', err);
+    } catch (err: any) {
+      // Extract the most readable error message
+      const errorMsg = err?.response?.data?.message ||
+                      err?.message ||
+                      'Update failed. Please try again.';
+      setSaveError(errorMsg);
     } finally {
       setSaving(false);
     }
@@ -92,6 +103,8 @@ const Profile = () => {
             <button
               onClick={() => {
                 setEditing(!editing);
+                setSaveError('');
+                setSaveSuccess(false);
                 // Reset values when cancelling
                 if (editing) {
                   setNameValue(user?.name || '');
@@ -195,9 +208,17 @@ const Profile = () => {
 
         {/* Success message */}
         {saveSuccess && (
-          <div className="flex items-center gap-2 px-4 py-3 bg-green-50 rounded-xl border border-green-100 text-sm text-green-700 font-medium">
-            <CheckOutlined className="text-green-500" />
-            Profile updated successfully
+          <div className="flex items-center gap-2 px-4 py-3 bg-green-50 rounded-xl border border-green-100">
+            <span className="text-green-500">✓</span>
+            <p className="text-sm text-green-700 font-medium">Profile updated successfully</p>
+          </div>
+        )}
+
+        {/* Error message */}
+        {saveError && (
+          <div className="flex items-center gap-2 px-4 py-3 bg-red-50 rounded-xl border border-red-100">
+            <span className="text-red-500">✕</span>
+            <p className="text-sm text-red-600 font-medium">{saveError}</p>
           </div>
         )}
 
