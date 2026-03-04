@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { BatteryCard } from "../../components";
 import { useNearbyStations, useBookings, useStationWebSocket } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
@@ -20,11 +19,6 @@ import {
   CreditCardOutlined,
   CrownFilled
 } from "@ant-design/icons";
-
-const MapPreview = dynamic(() => import('../../components/map/MapPreview'), {
-  ssr: false,
-  loading: () => <div style={{height:'300px',background:'#f5f5f5'}}>Loading map...</div>
-});
 
 const Home = () => {
   const router = useRouter();
@@ -216,22 +210,6 @@ const Home = () => {
                 {subscription ? 'Manage →' : 'Get Plan →'}
               </button>
             </div>
-          </div>
-        )}
-
-        {/* Map Preview - Show stations on map */}
-        {location?.latitude && location?.longitude && (
-          <div className="animate-scale-in" style={{ animationDelay: "500ms" }}>
-            {loadingList ? (
-              <div className="h-[220px] rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg border border-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
-                  <p className="text-sm text-gray-600 font-medium">Loading map preview...</p>
-                </div>
-              </div>
-            ) : stationList && stationList.length > 0 ? (
-              <MapPreview />
-            ) : null}
           </div>
         )}
 
