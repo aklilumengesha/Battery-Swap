@@ -14,6 +14,7 @@ import {
 } from "@ant-design/icons";
 import { useAuthQuery } from "../../features/auth";
 import { useMySubscription } from "../../features/subscription/hooks/useSubscriptionQuery";
+import { useBookings } from "../../features/stations/hooks/useStationsQuery";
 import { routes } from "../../routes";
 
 interface DashboardLayoutProps {
@@ -38,6 +39,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: subscription } = useMySubscription();
   const { signout } = useAuthQuery();
+  
+  const { data: bookings = [] } = useBookings();
+  const activeBooking = bookings.find((b: any) => !b.is_collected);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -127,6 +131,23 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                   </Link>
                 );
               })}
+
+              {/* Active Booking Indicator */}
+              {activeBooking && (
+                <Link
+                  href={routes.HISTORY}
+                  onClick={handleNavClick}
+                  className="relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-200"
+                >
+                  {/* Pulse dot */}
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
+                  </span>
+                  <ThunderboltFilled className="text-orange-500 text-xs" />
+                  <span className="hidden sm:block text-xs font-semibold">Active</span>
+                </Link>
+              )}
             </div>
 
             {/* RIGHT: Location + User Avatar */}
