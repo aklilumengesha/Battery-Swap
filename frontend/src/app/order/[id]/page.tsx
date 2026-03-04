@@ -105,65 +105,128 @@ const Order = () => {
               </div>
             </div>
 
-            {/* Details Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* Battery Company */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-100">
-                <p className="text-xs text-gray-400 mb-1">Battery Brand</p>
-                <p className="text-sm font-bold text-gray-900">
-                  {booking?.battery?.company?.name || 'N/A'}
-                </p>
+            {/* Battery Info Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-50">
+                <h3 className="text-sm font-semibold text-gray-900">Battery Information</h3>
               </div>
+              <div className="divide-y divide-gray-50">
+                <div className="px-5 py-4 flex items-center
+                  justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50
+                      flex items-center justify-center">
+                      <ThunderboltFilled className="text-blue-500 text-xs" />
+                    </div>
+                    <p className="text-sm text-gray-500">Battery Brand</p>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {booking?.battery?.company?.name || 'N/A'}
+                  </p>
+                </div>
 
-              {/* Vehicle */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-100">
-                <p className="text-xs text-gray-400 mb-1">Vehicle Type</p>
-                <p className="text-sm font-bold text-gray-900">
-                  {booking?.battery?.vehicle?.name || 'N/A'}
-                </p>
+                <div className="px-5 py-4 flex items-center
+                  justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-purple-50
+                      flex items-center justify-center">
+                      <span className="text-sm">🚗</span>
+                    </div>
+                    <p className="text-sm text-gray-500">Vehicle Type</p>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {booking?.battery?.vehicle?.name || 'N/A'}
+                  </p>
+                </div>
               </div>
+            </div>
 
-              {/* Booked Time */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-100">
-                <p className="text-xs text-gray-400 mb-1">Booked Time</p>
-                <p className="text-sm font-bold text-gray-900">
-                  {booking?.booked_time
-                    ? new Date(booking.booked_time).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })
-                    : 'N/A'}
-                </p>
+            {/* Timeline Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-50">
+                <h3 className="text-sm font-semibold text-gray-900">Booking Timeline</h3>
               </div>
+              <div className="divide-y divide-gray-50">
+                <div className="px-5 py-4 flex items-center
+                  justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-green-50
+                      flex items-center justify-center">
+                      <ClockCircleOutlined className="text-green-500 text-xs" />
+                    </div>
+                    <p className="text-sm text-gray-500">Booked At</p>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {booking?.booked_time
+                      ? new Date(booking.booked_time).toLocaleString('en-US', {
+                          month: 'short', day: 'numeric',
+                          year: 'numeric', hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : 'N/A'}
+                  </p>
+                </div>
 
-              {/* Expiry Time */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-100">
-                <p className="text-xs text-gray-400 mb-1">Expires</p>
-                <p className="text-sm font-bold text-gray-900">
-                  {booking?.expiry_time
-                    ? new Date(booking.expiry_time).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })
-                    : 'N/A'}
-                </p>
+                <div className="px-5 py-4 flex items-center
+                  justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-red-50
+                      flex items-center justify-center">
+                      <ClockCircleOutlined className="text-red-400 text-xs" />
+                    </div>
+                    <p className="text-sm text-gray-500">Expires At</p>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {booking?.expiry_time
+                      ? new Date(booking.expiry_time).toLocaleString('en-US', {
+                          month: 'short', day: 'numeric',
+                          year: 'numeric', hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : 'N/A'}
+                  </p>
+                </div>
               </div>
+            </div>
 
-              {/* Collection Status */}
-              <div className="col-span-2 bg-white rounded-2xl p-4 border border-gray-100">
-                <p className="text-xs text-gray-400 mb-2">Collection Status</p>
-                <span className={`inline-flex px-3 py-1.5 rounded-full text-xs font-semibold
-                  ${booking?.is_collected
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'bg-gray-50 text-gray-500'
-                  }`}
-                >
-                  {booking?.is_collected ? '✓ Collected' : '⏳ Not Collected'}
-                </span>
+            {/* Status Grid Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-50">
+                <h3 className="text-sm font-semibold text-gray-900">Status</h3>
+              </div>
+              <div className="p-4 grid grid-cols-2 gap-3">
+                <div className={`rounded-xl p-4 text-center
+                  border ${booking?.is_paid
+                    ? 'bg-green-50 border-green-100'
+                    : 'bg-yellow-50 border-yellow-100'
+                  }`}>
+                  <p className="text-xs text-gray-400 mb-1">Payment</p>
+                  <p className={`text-sm font-bold
+                    ${booking?.is_paid
+                      ? 'text-green-600'
+                      : 'text-yellow-600'
+                    }`}>
+                    {booking?.is_paid ? '✓ Paid' : '⏳ Pending'}
+                  </p>
+                </div>
+
+                <div className={`rounded-xl p-4 text-center
+                  border ${booking?.is_collected
+                    ? 'bg-blue-50 border-blue-100'
+                    : 'bg-gray-50 border-gray-100'
+                  }`}>
+                  <p className="text-xs text-gray-400 mb-1">Collection</p>
+                  <p className={`text-sm font-bold
+                    ${booking?.is_collected
+                      ? 'text-blue-600'
+                      : 'text-gray-500'
+                    }`}>
+                    {booking?.is_collected ? '✓ Collected' : '⏳ Pending'}
+                  </p>
+                </div>
               </div>
             </div>
 
