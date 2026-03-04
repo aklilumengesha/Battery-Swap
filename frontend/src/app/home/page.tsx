@@ -101,7 +101,7 @@ const Home = () => {
 
   return (
     <DashboardLayout title="Home" location={location}>
-      <div className="space-y-6 pb-6">
+      <div className="max-w-2xl mx-auto space-y-0 pb-6">
         {/* Hero Card */}
         <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-7 text-white overflow-hidden shadow-2xl mb-4">
           {/* Animated background glows */}
@@ -363,7 +363,7 @@ const Home = () => {
               ))}
             </div>
           </div>
-          <div className="flex items-start gap-3 transition-all duration-300">
+          <div key={currentTip} className="flex items-start gap-3 animate-[fadeIn_0.3s_ease-out]">
             <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0 text-xl border border-gray-100">
               {swapTips[currentTip].icon}
             </div>
