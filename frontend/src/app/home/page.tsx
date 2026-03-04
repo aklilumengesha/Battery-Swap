@@ -58,6 +58,7 @@ const Home = () => {
   const nearbyStationsCount = stationList?.length || 0;
   const activeBooking = bookings.find((b: any) => !b.is_collected);
   const totalSwaps = bookings.filter((b: any) => b.is_collected).length;
+  const recentBooking = bookings?.[0];
 
   // Get greeting based on time
   const getGreeting = () => {
@@ -209,6 +210,86 @@ const Home = () => {
               >
                 {subscription ? 'Manage →' : 'Get Plan →'}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Swap CTA */}
+        <div className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 rounded-3xl p-6 overflow-hidden mb-4 shadow-lg">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex-1">
+              <p className="text-blue-100 text-xs font-medium uppercase tracking-wider mb-1">Ready to swap?</p>
+              <h3 className="text-white text-xl font-bold mb-1">Book a Battery</h3>
+              <p className="text-blue-200 text-sm">Find the nearest station and swap instantly</p>
+            </div>
+            <button
+              onClick={() => {
+                const stationsSection = document.getElementById('stations-section');
+                if (stationsSection) {
+                  stationsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="flex-shrink-0 ml-4 flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-white/20 border border-white/30 hover:bg-white/30 transition-all duration-200 active:scale-95"
+            >
+              <ThunderboltFilled className="text-white text-2xl" />
+              <span className="text-white text-xs mt-1 font-medium">Swap</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Recent Booking Card */}
+        {recentBooking && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-gray-900">Recent Booking</h3>
+              <button
+                onClick={() => router.push(routes.HISTORY)}
+                className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                View All →
+              </button>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center flex-shrink-0">
+                <ThunderboltFilled className="text-white text-lg" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 truncate">
+                  {recentBooking.station?.name || 'Station'}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {recentBooking.booked_time
+                    ? new Date(recentBooking.booked_time).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })
+                    : 'Recently booked'}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1.5 flex-shrink-0">
+                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold text-center ${
+                  recentBooking.is_paid
+                    ? 'bg-green-50 text-green-600'
+                    : 'bg-yellow-50 text-yellow-600'
+                }`}>
+                  {recentBooking.is_paid ? 'Paid' : 'Unpaid'}
+                </span>
+                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold text-center ${
+                  recentBooking.is_collected
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'bg-gray-50 text-gray-500'
+                }`}>
+                  {recentBooking.is_collected ? 'Collected' : 'Pending'}
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between">
+              <span className="text-xs text-gray-400">Battery swap charge</span>
+              <span className="text-sm font-bold text-gray-900">Rs {recentBooking.battery?.price || 0}</span>
             </div>
           </div>
         )}
