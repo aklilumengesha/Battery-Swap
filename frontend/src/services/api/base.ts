@@ -12,11 +12,63 @@ interface ApiResponse<T = any> {
 }
 
 /**
+ * Try to refresh the access token using the refresh token
+ * Returns true if refresh was successful, false otherwise
+ */
+const tryRefreshToken = async (): Promise<boolean> => {
+  try {
+    const raw = sessionStorage.getItem('refreshToken');
+    if (!raw) return false;
+
+    let refreshToken: string | null = null;
+    try {
+      refreshToken = JSON.parse(raw);
+    } catch {
+      refreshToken = raw;
+    }
+
+    if (!refreshToken) return false;
+
+    console.log('[Auth] Access token expired, refreshing...');
+
+    const res = await fetch(config.API_URL + 'user/token/refresh/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+
+      // Save new access token to sessionStorage
+      sessionStorage.setItem('accessToken', JSON.stringify(data.access));
+
+      // Save new refresh token if returned
+      if (data.refresh) {
+        sessionStorage.setItem('refreshToken', JSON.stringify(data.refresh));
+      }
+
+      console.log('[Auth] Token refreshed successfully');
+      return true;
+    }
+
+    console.log('[Auth] Token refresh failed:', res.status);
+    return false;
+  } catch (error) {
+    console.log('[Auth] Token refresh error:', error);
+    return false;
+  }
+};
+
+/**
  * Base API request handler
  * Handles all HTTP requests with consistent error handling and headers
  * 
  * IMPORTANT: Uses getFreshHeaders() to ensure JWT token is always current.
  * This is critical for authenticated requests after login.
+ * 
+ * AUTOMATIC TOKEN REFRESH: On 401 responses, automatically attempts to refresh
+ * the access token using the refresh token and retries the request once.
  * 
  * NOTE: This function returns { data, status } for ALL responses (including errors).
  * It does NOT throw on non-2xx status codes. Error handling is done at the service layer.
@@ -26,52 +78,53 @@ const base = async <T = any>(
   options: RequestOptions
 ): Promise<ApiResponse<T>> => {
   const fetchUrl = config.API_URL + url;
-  const headers = getFreshHeaders();
-  
-  let res: Response;
-  
-  try {
-    res = await fetch(fetchUrl, {
-      headers,
-      method: options.method,
-      body: options.data ? JSON.stringify(options.data) : undefined,
-    });
-  } catch (networkError) {
-    // Network level failure - server not reachable
-    throw new Error(
-      `Cannot reach server at ${config.API_URL}. ` +
-      `Make sure Django is running.`
-    );
+  let headers = getFreshHeaders();
+
+  console.log(`[API] ${options.method} ${fetchUrl}`);
+  console.log('[API] Has auth:', 'Authorization' in headers);
+
+  let res = await fetch(fetchUrl, {
+    method: options.method,
+    headers,
+    body: options.data ? JSON.stringify(options.data) : undefined,
+  });
+
+  // Auto-refresh on 401 and retry ONCE
+  if (res.status === 401) {
+    console.log('[API] Got 401, attempting token refresh...');
+    
+    const refreshed = await tryRefreshToken();
+    
+    if (refreshed) {
+      // Get fresh headers with new token
+      headers = getFreshHeaders();
+      
+      // Retry the original request
+      res = await fetch(fetchUrl, {
+        method: options.method,
+        headers,
+        body: options.data ? JSON.stringify(options.data) : undefined,
+      });
+      
+      console.log('[API] Retry result:', res.status);
+    } else {
+      // Refresh failed - clear session and redirect to signin
+      console.log('[API] Refresh failed, clearing session');
+      sessionStorage.clear();
+      window.location.href = '/auth/signin';
+      throw new Error('Session expired. Please sign in again.');
+    }
   }
-  
+
   const contentType = res.headers.get('content-type') || '';
-  
-  // Handle HTML response
-  if (contentType.includes('text/html')) {
-    if (res.status === 404) {
-      throw new Error(`Endpoint not found: ${fetchUrl}`);
-    }
-    
-    if (res.status === 401 || res.status === 403) {
-      throw new Error(
-        'Authentication failed. Token may be expired. ' +
-        'Please log out and log in again.'
-      );
-    }
-    
-    if (res.status === 500) {
-      throw new Error('Server error (500). Check Django terminal for details.');
-    }
-    
-    throw new Error(
-      `Server returned HTML (${res.status}). ` +
-      `Endpoint may not exist: ${fetchUrl}`
-    );
+
+  if (!contentType.includes('application/json')) {
+    throw new Error(`Server returned non-JSON (${res.status})`);
   }
-  
-  // Parse JSON
+
   const data = await res.json();
-  
+  console.log('[API] Response:', res.status, data);
+
   return { data, status: res.status };
 };
 
