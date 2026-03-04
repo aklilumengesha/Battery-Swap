@@ -6,11 +6,7 @@ import {
   CrownFilled,
   ThunderboltFilled,
   CheckCircleFilled,
-  CalendarOutlined,
   ClockCircleOutlined,
-  FireOutlined,
-  TrophyOutlined,
-  ExclamationCircleOutlined,
   ArrowRightOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
@@ -37,25 +33,6 @@ const MyPlanPage = () => {
     if (percentage < 50) return { ring: 'stroke-green-500', bg: 'bg-green-50', text: 'text-green-600' };
     if (percentage < 80) return { ring: 'stroke-orange-500', bg: 'bg-orange-50', text: 'text-orange-600' };
     return { ring: 'stroke-red-500', bg: 'bg-red-50', text: 'text-red-600' };
-  };
-
-  // Calculate days until renewal
-  const getDaysUntilRenewal = () => {
-    if (!subscription?.end_date) return 0;
-    const endDate = new Date(subscription.end_date);
-    const today = new Date();
-    const diffTime = endDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return Math.max(0, diffDays);
-  };
-
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
   };
 
   // Handle cancel subscription
@@ -158,18 +135,16 @@ const MyPlanPage = () => {
 
   const usagePercentage = getUsagePercentage();
   const usageColors = getUsageColor();
-  const daysUntilRenewal = getDaysUntilRenewal();
   const swapsUsed = subscription.swaps_used || 0;
   const swapsLimit = subscription.plan_details?.swap_limit_per_month || 0;
-  const swapsRemaining = Math.max(0, swapsLimit - swapsUsed);
 
   return (
     <DashboardLayout title="My Plan">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Main Subscription Card */}
+      <div className="w-full space-y-5">
+        {/* Main Subscription Card - Full Width */}
         <div className="relative bg-gradient-to-br
           from-gray-900 via-gray-800 to-gray-900
-          rounded-3xl p-6 text-white overflow-hidden mb-4">
+          rounded-3xl p-6 text-white overflow-hidden w-full">
           {/* Background glows */}
           <div className="absolute top-0 right-0 w-48 h-48
             bg-purple-500/10 rounded-full blur-3xl" />
@@ -237,21 +212,126 @@ const MyPlanPage = () => {
               </div>
             </div>
 
-            {/* Progress Ring + Usage */}
-            <div className="bg-white/5 rounded-2xl p-4
-              border border-white/10 mb-6">
-              <div className="flex items-center justify-between
-                mb-3">
-                <p className="text-gray-400 text-xs">Monthly Usage</p>
-                <p className="text-white text-xs font-semibold">
-                  {usagePercentage.toFixed(0)}% used
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => router.push(routes.PRICING)}
+                className="py-3 rounded-xl bg-white text-gray-900 text-sm font-semibold
+                  hover:bg-gray-100 transition-colors">
+                Change Plan
+              </button>
+
+              <button
+                onClick={() => router.push(routes.PRICING)}
+                className="py-3 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500
+                  text-white text-sm font-semibold
+                  hover:opacity-90 transition-opacity">
+                Upgrade ↑
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* LEFT COLUMN */}
+          <div className="space-y-5">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              {/* Swaps Used */}
+              <div className="bg-white rounded-2xl border
+                border-gray-100 shadow-sm p-4 text-center">
+                <div className="w-9 h-9 rounded-xl bg-blue-50
+                  flex items-center justify-center mx-auto mb-2">
+                  <ThunderboltFilled className="text-blue-500 text-sm" />
+                </div>
+                <p className={`text-2xl font-bold mb-0.5
+                  ${usageColors.text}`}>
+                  {swapsUsed}
+                </p>
+                <p className="text-xs text-gray-400 leading-tight">
+                  Swaps Used
                 </p>
               </div>
 
-              {/* Keep existing SVG progress ring */}
-              <div className="flex items-center justify-center">
+              {/* Swaps Remaining */}
+              <div className="bg-white rounded-2xl border
+                border-gray-100 shadow-sm p-4 text-center">
+                <div className="w-9 h-9 rounded-xl bg-green-50
+                  flex items-center justify-center mx-auto mb-2">
+                  <ThunderboltFilled className="text-green-500 text-sm" />
+                </div>
+                <p className="text-2xl font-bold text-green-600 mb-0.5">
+                  {swapsLimit - swapsUsed}
+                </p>
+                <p className="text-xs text-gray-400 leading-tight">
+                  Remaining
+                </p>
+              </div>
+
+              {/* Days Until Renewal */}
+              <div className="bg-white rounded-2xl border
+                border-gray-100 shadow-sm p-4 text-center">
+                <div className="w-9 h-9 rounded-xl bg-purple-50
+                  flex items-center justify-center mx-auto mb-2">
+                  <ClockCircleOutlined className="text-purple-500 text-sm" />
+                </div>
+                <p className="text-2xl font-bold text-purple-600 mb-0.5">
+                  {Math.max(0, Math.ceil((new Date(subscription.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))}
+                </p>
+                <p className="text-xs text-gray-400 leading-tight">
+                  Days Left
+                </p>
+              </div>
+            </div>
+
+            {/* Battery Info Card - Placeholder for future content */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-50">
+                <h3 className="text-sm font-semibold text-gray-900">Subscription Timeline</h3>
+              </div>
+              <div className="p-5 space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">Plan Started</p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(subscription.start_date).toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">Next Renewal</p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(subscription.end_date).toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="space-y-5">
+            {/* Circular Progress Ring Card */}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <div className="px-1 pb-4 border-b border-gray-50 mb-4">
+                <h3 className="text-sm font-semibold text-gray-900">Usage This Month</h3>
+              </div>
+              <div className="flex flex-col items-center">
+                {/* SVG Circle Progress */}
                 <div className="relative">
-                  {/* SVG Circle Progress */}
                   <svg className="w-56 h-56 transform -rotate-90">
                     {/* Background circle */}
                     <circle
@@ -290,81 +370,15 @@ const MyPlanPage = () => {
                     </div>
                   </div>
                 </div>
+                <p className="text-xs text-gray-400 mt-4 text-center">
+                  {usagePercentage.toFixed(0)}% of monthly limit used
+                </p>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => router.push(routes.PRICING)}
-                className="py-3 rounded-xl bg-white text-gray-900 text-sm font-semibold
-                  hover:bg-gray-100 transition-colors">
-                Change Plan
-              </button>
-
-              <button
-                onClick={() => router.push(routes.PRICING)}
-                className="py-3 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500
-                  text-white text-sm font-semibold
-                  hover:opacity-90 transition-opacity">
-                Upgrade ↑
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          {/* Swaps Used */}
-          <div className="bg-white rounded-2xl border
-            border-gray-100 shadow-sm p-4 text-center">
-            <div className="w-9 h-9 rounded-xl bg-blue-50
-              flex items-center justify-center mx-auto mb-2">
-              <ThunderboltFilled className="text-blue-500 text-sm" />
-            </div>
-            <p className={`text-2xl font-bold mb-0.5
-              ${usageColors.text}`}>
-              {swapsUsed}
-            </p>
-            <p className="text-xs text-gray-400 leading-tight">
-              Swaps Used
-            </p>
-          </div>
-
-          {/* Swaps Remaining */}
-          <div className="bg-white rounded-2xl border
-            border-gray-100 shadow-sm p-4 text-center">
-            <div className="w-9 h-9 rounded-xl bg-green-50
-              flex items-center justify-center mx-auto mb-2">
-              <ThunderboltFilled className="text-green-500 text-sm" />
-            </div>
-            <p className="text-2xl font-bold text-green-600 mb-0.5">
-              {swapsLimit - swapsUsed}
-            </p>
-            <p className="text-xs text-gray-400 leading-tight">
-              Remaining
-            </p>
-          </div>
-
-          {/* Days Until Renewal */}
-          <div className="bg-white rounded-2xl border
-            border-gray-100 shadow-sm p-4 text-center">
-            <div className="w-9 h-9 rounded-xl bg-purple-50
-              flex items-center justify-center mx-auto mb-2">
-              <ClockCircleOutlined className="text-purple-500 text-sm" />
-            </div>
-            <p className="text-2xl font-bold text-purple-600 mb-0.5">
-              {Math.max(0, Math.ceil((new Date(subscription.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))}
-            </p>
-            <p className="text-xs text-gray-400 leading-tight">
-              Days Left
-            </p>
-          </div>
-        </div>
-
-        {/* Plan Features Card */}
-        <div className="bg-white rounded-2xl border
-          border-gray-100 shadow-sm overflow-hidden mb-4">
+            {/* Plan Features Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
           {/* Card Header */}
           <div className="px-5 py-4 border-b border-gray-50
             flex items-center justify-between">
@@ -438,9 +452,11 @@ const MyPlanPage = () => {
               </>
             )}
           </div>
+            </div>
+          </div>
         </div>
 
-        {/* Cancel Plan Button */}
+        {/* Cancel Plan Button - Full Width */}
         <button
           onClick={() => setShowCancelModal(true)}
           className="w-full py-3 rounded-2xl
