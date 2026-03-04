@@ -1,14 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useBookings } from "../../features/stations";
 import Link from "next/link";
 import { routes } from "../../routes";
-import { ClockCircleOutlined, ThunderboltFilled } from '@ant-design/icons';
+import { ClockCircleOutlined, ThunderboltFilled, SearchOutlined } from '@ant-design/icons';
 
 const History = () => {
   const { data: bookings, isLoading: loadingBookings } = useBookings();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const filteredBookings = bookings?.filter(booking => {
+    const matchesSearch = !searchQuery ||
+      booking.station?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      booking.battery?.company?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      booking.battery?.vehicle?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesFilter =
+      activeFilter === 'All' ||
+      (activeFilter === 'Paid' && booking.is_paid) ||
+      (activeFilter === 'Unpaid' && !booking.is_paid) ||
+      (activeFilter === 'Collected' && booking.is_collected) ||
+      (activeFilter === 'Pending' && !booking.is_collected);
+
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <DashboardLayout title="History">
@@ -21,6 +39,70 @@ const History = () => {
               {bookings?.length || 0} total bookings
             </p>
           </div>
+        </div>
+
+        {/* Search and Filter Bar */}
+        <div className="space-y-3 mb-6">
+          {/* Search Input */}
+          <div className="relative">
+            <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <input
+              type="text"
+              placeholder="Search by station, vehicle, battery..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl
+                border border-gray-200 bg-white text-sm
+                text-gray-900 placeholder:text-gray-400
+                focus:outline-none focus:border-gray-400
+                transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex gap-2 flex-wrap">
+            {['All', 'Paid', 'Unpaid', 'Collected', 'Pending'].map(filter => (
+              <button
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                className={`px-4 py-2 rounded-xl text-xs
+                  font-medium transition-all duration-200
+                  ${activeFilter === filter
+                    ? 'bg-gray-900 text-white shadow-sm'
+                    : 'bg-white text-gray-500 border border-gray-200 hover:border-gray-300'
+                  }`}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+
+          {/* Result count */}
+          {(searchQuery || activeFilter !== 'All') && (
+            <p className="text-xs text-gray-400">
+              Showing {filteredBookings?.length || 0} of{' '}
+              {bookings?.length || 0} bookings
+              {(searchQuery || activeFilter !== 'All') && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setActiveFilter('All');
+                  }}
+                  className="ml-2 text-gray-900 underline underline-offset-2"
+                >
+                  Clear
+                </button>
+              )}
+            </p>
+          )}
         </div>
 
         {/* Loading State */}
@@ -52,10 +134,32 @@ const History = () => {
           </div>
         )}
 
+        {/* No Results State */}
+        {filteredBookings?.length === 0 && (bookings?.length ?? 0) > 0 && (
+          <div className="text-center py-16">
+            <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center
+              mx-auto mb-3">
+              <SearchOutlined className="text-gray-400 text-lg" />
+            </div>
+            <p className="text-sm font-medium text-gray-900">No results found</p>
+            <p className="text-xs text-gray-400 mt-1">Try a different search or filter</p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setActiveFilter('All');
+              }}
+              className="mt-3 text-xs text-gray-900
+                underline underline-offset-2"
+            >
+              Clear filters
+            </button>
+          </div>
+        )}
+
         {/* Booking Cards */}
-        {!loadingBookings && bookings && bookings.length > 0 && (
+        {!loadingBookings && filteredBookings && filteredBookings.length > 0 && (
           <div className="space-y-3">
-            {bookings.map((booking: any, i: number) => (
+            {filteredBookings.map((booking: any, i: number) => (
               <Link href={routes.ORDER_DETAILS(booking.pk)} key={i}>
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:border-gray-200 transition-all duration-200 cursor-pointer group">
                   <div className="flex items-start gap-4">
