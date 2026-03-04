@@ -1,30 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import BarLayout from "../../components/layout/BarLayout";
+import React from "react";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useAuthQuery } from "../../features/auth";
 import { Button } from "../../components";
-import { getLocation } from "../../utils/location";
 
 const Profile = () => {
   const { user, signout } = useAuthQuery();
-  const [location, setLocation] = useState<any>({ name: "loading..." });
-
-  useEffect(() => {
-    const savedLocation = localStorage.getItem("location");
-    if (savedLocation) {
-      setLocation(JSON.parse(savedLocation));
-    } else if ("geolocation" in navigator) {
-      getLocation((data: any) => setLocation(data));
-    }
-  }, []);
 
   const handleLogout = () => {
     signout();
   };
 
   return (
-    <BarLayout location={location}>
+    <DashboardLayout title="Profile">
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Profile</h1>
         <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
@@ -49,7 +38,7 @@ const Profile = () => {
           </Button>
         </div>
       </div>
-    </BarLayout>
+    </DashboardLayout>
   );
 };
 
