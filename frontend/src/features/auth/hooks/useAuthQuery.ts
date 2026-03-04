@@ -136,6 +136,9 @@ export const useAuthQuery = () => {
       throw new Error(res.data.message || "Signin failed");
     },
     onSuccess: (data) => {
+      // Clear the auth failure flag first
+      sessionStorage.removeItem('authFailure');
+      
       message.success(data.message || "Signed in successfully!");
       Cache.setItem({
         accessToken: data.access,
