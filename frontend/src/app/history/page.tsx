@@ -5,7 +5,12 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useBookings } from "../../features/stations";
 import Link from "next/link";
 import { routes } from "../../routes";
-import { ClockCircleOutlined, ThunderboltFilled, SearchOutlined } from '@ant-design/icons';
+import { 
+  ClockCircleOutlined, 
+  ThunderboltFilled, 
+  SearchOutlined,
+  CheckCircleFilled 
+} from '@ant-design/icons';
 
 const History = () => {
   const { data: bookings, isLoading: loadingBookings } = useBookings();
@@ -31,7 +36,21 @@ const History = () => {
 
   return (
     <DashboardLayout title="History">
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="w-full space-y-5">
+        {/* PAGE HEADER */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Booking History</h1>
+            <p className="text-sm text-gray-400 mt-1">
+              {bookings?.length || 0} total bookings
+            </p>
+          </div>
+        </div>
+
+        {/* MAIN TWO COLUMN LAYOUT */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* LEFT: Bookings list - takes 2/3 width */}
+          <div className="lg:col-span-2 space-y-4">
         {/* Page Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -297,6 +316,88 @@ const History = () => {
             ))}
           </div>
         )}
+          </div>
+
+          {/* RIGHT: Stats Sidebar - takes 1/3 width */}
+          <div className="space-y-4">
+            {/* Summary Stats Card */}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-24">
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">Summary</h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-3 border-b border-gray-50">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <ThunderboltFilled className="text-blue-500 text-xs" />
+                    </div>
+                    <span className="text-sm text-gray-500">Total Bookings</span>
+                  </div>
+                  <span className="text-sm font-bold text-gray-900">
+                    {bookings?.length || 0}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-3 border-b border-gray-50">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
+                      <CheckCircleFilled className="text-green-500 text-xs" />
+                    </div>
+                    <span className="text-sm text-gray-500">Paid</span>
+                  </div>
+                  <span className="text-sm font-bold text-green-600">
+                    {bookings?.filter((b: any) => b.is_paid).length || 0}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-3 border-b border-gray-50">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center">
+                      <ClockCircleOutlined className="text-yellow-500 text-xs" />
+                    </div>
+                    <span className="text-sm text-gray-500">Unpaid</span>
+                  </div>
+                  <span className="text-sm font-bold text-yellow-600">
+                    {bookings?.filter((b: any) => !b.is_paid).length || 0}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-3 border-b border-gray-50">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <CheckCircleFilled className="text-blue-500 text-xs" />
+                    </div>
+                    <span className="text-sm text-gray-500">Collected</span>
+                  </div>
+                  <span className="text-sm font-bold text-blue-600">
+                    {bookings?.filter((b: any) => b.is_collected).length || 0}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
+                      <ClockCircleOutlined className="text-gray-400 text-xs" />
+                    </div>
+                    <span className="text-sm text-gray-500">Pending</span>
+                  </div>
+                  <span className="text-sm font-bold text-gray-500">
+                    {bookings?.filter((b: any) => !b.is_collected).length || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Total spent */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="bg-gray-900 rounded-xl p-4">
+                  <p className="text-xs text-gray-400 mb-1">Total Spent</p>
+                  <p className="text-2xl font-bold text-white">
+                    Rs {bookings?.reduce((sum: number, b: any) => sum + (b.battery?.price || 0), 0) || 0}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
