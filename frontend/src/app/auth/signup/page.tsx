@@ -1,21 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { userTypes } from "../../../../common/constants";
 import { useAuthQuery } from "../../../features/auth";
 import { routes } from "../../../routes";
 import { validator } from "../../../utils/validators";
 import { message } from "antd";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
-  const { isSigningUp, vehicles, vehiclesLoading, signup } = useAuthQuery();
+  const router = useRouter();
+  const { isSigningUp, vehicles, signup } = useAuthQuery();
   const [userType, setuserType] = useState(userTypes.consumer.key);
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [vehicle, setvehicle] = useState("");
   const [password, setpassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const didRedirect = useRef(false);
+
+  useEffect(() => {
+    if (didRedirect.current) return;
+
+    const raw = sessionStorage.getItem('accessToken');
+    if (!raw || raw === 'null') return;
+
+    try {
+      const token = JSON.parse(raw);
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp * 1000 > Date.now()) {
+        didRedirect.current = true;
+        window.location.replace(routes.HOME);
+      }
+    } catch {
+      // bad token, stay on signup
+    }
+  }, []); // EMPTY - once only
 
   // React Query automatically fetches vehicles, no manual call needed
 

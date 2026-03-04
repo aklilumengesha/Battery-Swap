@@ -44,6 +44,10 @@ export const useAuthQuery = () => {
   const cachedUser = Cache.getItem("user");
   const isAuthenticated = !!Cache.checkItem("accessToken");
 
+  // Check if user is logged in for conditional queries
+  const rawToken = sessionStorage.getItem('accessToken');
+  const isLoggedIn = !!(rawToken && rawToken !== 'null');
+
   // Query: Get user profile
   const {
     data: profile,
@@ -61,7 +65,7 @@ export const useAuthQuery = () => {
       // If profile fetch fails, return cached user
       return cachedUser;
     },
-    enabled: false, // Disable automatic fetching - only fetch manually when needed
+    enabled: isLoggedIn, // Only fetch when logged in
     staleTime: 10 * 60 * 1000, // 10 minutes
     retry: false, // Don't retry on failure
   });
@@ -79,6 +83,7 @@ export const useAuthQuery = () => {
       }
       return [];
     },
+    enabled: isLoggedIn, // Only fetch when logged in
     staleTime: 30 * 60 * 1000, // 30 minutes (vehicles don't change often)
   });
 
@@ -136,9 +141,6 @@ export const useAuthQuery = () => {
       throw new Error(res.data.message || "Signin failed");
     },
     onSuccess: (data) => {
-      // Clear the auth failure flag first
-      sessionStorage.removeItem('authFailure');
-      
       message.success(data.message || "Signed in successfully!");
       Cache.setItem({
         accessToken: data.access,
@@ -150,7 +152,7 @@ export const useAuthQuery = () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
       
       // Redirect to home
-      window.location.href = routes.HOME;
+      window.location.replace(routes.HOME);
     },
     onError: (error: Error) => {
       message.error(error.message || "Signin failed");
@@ -202,18 +204,9 @@ export const useAuthQuery = () => {
 
   // Action: Sign out
   const signout = () => {
-    Cache.removeItem("accessToken");
-    Cache.removeItem("refreshToken");
-    Cache.removeItem("user");
-    
-    // Clear all queries
+    sessionStorage.clear();
     queryClient.clear();
-    
-    // Set flag so AuthLayout does not redirect back to home
-    sessionStorage.setItem('authFailure', 'true');
-    
-    message.success("Signed out successfully!");
-    window.location.href = routes.SIGNIN;
+    window.location.replace('/auth/signin');
   };
 
   // Action: Get profile with callback

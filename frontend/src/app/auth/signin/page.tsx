@@ -2,7 +2,7 @@
 
 import { message } from "antd";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { userTypes } from "../../../../common/constants";
 import { useAuthQuery } from "../../../features/auth";
@@ -15,6 +15,25 @@ const Signin = () => {
   const [email, setemail] = useState("");
   const [userType, setuserType] = useState(userTypes.consumer.key);
   const [password, setpassword] = useState("");
+  const didRedirect = useRef(false);
+
+  useEffect(() => {
+    if (didRedirect.current) return;
+
+    const raw = sessionStorage.getItem('accessToken');
+    if (!raw || raw === 'null') return;
+
+    try {
+      const token = JSON.parse(raw);
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp * 1000 > Date.now()) {
+        didRedirect.current = true;
+        window.location.replace(routes.HOME);
+      }
+    } catch {
+      // bad token, stay on signin
+    }
+  }, []); // EMPTY - once only
 
   const handleSubmit = () => {
     message.config({ maxCount: 2 });

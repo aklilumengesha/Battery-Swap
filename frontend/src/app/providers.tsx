@@ -6,27 +6,13 @@ import { usePathname } from "next/navigation";
 import { queryClient } from "../lib/react-query";
 import { ThemeContextProvider } from "../contexts";
 import AuthLayout from "../components/layout/AuthLayout";
-import { useEffect, useState } from "react";
-import { getLocation } from "../utils/location";
-import { routes } from "@/routes";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [location, setLocation] = useState({ name: "loading..." });
   const pathname = usePathname();
 
-  useEffect(() => {
-    const location = localStorage.getItem("location");
-    if (location) setLocation(JSON.parse(location));
-    else if ("geolocation" in navigator) {
-      getLocation((data) => setLocation(data));
-    }
-  }, []);
-
+  // ALL routes that should never go through AuthLayout
   const isAuthPage =
-    pathname === routes.SIGNIN ||
-    pathname === routes.SIGNUP ||
-    pathname === routes.INITIAL ||
-    pathname === "/";
+    !pathname || pathname === "/" || pathname.startsWith("/auth/");
 
   return (
     <QueryClientProvider client={queryClient}>
