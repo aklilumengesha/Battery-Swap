@@ -20,7 +20,10 @@ class ManageConsumer(APIView):
                     "success": True,
                     "user": {
                         "name": consumer.user.name,
+                        "email": consumer.user.email,
                         "phone": request.user.phone,
+                        "user_type": consumer.user.user_type,
+                        "date_joined": consumer.user.date_joined.isoformat() if consumer.user.date_joined else None,
                         "vehicle": {
                             "pk": consumer.vehicle.pk,
                             "name": consumer.vehicle.name,
@@ -72,6 +75,7 @@ class ManageConsumer(APIView):
                         "email": user.email,
                         "phone": user.phone,
                         "user_type": user.user_type,
+                        "date_joined": user.date_joined.isoformat() if user.date_joined else None,
                     }
                 },
                 status=status.HTTP_200_OK

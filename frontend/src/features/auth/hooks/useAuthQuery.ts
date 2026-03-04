@@ -177,6 +177,7 @@ export const useAuthQuery = () => {
           phone: responseData.user.phone,
           email: responseData.user.email,
           user_type: responseData.user.user_type,
+          date_joined: responseData.user.date_joined,
         } : {}),
       };
       
