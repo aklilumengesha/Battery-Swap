@@ -63,6 +63,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     { label: 'My Plan', route: routes.MY_PLAN, icon: CreditCardOutlined },
   ];
 
+  const isDropdownPageActive = 
+    pathname === routes.HISTORY || 
+    pathname === routes.PROFILE;
+
   const handleNavClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -134,16 +138,39 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 </span>
               </div>
 
-              {/* User Avatar */}
-              <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : <UserOutlined />}
-                </div>
-                <div className="hidden md:block text-right">
-                  <p className="text-xs font-semibold text-gray-900 leading-none">
+              {/* User Avatar Dropdown */}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className={`flex items-center gap-2 px-2 py-1.5 rounded-xl transition-colors duration-200 ${
+                    isDropdownPageActive || dropdownOpen
+                      ? 'bg-gray-100'
+                      : 'hover:bg-gray-100'
+                  }`}
+                >
+                  {/* Avatar circle */}
+                  <div className="relative">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : <UserOutlined />}
+                    </div>
+                    {/* Active dot when on History or Profile */}
+                    {isDropdownPageActive && (
+                      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-gray-900 border-2 border-white" />
+                    )}
+                  </div>
+                  
+                  {/* User name - hidden on mobile */}
+                  <span className="hidden md:block text-xs font-semibold text-gray-900 leading-none">
                     {user?.name || 'User'}
-                  </p>
-                </div>
+                  </span>
+                  
+                  {/* Chevron arrow */}
+                  <span className={`text-gray-400 text-xs transition-transform duration-200 ${
+                    dropdownOpen ? 'rotate-180' : 'rotate-0'
+                  }`}>
+                    ▾
+                  </span>
+                </button>
               </div>
             </div>
           </div>
