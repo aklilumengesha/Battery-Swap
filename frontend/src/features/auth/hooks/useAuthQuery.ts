@@ -158,20 +158,41 @@ export const useAuthQuery = () => {
   const updateProfileMutation = useMutation({
     mutationFn: async (data: UpdateProfileData) => {
       const res = await UsersService.updateConsumer(data);
-      if (res.data.success) {
-        return res.data.user;
+      // Backend now returns { success: true, user: {...} }
+      if (res.data?.success === true) {
+        return res.data;  // Return full response
       }
-      throw new Error(res.data.message || "Update failed");
+      throw new Error(res.data?.message || 'Update failed');
     },
-    onSuccess: (user) => {
-      message.success("Profile updated successfully!");
-      Cache.setItem({ user });
+    onSuccess: (responseData) => {
+      // Get current cached user
+      const currentUser = Cache.getItem('user');
       
-      // Invalidate and refetch profile
+      // Merge ONLY the returned fields into cache
+      // Do NOT overwrite with undefined
+      const updatedUser = {
+        ...currentUser,
+        ...(responseData?.user ? {
+          name: responseData.user.name,
+          phone: responseData.user.phone,
+          email: responseData.user.email,
+          user_type: responseData.user.user_type,
+        } : {}),
+      };
+      
+      // Save updated user back to sessionStorage
+      Cache.setItem({ user: updatedUser });
+      
+      // Invalidate queries to sync any other consumers
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile() });
+      
+      message.success('Profile updated successfully!');
     },
-    onError: (error: Error) => {
-      message.error(error.message || "Update failed");
+    onError: (error: any) => {
+      const msg = error?.response?.data?.message ||
+                  error?.message ||
+                  'Update failed. Please try again.';
+      message.error(msg);
     },
   });
 
