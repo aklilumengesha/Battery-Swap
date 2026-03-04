@@ -76,61 +76,95 @@ const Home = () => {
   return (
     <DashboardLayout title="Home" location={location}>
       <div className="space-y-6 pb-6">
-        {/* Hero Section - Redesigned with fade-in animation */}
-        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-8 md:p-10 text-white shadow-2xl overflow-hidden animate-fade-in">
-          {/* Radial glow effect */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-indigo-500/20 via-blue-500/10 to-transparent rounded-full blur-3xl"></div>
-          
+        {/* Hero Card */}
+        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-7 text-white overflow-hidden shadow-2xl mb-4">
+          {/* Animated background glows */}
+          <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-blue-500/15 via-purple-500/10 to-transparent rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-indigo-500/15 via-blue-500/10 to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 w-32 h-32
+            bg-purple-500/5 rounded-full blur-2xl" />
+
           <div className="relative z-10">
-            {/* Top section with greeting and icon */}
-            <div className="flex items-start justify-between mb-6">
+            {/* Greeting + bolt icon row */}
+            <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <p className="text-gray-400 text-sm font-medium mb-2">{getGreeting()}</p>
-                <h1 className="text-3xl md:text-4xl font-bold mb-1">
-                  {user?.name || "Welcome"}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium
+                    text-gray-400 uppercase tracking-wider">
+                    {getGreeting()}
+                  </span>
+                  {/* Active indicator */}
+                  <span className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                    <span className="text-xs text-green-400">Online</span>
+                  </span>
+                </div>
+                <h1 className="text-3xl font-bold text-white tracking-tight">
+                  {user?.name || 'Welcome'}
                 </h1>
-                <p className="text-gray-300 text-base">Ready to power your journey?</p>
+                <p className="text-gray-400 text-sm mt-1">
+                  Ready to power your journey?
+                </p>
               </div>
-              
-              {/* Icon with radial glow */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl"></div>
-                <div className="relative bg-white/10 backdrop-blur-md rounded-full p-4 border border-white/20">
-                  <ThunderboltFilled className="text-2xl" />
+
+              {/* Bolt icon */}
+              <div className="relative flex-shrink-0">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl" />
+                <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/20">
+                  <ThunderboltFilled className="text-2xl text-white" />
                 </div>
               </div>
             </div>
-            
+
             {/* Location */}
-            <div className="flex items-center gap-2 text-gray-300 mb-8">
-              <EnvironmentOutlined className="text-lg" />
-              <span className="text-sm font-medium">
-                {location?.name || "Detecting location..."}
+            <div className="flex items-center gap-2 text-gray-400 mb-6">
+              <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
+                <EnvironmentOutlined className="text-xs" />
+              </div>
+              <span className="text-sm truncate max-w-[200px]">
+                {location?.name || 'Detecting location...'}
               </span>
             </div>
 
-            {/* Quick Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            {/* Quick stats row inside hero */}
+            <div className="grid grid-cols-3 gap-2 mb-5">
+              <div className="bg-white/5 rounded-xl p-2.5 text-center border border-white/10">
+                <p className="text-lg font-bold text-white">{nearbyStationsCount}</p>
+                <p className="text-xs text-gray-500">Nearby</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-2.5 text-center border border-white/10">
+                <p className="text-lg font-bold text-white">{activeBooking ? '1' : '0'}</p>
+                <p className="text-xs text-gray-500">Active</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-2.5 text-center border border-white/10">
+                <p className="text-lg font-bold text-white">{totalSwaps}</p>
+                <p className="text-xs text-gray-500">Swaps</p>
+              </div>
+            </div>
+
+            {/* Action Buttons - keep exact onClick handlers */}
+            <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => {
-                  // Scroll to stations section
                   const stationsSection = document.getElementById('stations-section');
                   if (stationsSection) {
                     stationsSection.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="flex-1 bg-white text-gray-900 px-6 py-3.5 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group"
-              >
-                <SearchOutlined className="text-lg group-hover:scale-110 transition-transform" />
+                className="flex items-center justify-center gap-2 py-3.5 rounded-xl
+                  bg-white text-gray-900 text-sm font-semibold
+                  hover:bg-gray-100 transition-all duration-200
+                  shadow-lg hover:shadow-xl group">
+                <SearchOutlined className="group-hover:scale-110 transition-transform" />
                 Find Station
               </button>
-              
+
               <button
                 onClick={() => router.push(subscription ? routes.MY_PLAN : routes.PRICING)}
-                className="flex-1 bg-white/10 backdrop-blur-sm text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-white/20 transition-all duration-200 border border-white/20 flex items-center justify-center gap-2 group"
-              >
-                <CreditCardOutlined className="text-lg group-hover:scale-110 transition-transform" />
+                className="flex items-center justify-center gap-2 py-3.5 rounded-xl
+                  bg-white/10 backdrop-blur-sm text-white text-sm font-semibold
+                  hover:bg-white/20 transition-all duration-200 border border-white/20 group">
+                <CreditCardOutlined className="group-hover:scale-110 transition-transform" />
                 View Plan
               </button>
             </div>
