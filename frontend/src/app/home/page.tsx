@@ -25,6 +25,30 @@ const Home = () => {
   const [location, setLocation] = useState<{ latitude?: number; longitude?: number; name: string }>({ 
     name: "loading..." 
   });
+  const [currentTip, setCurrentTip] = useState(0);
+
+  const swapTips = [
+    {
+      icon: '⚡',
+      title: 'Swap in under 2 minutes',
+      desc: 'Our stations are designed for quick and easy battery exchanges.',
+    },
+    {
+      icon: '📍',
+      title: 'Book before you arrive',
+      desc: 'Reserve your battery in advance to skip the wait.',
+    },
+    {
+      icon: '🔋',
+      title: 'Track your usage',
+      desc: 'Monitor your monthly swap limit in the My Plan section.',
+    },
+    {
+      icon: '💡',
+      title: 'Stay charged always',
+      desc: 'Plan your route around nearby swap stations for uninterrupted rides.',
+    },
+  ];
 
   const { user } = useAuthQuery();
   
@@ -52,6 +76,13 @@ const Home = () => {
     } else if ("geolocation" in navigator) {
       getLocation((data: any) => setLocation(data));
     }
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTip(prev => (prev + 1) % swapTips.length);
+    }, 4000);
+    return () => clearInterval(timer);
   }, []);
 
   // Calculate stats
@@ -293,6 +324,39 @@ const Home = () => {
             </div>
           </div>
         )}
+
+        {/* Swap Tips Carousel */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Did You Know?</h3>
+            <div className="flex gap-1">
+              {swapTips.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentTip(i)}
+                  className={`rounded-full transition-all duration-300 ${
+                    i === currentTip
+                      ? 'w-4 h-1.5 bg-gray-900'
+                      : 'w-1.5 h-1.5 bg-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex items-start gap-3 transition-all duration-300">
+            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0 text-xl border border-gray-100">
+              {swapTips[currentTip].icon}
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900 mb-0.5">
+                {swapTips[currentTip].title}
+              </p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                {swapTips[currentTip].desc}
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Stations Section - Redesigned */}
         <div id="stations-section" className="pt-6 border-t border-gray-200">
