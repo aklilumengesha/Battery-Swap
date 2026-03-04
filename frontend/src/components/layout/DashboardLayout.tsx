@@ -44,8 +44,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const navItems = [
     { label: 'Home', route: routes.HOME, icon: HomeOutlined },
     { label: 'My Plan', route: routes.MY_PLAN, icon: CreditCardOutlined },
-    { label: 'History', route: routes.HISTORY, icon: ClockCircleOutlined },
-    { label: 'Profile', route: routes.PROFILE, icon: UserOutlined },
   ];
 
   const handleNavClick = () => {
