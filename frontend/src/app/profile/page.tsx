@@ -14,13 +14,31 @@ import {
 } from "@ant-design/icons";
 
 const Profile = () => {
-  const { user, signout } = useAuthQuery();
+  const { user, signout, updateProfile } = useAuthQuery();
   const [editing, setEditing] = useState(false);
   const [nameValue, setNameValue] = useState(user?.name || '');
   const [phoneValue, setPhoneValue] = useState(user?.phone || '');
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const handleLogout = () => {
     signout();
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSaveSuccess(false);
+    try {
+      await updateProfile({ name: nameValue, phone: phoneValue });
+      setSaveSuccess(true);
+      setEditing(false);
+      // Clear success after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -147,11 +165,46 @@ const Profile = () => {
           {/* Save button - only when editing */}
           {editing && (
             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-              <button className="w-full py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50">
-                Save Changes
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {saving ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
               </button>
             </div>
           )}
+        </div>
+
+        {/* Success message */}
+        {saveSuccess && (
+          <div className="flex items-center gap-2 px-4 py-3 bg-green-50 rounded-xl border border-green-100 text-sm text-green-700 font-medium">
+            <CheckOutlined className="text-green-500" />
+            Profile updated successfully
+          </div>
+        )}
+
+        {/* Sign Out Card */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-4 px-6 py-4 group hover:bg-red-50 transition-colors duration-200"
+          >
+            <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition-colors">
+              <LogoutOutlined className="text-red-500" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-red-500">Sign Out</p>
+              <p className="text-xs text-red-400">Sign out from your account</p>
+            </div>
+          </button>
         </div>
       </div>
     </DashboardLayout>
