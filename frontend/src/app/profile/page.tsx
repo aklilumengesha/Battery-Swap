@@ -3,243 +3,319 @@
 import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useAuthQuery } from "../../features/auth";
-import { Button } from "../../components";
+import { useBookings } from "../../features/stations";
 import {
   UserOutlined,
   MailOutlined,
   PhoneOutlined,
   EditOutlined,
   LogoutOutlined,
-  CheckOutlined,
 } from "@ant-design/icons";
 
 const Profile = () => {
   const { user, signout, updateProfile } = useAuthQuery();
-  const [editing, setEditing] = useState(false);
+  const { data: bookings = [] } = useBookings();
+  
+  const [isEditing, setIsEditing] = useState(false);
   const [nameValue, setNameValue] = useState(user?.name || '');
   const [phoneValue, setPhoneValue] = useState(user?.phone || '');
-  const [saving, setSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [saveError, setSaveError] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // Calculate stats
+  const totalSwaps = bookings.filter((b: any) => b.is_collected).length;
+  const activeBooking = bookings.find((b: any) => !b.is_collected);
 
   useEffect(() => {
-    if (user?.name && !editing) {
+    if (user?.name && !isEditing) {
       setNameValue(user.name);
     }
-    if (user?.phone && !editing) {
+    if (user?.phone && !isEditing) {
       setPhoneValue(user.phone || '');
     }
-  }, [user?.name, user?.phone, editing]);
-
-  const handleLogout = () => {
-    signout();
-  };
+  }, [user?.name, user?.phone, isEditing]);
 
   const handleSave = async () => {
-    setSaving(true);
-    setSaveSuccess(false);
-    setSaveError('');
+    setIsUpdating(true);
+    setSuccessMsg('');
+    setErrorMsg('');
     try {
       await updateProfile({
         name: nameValue,
         phone: phoneValue,
-        // Do NOT send vehicle - it is optional
       });
-      // If we reach here, mutation succeeded
-      // (errors throw and are caught below)
-      setSaveSuccess(true);
-      setEditing(false);
-      setTimeout(() => setSaveSuccess(false), 3000);
+      setSuccessMsg('Profile updated successfully');
+      setIsEditing(false);
+      setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err: any) {
-      // Extract the most readable error message
-      const errorMsg = err?.response?.data?.message ||
-                      err?.message ||
-                      'Update failed. Please try again.';
-      setSaveError(errorMsg);
+      const errorMessage = err?.response?.data?.message ||
+                          err?.message ||
+                          'Update failed. Please try again.';
+      setErrorMsg(errorMessage);
     } finally {
-      setSaving(false);
+      setIsUpdating(false);
     }
   };
 
   return (
     <DashboardLayout title="Profile">
-      <div className="max-w-2xl mx-auto space-y-4">
-        {/* Profile Header Card */}
-        <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-3xl p-8 text-white overflow-hidden">
-          {/* Background glows */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
-          
-          <div className="relative z-10 flex items-center gap-6">
-            {/* Avatar */}
-            <div className="relative flex-shrink-0">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-600 to-gray-800 border-2 border-white/20 flex items-center justify-center text-3xl font-bold text-white shadow-xl">
-                {(nameValue || user?.name)?.charAt(0).toUpperCase() || 'U'}
-              </div>
-              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-400 border-2 border-gray-900" />
-            </div>
-            
-            {/* Name and info */}
-            <div className="flex-1 min-w-0">
-              <h2 className="text-2xl font-bold text-white truncate">
-                {nameValue || user?.name || 'User'}
-              </h2>
-              <p className="text-gray-400 text-sm mt-0.5 truncate">
-                {user?.email || ''}
-              </p>
-              <span className="inline-flex items-center mt-2 px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white/80 border border-white/10 capitalize">
-                {user?.user_type || 'Consumer'}
-              </span>
-              {user?.date_joined && (
-                <p className="text-xs text-gray-500 mt-3">
-                  Member since {new Date(user.date_joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+      <div className="w-full">
+        {/* TWO COLUMN GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* LEFT COLUMN — Profile card 1/3 width */}
+          <div className="space-y-5">
+            {/* Profile Hero Card */}
+            <div className="relative bg-gradient-to-br
+              from-gray-900 via-gray-800 to-gray-900
+              rounded-3xl p-6 text-white overflow-hidden">
+              {/* Glow effects */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10 flex flex-col items-center text-center">
+                {/* Avatar */}
+                <div className="relative mb-4">
+                  <div className="w-20 h-20 rounded-2xl
+                    bg-white/10 border border-white/20
+                    flex items-center justify-center
+                    text-3xl font-bold text-white">
+                    {user?.name?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                  {/* Online dot */}
+                  <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-400 border-2 border-gray-900">
+                    <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-60" />
+                  </span>
+                </div>
+
+                {/* Name */}
+                <h2 className="text-xl font-bold text-white mb-1">
+                  {user?.name || 'User'}
+                </h2>
+
+                {/* Email */}
+                <p className="text-gray-400 text-sm mb-3 truncate max-w-full px-2">
+                  {user?.email}
                 </p>
-              )}
-            </div>
-          </div>
-        </div>
 
-        {/* Account Information Card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          {/* Card header */}
-          <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-gray-900">Account Information</h3>
-            <button
-              onClick={() => {
-                setEditing(!editing);
-                setSaveError('');
-                setSaveSuccess(false);
-                // Reset values when cancelling
-                if (editing) {
-                  setNameValue(user?.name || '');
-                  setPhoneValue(user?.phone || '');
-                }
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors border border-gray-200"
-            >
-              <EditOutlined />
-              {editing ? 'Cancel' : 'Edit'}
-            </button>
-          </div>
+                {/* Account type badge */}
+                <span className="px-3 py-1.5 rounded-full
+                  text-xs font-semibold
+                  bg-white/10 border border-white/20 text-white capitalize">
+                  {user?.user_type || 'Consumer'}
+                </span>
 
-          {/* Fields */}
-          <div className="divide-y divide-gray-50">
-            {/* Name */}
-            <div className="px-6 py-4 flex items-center gap-4">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                <UserOutlined className="text-blue-500" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-gray-400 mb-1">Full Name</p>
-                {editing ? (
-                  <input
-                    type="text"
-                    value={nameValue}
-                    onChange={(e) => setNameValue(e.target.value)}
-                    className="w-full text-sm font-medium text-gray-900 border-b-2 border-gray-900 outline-none pb-0.5 bg-transparent"
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-900">{user?.name || 'Not set'}</p>
-                )}
+                {/* Stats row */}
+                <div className="relative z-10 grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-white/10 w-full">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">
+                      {totalSwaps || 0}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">Total Swaps</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">
+                      {activeBooking ? '1' : '0'}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">Active Booking</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Email - always read only */}
-            <div className="px-6 py-4 flex items-center gap-4">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
-                <MailOutlined className="text-purple-500" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-gray-400 mb-1">Email Address</p>
-                <p className="text-sm font-medium text-gray-900 truncate">{user?.email || 'Not set'}</p>
-                <span className="text-xs text-green-500 font-medium">✓ Verified</span>
-              </div>
-            </div>
-
-            {/* Phone */}
-            <div className="px-6 py-4 flex items-center gap-4">
-              <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
-                <PhoneOutlined className="text-green-500" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-gray-400 mb-1">Phone Number</p>
-                {editing ? (
-                  <input
-                    type="tel"
-                    value={phoneValue}
-                    onChange={(e) => setPhoneValue(e.target.value)}
-                    placeholder="Add phone number"
-                    className="w-full text-sm font-medium text-gray-900 border-b-2 border-gray-900 outline-none pb-0.5 bg-transparent placeholder:text-gray-300"
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-900">{user?.phone || 'Not set'}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Account Type - always read only */}
-            <div className="px-6 py-4 flex items-center gap-4">
-              <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                <UserOutlined className="text-orange-500" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-gray-400 mb-1">Account Type</p>
-                <p className="text-sm font-medium text-gray-900 capitalize">{user?.user_type || 'Consumer'}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Save button - only when editing */}
-          {editing && (
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+            {/* Sign Out Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm p-5">
               <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                onClick={signout}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl
+                  border border-red-200 text-red-500 text-sm font-medium
+                  hover:bg-red-50 transition-colors"
               >
-                {saving ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  'Save Changes'
-                )}
+                <LogoutOutlined />
+                Sign Out
               </button>
             </div>
-          )}
-        </div>
-
-        {/* Success message */}
-        {saveSuccess && (
-          <div className="flex items-center gap-2 px-4 py-3 bg-green-50 rounded-xl border border-green-100">
-            <span className="text-green-500">✓</span>
-            <p className="text-sm text-green-700 font-medium">Profile updated successfully</p>
           </div>
-        )}
 
-        {/* Error message */}
-        {saveError && (
-          <div className="flex items-center gap-2 px-4 py-3 bg-red-50 rounded-xl border border-red-100">
-            <span className="text-red-500">✕</span>
-            <p className="text-sm text-red-600 font-medium">{saveError}</p>
+          {/* RIGHT COLUMN — Account info 2/3 width */}
+          <div className="lg:col-span-2 space-y-5">
+            {/* Account Information Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-gray-900">Account Information</h3>
+                <button
+                  onClick={() => {
+                    setIsEditing(!isEditing);
+                    setErrorMsg('');
+                    setSuccessMsg('');
+                    if (isEditing) {
+                      setNameValue(user?.name || '');
+                      setPhoneValue(user?.phone || '');
+                    }
+                  }}
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                    isEditing
+                      ? 'bg-gray-100 text-gray-600'
+                      : 'bg-gray-900 text-white'
+                  }`}
+                >
+                  {isEditing ? 'Cancel' : 'Edit Profile'}
+                </button>
+              </div>
+
+              {/* Form fields - 2 column grid inside */}
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Name field */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold
+                    text-gray-500 uppercase tracking-wider">
+                    Full Name
+                  </label>
+                  {isEditing ? (
+                    <input
+                      value={nameValue}
+                      onChange={e => setNameValue(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl
+                        border border-gray-200 text-sm
+                        text-gray-900 bg-gray-50
+                        focus:outline-none focus:border-gray-400
+                        transition-colors"
+                    />
+                  ) : (
+                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 border border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">
+                        {user?.name || '—'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Email field */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold
+                    text-gray-500 uppercase tracking-wider">
+                    Email Address
+                  </label>
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 border border-gray-100">
+                    <p className="text-sm font-medium text-gray-900 flex-1 truncate">
+                      {user?.email || '—'}
+                    </p>
+                    <span className="text-xs text-green-600
+                      bg-green-50 px-2 py-0.5 rounded-full
+                      font-medium flex-shrink-0">
+                      ✓ Verified
+                    </span>
+                  </div>
+                </div>
+
+                {/* Phone field */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold
+                    text-gray-500 uppercase tracking-wider">
+                    Phone Number
+                  </label>
+                  {isEditing ? (
+                    <input
+                      value={phoneValue}
+                      onChange={e => setPhoneValue(e.target.value)}
+                      placeholder="Enter phone number"
+                      className="w-full px-4 py-3 rounded-xl
+                        border border-gray-200 text-sm
+                        text-gray-900 bg-gray-50
+                        focus:outline-none focus:border-gray-400
+                        transition-colors"
+                    />
+                  ) : (
+                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 border border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">
+                        {user?.phone || 'Not provided'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Account Type field */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold
+                    text-gray-500 uppercase tracking-wider">
+                    Account Type
+                  </label>
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 border border-gray-100">
+                    <p className="text-sm font-medium text-gray-900 capitalize">
+                      {user?.user_type || 'Consumer'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Save button - only when editing */}
+              {isEditing && (
+                <div className="px-6 pb-6">
+                  <button
+                    onClick={handleSave}
+                    disabled={isUpdating}
+                    className="w-full py-3.5 rounded-xl
+                      bg-gray-900 text-white text-sm font-semibold
+                      hover:bg-gray-800
+                      disabled:opacity-50
+                      transition-colors"
+                  >
+                    {isUpdating ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Success/Error messages */}
+            {successMsg && (
+              <div className="px-4 py-3 rounded-xl
+                bg-green-50 border border-green-100
+                text-sm text-green-600">
+                ✓ {successMsg}
+              </div>
+            )}
+
+            {errorMsg && (
+              <div className="px-4 py-3 rounded-xl
+                bg-red-50 border border-red-100
+                text-sm text-red-600">
+                ✗ {errorMsg}
+              </div>
+            )}
+
+            {/* Security Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-50">
+                <h3 className="text-sm font-semibold text-gray-900">Security</h3>
+              </div>
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Password</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Last updated recently</p>
+                  </div>
+                  <button className="text-xs text-gray-900 font-semibold underline underline-offset-2 hover:text-gray-600
+                    transition-colors">
+                    Change
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Two Factor Auth</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Not enabled</p>
+                  </div>
+                  <button className="text-xs text-gray-900 font-semibold underline underline-offset-2 hover:text-gray-600
+                    transition-colors">
+                    Enable
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-
-        {/* Sign Out Card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-6 py-4 group hover:bg-red-50 transition-colors duration-200"
-          >
-            <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition-colors">
-              <LogoutOutlined className="text-red-500" />
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-semibold text-red-500">Sign Out</p>
-              <p className="text-xs text-red-400">Sign out from your account</p>
-            </div>
-          </button>
         </div>
       </div>
     </DashboardLayout>
