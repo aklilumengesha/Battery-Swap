@@ -359,7 +359,7 @@ const Home = () => {
         </div>
 
         {/* Stations Section - Redesigned */}
-        <div id="stations-section" className="pt-6 border-t border-gray-200">
+        <div id="stations-section" className="pt-2">
           {/* Section Header */}
           <div className="flex items-center justify-between mb-4">
             <div>
