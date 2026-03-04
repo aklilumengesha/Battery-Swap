@@ -23,9 +23,13 @@ const Profile = () => {
   const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
-    if (user?.name) setNameValue(user.name);
-    if (user?.phone) setPhoneValue(user.phone);
-  }, [user]);
+    if (user?.name && !editing) {
+      setNameValue(user.name);
+    }
+    if (user?.phone && !editing) {
+      setPhoneValue(user.phone || '');
+    }
+  }, [user?.name, user?.phone, editing]);
 
   const handleLogout = () => {
     signout();
@@ -70,7 +74,7 @@ const Profile = () => {
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-600 to-gray-800 border-2 border-white/20 flex items-center justify-center text-3xl font-bold text-white shadow-xl">
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
+                {(nameValue || user?.name)?.charAt(0).toUpperCase() || 'U'}
               </div>
               <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-400 border-2 border-gray-900" />
             </div>
@@ -78,7 +82,7 @@ const Profile = () => {
             {/* Name and info */}
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold text-white truncate">
-                {editing ? nameValue || user?.name || 'User' : user?.name || 'User'}
+                {nameValue || user?.name || 'User'}
               </h2>
               <p className="text-gray-400 text-sm mt-0.5 truncate">
                 {user?.email || ''}
