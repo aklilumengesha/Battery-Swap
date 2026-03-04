@@ -165,100 +165,149 @@ const MyPlanPage = () => {
   return (
     <DashboardLayout title="My Plan">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Section A: Current Plan Card */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg mb-8 border border-gray-100">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left: Plan Details */}
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <CrownFilled className="text-white text-2xl" />
+        {/* Main Subscription Card */}
+        <div className="relative bg-gradient-to-br
+          from-gray-900 via-gray-800 to-gray-900
+          rounded-3xl p-6 text-white overflow-hidden mb-4">
+          {/* Background glows */}
+          <div className="absolute top-0 right-0 w-48 h-48
+            bg-purple-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-32 h-32
+            bg-blue-500/10 rounded-full blur-3xl" />
+
+          <div className="relative z-10">
+            {/* Top: Plan name + Active badge */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl
+                  bg-white/10 border border-white/20
+                  flex items-center justify-center">
+                  <CrownFilled className="text-yellow-400" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900">
+                  <p className="text-gray-400 text-xs">Current Plan</p>
+                  <p className="text-white font-bold text-lg
+                    leading-tight">
                     {subscription.plan_details?.name} Plan
-                  </h2>
-                  <p className="text-gray-600">
-                    ${subscription.plan_details?.price}/month
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-4 mb-6">
-                <div className="flex items-center gap-3 text-gray-700">
-                  <CalendarOutlined className="text-lg text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Start Date</p>
-                    <p className="font-medium">{formatDate(subscription.start_date)}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 text-gray-700">
-                  <CalendarOutlined className="text-lg text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Renewal Date</p>
-                    <p className="font-medium">{formatDate(subscription.end_date)}</p>
-                  </div>
-                </div>
+              <span className="px-3 py-1.5 rounded-full
+                text-xs font-semibold
+                bg-green-500/20 text-green-400 border border-green-500/30">
+                ● Active
+              </span>
+            </div>
+
+            {/* Price */}
+            <div className="mb-6">
+              <p className="text-gray-400 text-xs mb-1">Monthly Price</p>
+              <p className="text-4xl font-bold text-white">
+                ${subscription.plan_details?.price}
+                <span className="text-lg text-gray-400 font-normal">/mo</span>
+              </p>
+            </div>
+
+            {/* Dates row */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="bg-white/5 rounded-xl p-3
+                border border-white/10">
+                <p className="text-gray-400 text-xs mb-1">Started</p>
+                <p className="text-white text-sm font-semibold">
+                  {new Date(subscription.start_date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
+                </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => router.push(routes.PRICING)}
-                  className="bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg"
-                >
-                  Change Plan
-                </button>
-                <button
-                  onClick={() => router.push(routes.PRICING)}
-                  className="bg-white text-black border-2 border-black px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all"
-                >
-                  Upgrade
-                </button>
+              <div className="bg-white/5 rounded-xl p-3
+                border border-white/10">
+                <p className="text-gray-400 text-xs mb-1">Renews</p>
+                <p className="text-white text-sm font-semibold">
+                  {new Date(subscription.end_date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
+                </p>
               </div>
             </div>
 
-            {/* Right: Circular Progress */}
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                {/* SVG Circle Progress */}
-                <svg className="w-56 h-56 transform -rotate-90">
-                  {/* Background circle */}
-                  <circle
-                    cx="112"
-                    cy="112"
-                    r="100"
-                    stroke="#E5E7EB"
-                    strokeWidth="12"
-                    fill="none"
-                  />
-                  {/* Progress circle */}
-                  <circle
-                    cx="112"
-                    cy="112"
-                    r="100"
-                    className={usageColors.ring}
-                    strokeWidth="12"
-                    fill="none"
-                    strokeDasharray={`${2 * Math.PI * 100}`}
-                    strokeDashoffset={`${2 * Math.PI * 100 * (1 - usagePercentage / 100)}`}
-                    strokeLinecap="round"
-                    style={{ transition: 'stroke-dashoffset 0.5s ease' }}
-                  />
-                </svg>
-                
-                {/* Center content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className={`text-5xl font-bold ${usageColors.text}`}>
-                    {swapsUsed}
-                  </div>
-                  <div className="text-gray-500 text-lg">
-                    of {swapsLimit}
-                  </div>
-                  <div className="text-sm text-gray-400 mt-1">
-                    swaps used
+            {/* Progress Ring + Usage */}
+            <div className="bg-white/5 rounded-2xl p-4
+              border border-white/10 mb-6">
+              <div className="flex items-center justify-between
+                mb-3">
+                <p className="text-gray-400 text-xs">Monthly Usage</p>
+                <p className="text-white text-xs font-semibold">
+                  {usagePercentage.toFixed(0)}% used
+                </p>
+              </div>
+
+              {/* Keep existing SVG progress ring */}
+              <div className="flex items-center justify-center">
+                <div className="relative">
+                  {/* SVG Circle Progress */}
+                  <svg className="w-56 h-56 transform -rotate-90">
+                    {/* Background circle */}
+                    <circle
+                      cx="112"
+                      cy="112"
+                      r="100"
+                      stroke="#E5E7EB"
+                      strokeWidth="12"
+                      fill="none"
+                    />
+                    {/* Progress circle */}
+                    <circle
+                      cx="112"
+                      cy="112"
+                      r="100"
+                      className={usageColors.ring}
+                      strokeWidth="12"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 100}`}
+                      strokeDashoffset={`${2 * Math.PI * 100 * (1 - usagePercentage / 100)}`}
+                      strokeLinecap="round"
+                      style={{ transition: 'stroke-dashoffset 0.5s ease' }}
+                    />
+                  </svg>
+                  
+                  {/* Center content */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className={`text-5xl font-bold ${usageColors.text}`}>
+                      {swapsUsed}
+                    </div>
+                    <div className="text-gray-500 text-lg">
+                      of {swapsLimit}
+                    </div>
+                    <div className="text-sm text-gray-400 mt-1">
+                      swaps used
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => router.push(routes.PRICING)}
+                className="py-3 rounded-xl bg-white text-gray-900 text-sm font-semibold
+                  hover:bg-gray-100 transition-colors">
+                Change Plan
+              </button>
+
+              <button
+                onClick={() => router.push(routes.PRICING)}
+                className="py-3 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500
+                  text-white text-sm font-semibold
+                  hover:opacity-90 transition-opacity">
+                Upgrade ↑
+              </button>
             </div>
           </div>
         </div>
