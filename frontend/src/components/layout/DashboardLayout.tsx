@@ -175,7 +175,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
                 {/* Dropdown Panel */}
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                  <div className="dropdown-enter absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
                     {/* User info header */}
                     <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
                       <p className="text-sm font-semibold text-gray-900">
