@@ -110,7 +110,13 @@ const base = async <T = any>(
     } else {
       // Refresh failed - clear session and redirect to signin
       console.log('[API] Refresh failed, clearing session');
+      
+      // Clear all auth data
       sessionStorage.clear();
+      
+      // Set flag AFTER clear so AuthLayout knows this is a forced redirect not voluntary
+      sessionStorage.setItem('authFailure', 'true');
+      
       window.location.href = '/auth/signin';
       throw new Error('Session expired. Please sign in again.');
     }

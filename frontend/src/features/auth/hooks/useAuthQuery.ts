@@ -206,6 +206,9 @@ export const useAuthQuery = () => {
     // Clear all queries
     queryClient.clear();
     
+    // Set flag so AuthLayout does not redirect back to home
+    sessionStorage.setItem('authFailure', 'true');
+    
     message.success("Signed out successfully!");
     window.location.href = routes.SIGNIN;
   };
