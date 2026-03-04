@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,6 +10,7 @@ import {
   UserOutlined,
   EnvironmentOutlined,
   ThunderboltFilled,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { useAuthQuery } from "../../features/auth";
 import { useMySubscription } from "../../features/subscription/hooks/useSubscriptionQuery";
@@ -33,6 +34,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const { user } = useAuthQuery();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: subscription } = useMySubscription();
 
   useEffect(() => {
@@ -40,6 +43,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [pathname]);
 
   const navItems = [
     { label: 'Home', route: routes.HOME, icon: HomeOutlined },
