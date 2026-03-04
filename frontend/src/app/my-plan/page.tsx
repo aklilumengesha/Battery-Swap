@@ -362,67 +362,92 @@ const MyPlanPage = () => {
           </div>
         </div>
 
-        {/* Section C: Plan Features */}
-        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Plan Features</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Plan Features Card */}
+        <div className="bg-white rounded-2xl border
+          border-gray-100 shadow-sm overflow-hidden mb-4">
+          {/* Card Header */}
+          <div className="px-5 py-4 border-b border-gray-50
+            flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-gray-900">Plan Features</h3>
+            <span className="text-xs text-gray-400">
+              {subscription.plan_details?.name} Plan
+            </span>
+          </div>
+
+          {/* Features List */}
+          <div className="p-5 space-y-4">
+            {/* Swap limit from API */}
             <div className="flex items-center gap-3">
-              <CheckCircleFilled className="text-green-500 text-xl flex-shrink-0" />
-              <span className="text-gray-700">
+              <div className="w-7 h-7 rounded-lg bg-green-50
+                flex items-center justify-center flex-shrink-0">
+                <CheckCircleFilled className="text-green-500 text-xs" />
+              </div>
+              <span className="text-sm text-gray-700">
                 {swapsLimit} battery swaps per month
               </span>
             </div>
+
+            {/* Hardcoded features */}
             <div className="flex items-center gap-3">
-              <CheckCircleFilled className="text-green-500 text-xl flex-shrink-0" />
-              <span className="text-gray-700">Real-time station availability</span>
+              <div className="w-7 h-7 rounded-lg bg-green-50
+                flex items-center justify-center flex-shrink-0">
+                <CheckCircleFilled className="text-green-500 text-xs" />
+              </div>
+              <span className="text-sm text-gray-700">Real-time station availability</span>
             </div>
+
             <div className="flex items-center gap-3">
-              <CheckCircleFilled className="text-green-500 text-xl flex-shrink-0" />
-              <span className="text-gray-700">Mobile app access</span>
+              <div className="w-7 h-7 rounded-lg bg-green-50
+                flex items-center justify-center flex-shrink-0">
+                <CheckCircleFilled className="text-green-500 text-xs" />
+              </div>
+              <span className="text-sm text-gray-700">Mobile app access</span>
             </div>
+
             <div className="flex items-center gap-3">
-              <CheckCircleFilled className="text-green-500 text-xl flex-shrink-0" />
-              <span className="text-gray-700">Email notifications</span>
+              <div className="w-7 h-7 rounded-lg bg-green-50
+                flex items-center justify-center flex-shrink-0">
+                <CheckCircleFilled className="text-green-500 text-xs" />
+              </div>
+              <span className="text-sm text-gray-700">Email notifications</span>
             </div>
+
+            {/* Conditional premium features */}
             {subscription.plan_details?.priority_support && (
               <>
                 <div className="flex items-center gap-3">
-                  <CheckCircleFilled className="text-green-500 text-xl flex-shrink-0" />
-                  <span className="text-gray-700 flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-green-50
+                    flex items-center justify-center flex-shrink-0">
+                    <CheckCircleFilled className="text-green-500 text-xs" />
+                  </div>
+                  <span className="text-sm text-gray-700 flex items-center gap-2">
                     Priority support
                     <span className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
                       Premium
                     </span>
                   </span>
                 </div>
+
                 <div className="flex items-center gap-3">
-                  <CheckCircleFilled className="text-green-500 text-xl flex-shrink-0" />
-                  <span className="text-gray-700">24/7 customer service</span>
+                  <div className="w-7 h-7 rounded-lg bg-green-50
+                    flex items-center justify-center flex-shrink-0">
+                    <CheckCircleFilled className="text-green-500 text-xs" />
+                  </div>
+                  <span className="text-sm text-gray-700">24/7 customer service</span>
                 </div>
               </>
             )}
           </div>
         </div>
 
-        {/* Section D: Danger Zone */}
-        <div className="bg-red-50 rounded-xl p-8 border-2 border-red-200">
-          <div className="flex items-start gap-4">
-            <ExclamationCircleOutlined className="text-red-600 text-2xl flex-shrink-0 mt-1" />
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-red-900 mb-2">Danger Zone</h3>
-              <p className="text-red-700 mb-4">
-                Once you cancel your subscription, you will lose access to all premium features immediately.
-                This action cannot be undone.
-              </p>
-              <button
-                onClick={() => setShowCancelModal(true)}
-                className="bg-white text-red-600 border-2 border-red-600 px-6 py-2.5 rounded-lg font-semibold hover:bg-red-600 hover:text-white transition-all"
-              >
-                Cancel Subscription
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Cancel Plan Button */}
+        <button
+          onClick={() => setShowCancelModal(true)}
+          className="w-full py-3 rounded-2xl
+            border border-red-200 text-red-500 text-sm font-medium
+            hover:bg-red-50 transition-colors mb-4">
+          Cancel Subscription
+        </button>
       </div>
 
       {/* Cancel Confirmation Modal */}
