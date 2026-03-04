@@ -15,7 +15,6 @@ import {
   ThunderboltFilled,
   EnvironmentOutlined,
   ClockCircleOutlined,
-  ReloadOutlined,
   ArrowRightOutlined,
   SearchOutlined,
   CreditCardOutlined,
@@ -171,6 +170,25 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        {/* Active Booking Alert */}
+        {activeBooking && (
+          <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-4 mb-4 flex items-center gap-3 shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <ThunderboltFilled className="text-white text-sm" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white text-sm font-semibold">Active Booking</p>
+              <p className="text-orange-100 text-xs mt-0.5">You have a battery swap pending collection</p>
+            </div>
+            <button
+              onClick={() => router.push(routes.HISTORY)}
+              className="flex-shrink-0 px-3 py-1.5 rounded-xl bg-white/20 border border-white/30 text-white text-xs font-semibold hover:bg-white/30 transition-colors whitespace-nowrap"
+            >
+              View →
+            </button>
+          </div>
+        )}
 
         {/* Subscription Banner */}
         {!subscriptionLoading && (
