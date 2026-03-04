@@ -231,19 +231,24 @@ const Order = () => {
             </div>
 
             {/* Navigate to Station Button */}
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://maps.google.com/?q=${station?.latitude},${station?.longitude}`}
-              className="flex items-center justify-center gap-2
-                w-full py-3 rounded-xl
-                bg-gray-900 text-white text-sm font-medium
-                hover:bg-gray-800
-                transition-colors"
-            >
-              <EnvironmentOutlined />
-              Navigate to Station
-            </a>
+            {station?.latitude && station?.longitude && (
+              <a
+                href={`https://maps.google.com/?q=${station.latitude},${station.longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2
+                  w-full py-4 rounded-2xl
+                  bg-gray-900 text-white text-sm font-semibold
+                  hover:bg-gray-800 active:scale-[0.98]
+                  transition-all duration-200 shadow-sm"
+              >
+                <EnvironmentOutlined />
+                Navigate to Station
+              </a>
+            )}
+
+            {/* Bottom padding */}
+            <div className="h-4" />
           </>
         )}
       </div>
