@@ -101,9 +101,9 @@ const Home = () => {
 
   return (
     <DashboardLayout title="Home" location={location}>
-      <div className="max-w-2xl mx-auto space-y-0 pb-6">
+      <div className="w-full px-6 space-y-4">
         {/* Hero Card */}
-        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-7 text-white overflow-hidden shadow-2xl mb-4">
+        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-3xl p-8 text-white overflow-hidden shadow-2xl mb-5">
           {/* Animated background glows */}
           <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-blue-500/15 via-purple-500/10 to-transparent rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-indigo-500/15 via-blue-500/10 to-transparent rounded-full blur-3xl" />
@@ -153,8 +153,8 @@ const Home = () => {
             </div>
 
             {/* Stats row */}
-            <div className="grid grid-cols-3 gap-2 mb-5">
-              <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 hover:bg-white/10 transition-colors cursor-default">
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="bg-white/5 rounded-xl p-4 text-center border border-white/10 hover:bg-white/10 transition-colors cursor-default">
                 <p className="text-2xl font-bold text-white mb-0.5">{nearbyStationsCount}</p>
                 <div className="flex items-center justify-center gap-1">
                   <EnvironmentOutlined className="text-blue-400 text-xs" />
@@ -163,7 +163,7 @@ const Home = () => {
               </div>
               <div 
                 onClick={() => activeBooking && router.push(routes.HISTORY)}
-                className={`bg-white/5 rounded-xl p-3 text-center border transition-colors ${
+                className={`bg-white/5 rounded-xl p-4 text-center border transition-colors ${
                   activeBooking 
                     ? 'border-orange-400/30 bg-orange-500/10 cursor-pointer hover:bg-orange-500/20' 
                     : 'border-white/10 cursor-default'
@@ -181,7 +181,7 @@ const Home = () => {
                   <p className="text-xs text-gray-300 font-medium">Active</p>
                 </div>
               </div>
-              <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 cursor-default">
+              <div className="bg-white/5 rounded-xl p-4 text-center border border-white/10 cursor-default">
                 <p className="text-2xl font-bold text-white mb-0.5">{totalSwaps}</p>
                 <div className="flex items-center justify-center gap-1">
                   <ClockCircleOutlined className="text-purple-400 text-xs" />
@@ -191,7 +191,7 @@ const Home = () => {
             </div>
 
             {/* Action Buttons - keep exact onClick handlers */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => {
                   const stationsSection = document.getElementById('stations-section');
@@ -199,7 +199,7 @@ const Home = () => {
                     stationsSection.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="flex items-center justify-center gap-2 py-3.5 rounded-xl
+                className="flex items-center justify-center gap-2 py-4 rounded-xl
                   bg-white text-gray-900 text-sm font-semibold
                   hover:bg-gray-100 transition-all duration-200
                   shadow-lg hover:shadow-xl group">
@@ -209,7 +209,7 @@ const Home = () => {
 
               <button
                 onClick={() => router.push(subscription ? routes.MY_PLAN : routes.PRICING)}
-                className="flex items-center justify-center gap-2 py-3.5 rounded-xl
+                className="flex items-center justify-center gap-2 py-4 rounded-xl
                   bg-white/10 backdrop-blur-sm text-white text-sm font-semibold
                   hover:bg-white/20 transition-all duration-200 border border-white/20 group">
                 <CreditCardOutlined className="group-hover:scale-110 transition-transform" />
@@ -221,8 +221,8 @@ const Home = () => {
 
         {/* Subscription Banner */}
         {!subscriptionLoading && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4">
-            <div className="p-5 flex items-center gap-4">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-5">
+            <div className="p-6 flex items-center gap-5">
               {/* Plan icon */}
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-sm">
                 <CrownFilled className="text-white text-lg" />
@@ -271,18 +271,18 @@ const Home = () => {
         {recentBooking && (
           <div 
             onClick={() => router.push(routes.ORDER_DETAILS(recentBooking.pk))}
-            className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4 cursor-pointer hover:shadow-md hover:border-gray-200 transition-all duration-200 active:scale-[0.99]"
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-5 cursor-pointer hover:shadow-md hover:border-gray-200 transition-all duration-200 active:scale-[0.99]"
           >
             {/* Card header */}
-            <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-gray-50">
+            <div className="px-6 pt-5 pb-4 flex items-center justify-between border-b border-gray-50">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Recent Booking</h3>
               <span className="text-xs text-gray-400 flex items-center gap-1">
                 View Details <ArrowRightOutlined className="text-xs" />
               </span>
             </div>
 
-            <div className="p-5">
-              <div className="flex items-center gap-4">
+            <div className="p-6">
+              <div className="flex items-center gap-5">
                 {/* Icon */}
                 <div className="relative flex-shrink-0">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center">
@@ -346,7 +346,7 @@ const Home = () => {
         )}
 
         {/* Swap Tips Carousel */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-4">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Did You Know?</h3>
             <div className="flex gap-1">
@@ -381,7 +381,7 @@ const Home = () => {
         {/* Stations Section - Redesigned */}
         <div id="stations-section" className="pt-2">
           {/* Section Header */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-lg font-bold text-gray-900">Nearby Stations</h2>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -438,7 +438,7 @@ const Home = () => {
               </button>
             </div>
           ) : stationList && stationList.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               {stationList.map((station: any, i: number) => (
                 <div
                   key={station.pk || i}

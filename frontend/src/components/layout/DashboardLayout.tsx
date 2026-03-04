@@ -257,7 +257,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       </nav>
 
       {/* Main Content */}
-      <main className="pt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="pt-24 w-full px-6 py-6">
         {children}
       </main>
     </div>
