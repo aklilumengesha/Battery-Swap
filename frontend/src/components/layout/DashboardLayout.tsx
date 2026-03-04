@@ -37,6 +37,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: subscription } = useMySubscription();
+  const { signout } = useAuthQuery();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -171,6 +172,63 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                     ▾
                   </span>
                 </button>
+
+                {/* Dropdown Panel */}
+                {dropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                    {/* User info header */}
+                    <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900">
+                        {user?.name || 'User'}
+                      </p>
+                      <p className="text-xs text-gray-400 truncate mt-0.5">
+                        {user?.email || ''}
+                      </p>
+                    </div>
+
+                    {/* Menu items */}
+                    <div className="py-1.5">
+                      <Link
+                        href={routes.HISTORY}
+                        onClick={() => setDropdownOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                          pathname === routes.HISTORY
+                            ? 'bg-gray-50 text-gray-900 font-semibold'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        }`}
+                      >
+                        <ClockCircleOutlined className="text-gray-400" />
+                        History
+                      </Link>
+                      <Link
+                        href={routes.PROFILE}
+                        onClick={() => setDropdownOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                          pathname === routes.PROFILE
+                            ? 'bg-gray-50 text-gray-900 font-semibold'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        }`}
+                      >
+                        <UserOutlined className="text-gray-400" />
+                        Profile
+                      </Link>
+                    </div>
+
+                    {/* Sign out */}
+                    <div className="border-t border-gray-100 py-1.5">
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          signout();
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        <LogoutOutlined />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
