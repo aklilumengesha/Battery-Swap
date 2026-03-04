@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useAuthQuery } from "../../features/auth";
 import { Button } from "../../components";
@@ -20,6 +20,11 @@ const Profile = () => {
   const [phoneValue, setPhoneValue] = useState(user?.phone || '');
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    if (user?.name) setNameValue(user.name);
+    if (user?.phone) setPhoneValue(user.phone);
+  }, [user]);
 
   const handleLogout = () => {
     signout();
@@ -62,7 +67,7 @@ const Profile = () => {
             {/* Name and info */}
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold text-white truncate">
-                {user?.name || 'User'}
+                {editing ? nameValue || user?.name || 'User' : user?.name || 'User'}
               </h2>
               <p className="text-gray-400 text-sm mt-0.5 truncate">
                 {user?.email || ''}
@@ -70,6 +75,11 @@ const Profile = () => {
               <span className="inline-flex items-center mt-2 px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white/80 border border-white/10 capitalize">
                 {user?.user_type || 'Consumer'}
               </span>
+              {user?.date_joined && (
+                <p className="text-xs text-gray-500 mt-3">
+                  Member since {new Date(user.date_joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                </p>
+              )}
             </div>
           </div>
         </div>
