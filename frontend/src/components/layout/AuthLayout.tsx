@@ -20,13 +20,36 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const hasAccessToken = Cache.checkItem("accessToken");
-    if (hasAccessToken && pathname && publicRoutes.includes(pathname)) {
+    const authFailure = sessionStorage.getItem('authFailure');
+    const isPublicPage = pathname && publicRoutes.includes(pathname);
+    const isProtectedPage = pathname && !publicRoutes.includes(pathname);
+
+    // If auth failed and we are on signin page
+    // DO NOT redirect back to home
+    // Just clear the flag and show signin
+    if (authFailure && isPublicPage) {
+      sessionStorage.removeItem('authFailure');
+      stopLoading();
+      return; // Stay on signin page
+    }
+
+    // Normal case: logged in user visits signin
+    // Redirect them home
+    if (hasAccessToken && isPublicPage && !authFailure) {
       router.push(routes.HOME);
-    } else if (!hasAccessToken && pathname && !publicRoutes.includes(pathname)) {
-      message.config({ maxCount: 1 });
+      stopLoading();
+      return;
+    }
+
+    // Not logged in and on protected page
+    // Redirect to signin
+    if (!hasAccessToken && isProtectedPage) {
       message.error("Login to continue!");
       router.push(routes.INITIAL);
+      stopLoading();
+      return;
     }
+
     stopLoading();
   }, [pathname]);
 
