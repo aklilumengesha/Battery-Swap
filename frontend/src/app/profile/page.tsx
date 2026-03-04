@@ -55,6 +55,104 @@ const Profile = () => {
             </div>
           </div>
         </div>
+
+        {/* Account Information Card */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          {/* Card header */}
+          <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-gray-900">Account Information</h3>
+            <button
+              onClick={() => {
+                setEditing(!editing);
+                // Reset values when cancelling
+                if (editing) {
+                  setNameValue(user?.name || '');
+                  setPhoneValue(user?.phone || '');
+                }
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors border border-gray-200"
+            >
+              <EditOutlined />
+              {editing ? 'Cancel' : 'Edit'}
+            </button>
+          </div>
+
+          {/* Fields */}
+          <div className="divide-y divide-gray-50">
+            {/* Name */}
+            <div className="px-6 py-4 flex items-center gap-4">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                <UserOutlined className="text-blue-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-gray-400 mb-1">Full Name</p>
+                {editing ? (
+                  <input
+                    type="text"
+                    value={nameValue}
+                    onChange={(e) => setNameValue(e.target.value)}
+                    className="w-full text-sm font-medium text-gray-900 border-b-2 border-gray-900 outline-none pb-0.5 bg-transparent"
+                  />
+                ) : (
+                  <p className="text-sm font-medium text-gray-900">{user?.name || 'Not set'}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Email - always read only */}
+            <div className="px-6 py-4 flex items-center gap-4">
+              <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+                <MailOutlined className="text-purple-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-gray-400 mb-1">Email Address</p>
+                <p className="text-sm font-medium text-gray-900 truncate">{user?.email || 'Not set'}</p>
+                <span className="text-xs text-green-500 font-medium">✓ Verified</span>
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="px-6 py-4 flex items-center gap-4">
+              <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                <PhoneOutlined className="text-green-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-gray-400 mb-1">Phone Number</p>
+                {editing ? (
+                  <input
+                    type="tel"
+                    value={phoneValue}
+                    onChange={(e) => setPhoneValue(e.target.value)}
+                    placeholder="Add phone number"
+                    className="w-full text-sm font-medium text-gray-900 border-b-2 border-gray-900 outline-none pb-0.5 bg-transparent placeholder:text-gray-300"
+                  />
+                ) : (
+                  <p className="text-sm font-medium text-gray-900">{user?.phone || 'Not set'}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Account Type - always read only */}
+            <div className="px-6 py-4 flex items-center gap-4">
+              <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+                <UserOutlined className="text-orange-500" />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs text-gray-400 mb-1">Account Type</p>
+                <p className="text-sm font-medium text-gray-900 capitalize">{user?.user_type || 'Consumer'}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Save button - only when editing */}
+          {editing && (
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+              <button className="w-full py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50">
+                Save Changes
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );
