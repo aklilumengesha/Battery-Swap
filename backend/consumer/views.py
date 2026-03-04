@@ -39,30 +39,54 @@ class ManageConsumer(APIView):
 
     def put(self, request, *args, **kwargs):
         try:
-            consumer = Consumer.objects.get(user=request.user)
-            user = User.objects.get(pk=request.user.pk)
-            user.name = request.data.get("name")
-            user.phone = request.data.get("phone")
-            consumer.vehicle = Vehicle.objects.get(pk=request.data.get("vehicle"))
+            user = request.user
+            
+            # Update name if provided
+            name = request.data.get("name")
+            if name is not None:
+                user.name = name
+            
+            # Update phone if provided
+            phone = request.data.get("phone")
+            if phone is not None:
+                user.phone = phone
+            
             user.save()
-            consumer.save()
-            return Response(status=status.HTTP_200_OK, data={"success": True})
-        except Consumer.DoesNotExist:
+            
+            # Update vehicle only if provided
+            vehicle_id = request.data.get("vehicle")
+            if vehicle_id is not None:
+                try:
+                    consumer = Consumer.objects.get(user=user)
+                    consumer.vehicle = Vehicle.objects.get(pk=vehicle_id)
+                    consumer.save()
+                except (Consumer.DoesNotExist, Vehicle.DoesNotExist):
+                    pass  # Skip vehicle update silently
+            
             return Response(
-                status=status.HTTP_404_NOT_FOUND,
-                data={
-                    "success": False,
-                    "message": "Consumer profile not found",
+                {
+                    "success": True,
+                    "message": "Profile updated successfully",
+                    "user": {
+                        "name": user.name,
+                        "email": user.email,
+                        "phone": user.phone,
+                        "user_type": user.user_type,
+                    }
                 },
+                status=status.HTTP_200_OK
             )
-        except Vehicle.DoesNotExist:
+        except Exception as e:
             return Response(
-                status=status.HTTP_404_NOT_FOUND,
-                data={
+                {
                     "success": False,
-                    "message": "Vehicle not found",
+                    "message": str(e)
                 },
+                status=status.HTTP_400_BAD_REQUEST
             )
+
+    def patch(self, request, *args, **kwargs):
+        return self.put(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         try:
