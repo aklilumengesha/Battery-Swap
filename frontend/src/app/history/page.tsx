@@ -11,6 +11,7 @@ const History = () => {
   const { data: bookings, isLoading: loadingBookings } = useBookings();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const filteredBookings = bookings?.filter(booking => {
     const matchesSearch = !searchQuery ||
@@ -160,68 +161,139 @@ const History = () => {
         {!loadingBookings && filteredBookings && filteredBookings.length > 0 && (
           <div className="space-y-3">
             {filteredBookings.map((booking: any, i: number) => (
-              <Link href={routes.ORDER_DETAILS(booking.pk)} key={i}>
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:border-gray-200 transition-all duration-200 cursor-pointer group">
-                  <div className="flex items-start gap-4">
-                    {/* Icon */}
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center flex-shrink-0 shadow-sm">
-                      <ThunderboltFilled className="text-white text-lg" />
+              <div
+                key={booking.pk}
+                onClick={() => setExpandedId(expandedId === booking.pk ? null : booking.pk)}
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5
+                  cursor-pointer select-none
+                  hover:shadow-md hover:border-gray-200
+                  transition-all duration-200"
+              >
+                <div className="flex items-start gap-4">
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <ThunderboltFilled className="text-white text-lg" />
+                  </div>
+
+                  {/* Main Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 transition-colors truncate">
+                          {booking.station?.name}
+                        </h3>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {booking.battery?.vehicle?.name} · {booking.battery?.company?.name}
+                        </p>
+                      </div>
+
+                      {/* Price */}
+                      <span className="text-sm font-bold text-gray-900 flex-shrink-0">
+                        ${booking.battery?.price}
+                      </span>
                     </div>
 
-                    {/* Main Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h3 className="text-sm font-semibold text-gray-900 group-hover:text-black transition-colors truncate">
-                            {booking.station?.name}
-                          </h3>
-                          <p className="text-xs text-gray-500 mt-0.5">
-                            {booking.battery?.vehicle?.name} · {booking.battery?.company?.name}
-                          </p>
-                        </div>
-
-                        {/* Price */}
-                        <span className="text-sm font-bold text-gray-900 flex-shrink-0">
-                          ${booking.battery?.price}
+                    {/* Bottom row */}
+                    <div className="flex items-center justify-between mt-3">
+                      {/* Date */}
+                      <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                        <ClockCircleOutlined />
+                        <span>
+                          {new Date(booking.booked_time).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
                         </span>
                       </div>
 
-                      {/* Bottom row */}
-                      <div className="flex items-center justify-between mt-3">
-                        {/* Date */}
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                          <ClockCircleOutlined />
-                          <span>
-                            {new Date(booking.booked_time).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric'
-                            })}
-                          </span>
-                        </div>
-
-                        {/* Status Badges */}
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                            booking.is_paid
-                              ? 'bg-green-50 text-green-600'
-                              : 'bg-yellow-50 text-yellow-600'
-                          }`}>
-                            {booking.is_paid ? 'Paid' : 'Unpaid'}
-                          </span>
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                            booking.is_collected
-                              ? 'bg-blue-50 text-blue-600'
-                              : 'bg-gray-50 text-gray-500'
-                          }`}>
-                            {booking.is_collected ? 'Collected' : 'Pending'}
-                          </span>
-                        </div>
+                      {/* Status Badges */}
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                          booking.is_paid
+                            ? 'bg-green-50 text-green-600'
+                            : 'bg-yellow-50 text-yellow-600'
+                        }`}>
+                          {booking.is_paid ? 'Paid' : 'Unpaid'}
+                        </span>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                          booking.is_collected
+                            ? 'bg-blue-50 text-blue-600'
+                            : 'bg-gray-50 text-gray-500'
+                        }`}>
+                          {booking.is_collected ? 'Collected' : 'Pending'}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </Link>
+
+                {/* Expand toggle at bottom of card */}
+                <div className="flex items-center justify-center mt-4 pt-3 border-t border-gray-50 gap-1">
+                  <span className="text-xs text-gray-400">
+                    {expandedId === booking.pk ? 'Less details' : 'More details'}
+                  </span>
+                  <span className={`text-gray-400 text-xs
+                    transition-transform duration-300 inline-block
+                    ${expandedId === booking.pk ? 'rotate-180' : 'rotate-0'}`}
+                  >
+                    ▾
+                  </span>
+                </div>
+
+                {/* Expanded detail section */}
+                {expandedId === booking.pk && (
+                  <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
+                    <div className="bg-gray-50 rounded-xl p-3">
+                      <p className="text-xs text-gray-400 mb-1">Booking ID</p>
+                      <p className="text-sm font-bold text-gray-900">#{booking.pk}</p>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-3">
+                      <p className="text-xs text-gray-400 mb-1">Expires</p>
+                      <p className="text-sm font-bold text-gray-900">
+                        {booking.expiry_time
+                          ? new Date(booking.expiry_time).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })
+                          : 'N/A'}
+                      </p>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-3">
+                      <p className="text-xs text-gray-400 mb-1">Battery Brand</p>
+                      <p className="text-sm font-bold text-gray-900 truncate">
+                        {booking.battery?.company?.name || 'N/A'}
+                      </p>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-3">
+                      <p className="text-xs text-gray-400 mb-1">Vehicle Type</p>
+                      <p className="text-sm font-bold text-gray-900 truncate">
+                        {booking.battery?.vehicle?.name || 'N/A'}
+                      </p>
+                    </div>
+
+                    {/* View full details button */}
+                    <div className="col-span-2">
+                      <Link
+                        href={`/order/${booking.pk}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full flex items-center justify-center gap-2
+                          py-2.5 rounded-xl
+                          bg-gray-900 text-white text-xs font-medium
+                          hover:bg-gray-800
+                          transition-colors"
+                      >
+                        View Full Details →
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
