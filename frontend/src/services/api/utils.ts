@@ -16,19 +16,35 @@ export const getFreshHeaders = (): Record<string, string> => {
     'Content-Type': 'application/json',
   };
 
-  if (Cache.checkItem('accessToken')) {
-    // Cache.getItem uses JSON.parse so token may have 
-    // extra quotes - clean it:
-    let token = Cache.getItem('accessToken');
+  // Read raw value from sessionStorage to avoid double-parsing issues
+  const raw = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
+  
+  if (raw) {
+    let token: string | null = null;
     
-    // Remove any surrounding quotes added by JSON.stringify
-    if (typeof token === 'string') {
+    try {
+      // Try to parse as JSON (in case it was JSON.stringify'd)
+      token = JSON.parse(raw);
+    } catch {
+      // If parse fails, use raw value (it's already a plain string)
+      token = raw;
+    }
+    
+    // Clean any extra quotes that might remain
+    if (typeof token === 'string' && token) {
       token = token.replace(/^"|"$/g, '').trim();
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+        
+        // Temporary debug log
+        console.log('[PUT Auth] token exists:', true);
+        console.log('[PUT Auth] header set:', `Authorization: Bearer ${token.substring(0, 20)}...`);
+      }
     }
-    
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
+  } else {
+    console.log('[PUT Auth] token exists:', false);
+    console.log('[PUT Auth] header set:', 'NO AUTH HEADER');
   }
 
   return headers;

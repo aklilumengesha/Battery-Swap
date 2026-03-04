@@ -157,9 +157,12 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # 60 minutes for development
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # 7 days
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": False,
     "USER_ID_FIELD": "pk",
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 # Channels Configuration
