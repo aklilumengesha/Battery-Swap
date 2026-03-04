@@ -7,6 +7,7 @@ import {
   ThunderboltFilled,
   CheckCircleFilled,
   CalendarOutlined,
+  ClockCircleOutlined,
   FireOutlined,
   TrophyOutlined,
   ExclamationCircleOutlined,
@@ -312,45 +313,52 @@ const MyPlanPage = () => {
           </div>
         </div>
 
-        {/* Section B: Usage Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
           {/* Swaps Used */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <ThunderboltFilled className="text-blue-600 text-xl" />
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-gray-900">{swapsUsed}</div>
-                <div className="text-sm text-gray-500">Swaps Used</div>
-              </div>
+          <div className="bg-white rounded-2xl border
+            border-gray-100 shadow-sm p-4 text-center">
+            <div className="w-9 h-9 rounded-xl bg-blue-50
+              flex items-center justify-center mx-auto mb-2">
+              <ThunderboltFilled className="text-blue-500 text-sm" />
             </div>
+            <p className={`text-2xl font-bold mb-0.5
+              ${usageColors.text}`}>
+              {swapsUsed}
+            </p>
+            <p className="text-xs text-gray-400 leading-tight">
+              Swaps Used
+            </p>
           </div>
 
           {/* Swaps Remaining */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <FireOutlined className="text-green-600 text-xl" />
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-gray-900">{swapsRemaining}</div>
-                <div className="text-sm text-gray-500">Swaps Remaining</div>
-              </div>
+          <div className="bg-white rounded-2xl border
+            border-gray-100 shadow-sm p-4 text-center">
+            <div className="w-9 h-9 rounded-xl bg-green-50
+              flex items-center justify-center mx-auto mb-2">
+              <ThunderboltFilled className="text-green-500 text-sm" />
             </div>
+            <p className="text-2xl font-bold text-green-600 mb-0.5">
+              {swapsLimit - swapsUsed}
+            </p>
+            <p className="text-xs text-gray-400 leading-tight">
+              Remaining
+            </p>
           </div>
 
           {/* Days Until Renewal */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <TrophyOutlined className="text-purple-600 text-xl" />
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-gray-900">{daysUntilRenewal}</div>
-                <div className="text-sm text-gray-500">Days Until Renewal</div>
-              </div>
+          <div className="bg-white rounded-2xl border
+            border-gray-100 shadow-sm p-4 text-center">
+            <div className="w-9 h-9 rounded-xl bg-purple-50
+              flex items-center justify-center mx-auto mb-2">
+              <ClockCircleOutlined className="text-purple-500 text-sm" />
             </div>
+            <p className="text-2xl font-bold text-purple-600 mb-0.5">
+              {Math.max(0, Math.ceil((new Date(subscription.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))}
+            </p>
+            <p className="text-xs text-gray-400 leading-tight">
+              Days Left
+            </p>
           </div>
         </div>
 
