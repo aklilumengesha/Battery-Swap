@@ -269,55 +269,78 @@ const Home = () => {
 
         {/* Recent Booking Card */}
         {recentBooking && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-gray-900">Recent Booking</h3>
-              <button
-                onClick={() => router.push(routes.HISTORY)}
-                className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                View All →
-              </button>
+          <div 
+            onClick={() => router.push(routes.ORDER_DETAILS(recentBooking.pk))}
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4 cursor-pointer hover:shadow-md hover:border-gray-200 transition-all duration-200 active:scale-[0.99]"
+          >
+            {/* Card header */}
+            <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-gray-50">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Recent Booking</h3>
+              <span className="text-xs text-gray-400 flex items-center gap-1">
+                View Details <ArrowRightOutlined className="text-xs" />
+              </span>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center flex-shrink-0">
-                <ThunderboltFilled className="text-white text-lg" />
+
+            <div className="p-5">
+              <div className="flex items-center gap-4">
+                {/* Icon */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center">
+                    <ThunderboltFilled className="text-white text-lg" />
+                  </div>
+                  {/* Active pulse if not collected */}
+                  {!recentBooking.is_collected && (
+                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-orange-400 border-2 border-white">
+                      <span className="absolute inset-0 rounded-full bg-orange-400 animate-ping opacity-75" />
+                    </span>
+                  )}
+                </div>
+
+                {/* Station + date */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-gray-900 truncate">
+                    {recentBooking.station?.name || 'Station'}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                    <ClockCircleOutlined className="text-xs" />
+                    {recentBooking.booked_time
+                      ? new Date(recentBooking.booked_time).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : 'Recently booked'}
+                  </p>
+                </div>
+
+                {/* Price */}
+                <div className="flex-shrink-0 text-right">
+                  <p className="text-lg font-bold text-gray-900">Rs {recentBooking.battery?.price || 0}</p>
+                  <p className="text-xs text-gray-400">charged</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-900 truncate">
-                  {recentBooking.station?.name || 'Station'}
-                </p>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {recentBooking.booked_time
-                    ? new Date(recentBooking.booked_time).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })
-                    : 'Recently booked'}
-                </p>
-              </div>
-              <div className="flex flex-col gap-1.5 flex-shrink-0">
-                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold text-center ${
+
+              {/* Status badges row */}
+              <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-50">
+                <span className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold ${
                   recentBooking.is_paid
-                    ? 'bg-green-50 text-green-600'
-                    : 'bg-yellow-50 text-yellow-600'
+                    ? 'bg-green-50 text-green-600 border border-green-100'
+                    : 'bg-yellow-50 text-yellow-600 border border-yellow-100'
                 }`}>
-                  {recentBooking.is_paid ? 'Paid' : 'Unpaid'}
+                  {recentBooking.is_paid ? '✓ Paid' : '⏳ Unpaid'}
                 </span>
-                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold text-center ${
+                <span className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold ${
                   recentBooking.is_collected
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'bg-gray-50 text-gray-500'
+                    ? 'bg-blue-50 text-blue-600 border border-blue-100'
+                    : 'bg-gray-50 text-gray-500 border border-gray-100'
                 }`}>
-                  {recentBooking.is_collected ? 'Collected' : 'Pending'}
+                  {recentBooking.is_collected ? '✓ Collected' : '⏳ Pending Collection'}
                 </span>
+                {/* Spacer + arrow */}
+                <div className="flex-1" />
+                <ArrowRightOutlined className="text-gray-300 text-xs" />
               </div>
-            </div>
-            <div className="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between">
-              <span className="text-xs text-gray-400">Battery swap charge</span>
-              <span className="text-sm font-bold text-gray-900">Rs {recentBooking.battery?.price || 0}</span>
             </div>
           </div>
         )}
