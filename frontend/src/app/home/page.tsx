@@ -245,31 +245,6 @@ const Home = () => {
           </div>
         )}
 
-        {/* Quick Swap CTA */}
-        <div className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 rounded-3xl p-6 overflow-hidden mb-4 shadow-lg">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex-1">
-              <p className="text-blue-100 text-xs font-medium uppercase tracking-wider mb-1">Ready to swap?</p>
-              <h3 className="text-white text-xl font-bold mb-1">Book a Battery</h3>
-              <p className="text-blue-200 text-sm">Find the nearest station and swap instantly</p>
-            </div>
-            <button
-              onClick={() => {
-                const stationsSection = document.getElementById('stations-section');
-                if (stationsSection) {
-                  stationsSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              className="flex-shrink-0 ml-4 flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-white/20 border border-white/30 hover:bg-white/30 transition-all duration-200 active:scale-95"
-            >
-              <ThunderboltFilled className="text-white text-2xl" />
-              <span className="text-white text-xs mt-1 font-medium">Swap</span>
-            </button>
-          </div>
-        </div>
-
         {/* Recent Booking Card */}
         {recentBooking && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-4">
