@@ -36,15 +36,8 @@ export const getFreshHeaders = (): Record<string, string> => {
       
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
-        
-        // Temporary debug log
-        console.log('[PUT Auth] token exists:', true);
-        console.log('[PUT Auth] header set:', `Authorization: Bearer ${token.substring(0, 20)}...`);
       }
     }
-  } else {
-    console.log('[PUT Auth] token exists:', false);
-    console.log('[PUT Auth] header set:', 'NO AUTH HEADER');
   }
 
   return headers;

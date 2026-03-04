@@ -29,8 +29,6 @@ const tryRefreshToken = async (): Promise<boolean> => {
 
     if (!refreshToken) return false;
 
-    console.log('[Auth] Access token expired, refreshing...');
-
     const res = await fetch(config.API_URL + 'user/token/refresh/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -48,14 +46,11 @@ const tryRefreshToken = async (): Promise<boolean> => {
         sessionStorage.setItem('refreshToken', JSON.stringify(data.refresh));
       }
 
-      console.log('[Auth] Token refreshed successfully');
       return true;
     }
 
-    console.log('[Auth] Token refresh failed:', res.status);
     return false;
   } catch (error) {
-    console.log('[Auth] Token refresh error:', error);
     return false;
   }
 };
@@ -80,9 +75,6 @@ const base = async <T = any>(
   const fetchUrl = config.API_URL + url;
   let headers = getFreshHeaders();
 
-  console.log(`[API] ${options.method} ${fetchUrl}`);
-  console.log('[API] Has auth:', 'Authorization' in headers);
-
   let res = await fetch(fetchUrl, {
     method: options.method,
     headers,
@@ -91,8 +83,6 @@ const base = async <T = any>(
 
   // Auto-refresh on 401 and retry ONCE
   if (res.status === 401) {
-    console.log('[API] Got 401, attempting token refresh...');
-    
     const refreshed = await tryRefreshToken();
     
     if (refreshed) {
@@ -105,12 +95,8 @@ const base = async <T = any>(
         headers,
         body: options.data ? JSON.stringify(options.data) : undefined,
       });
-      
-      console.log('[API] Retry result:', res.status);
     } else {
       // Refresh failed - clear session and redirect to signin
-      console.log('[API] Refresh failed, clearing session');
-      
       // Clear all auth data
       sessionStorage.clear();
       
@@ -129,7 +115,6 @@ const base = async <T = any>(
   }
 
   const data = await res.json();
-  console.log('[API] Response:', res.status, data);
 
   return { data, status: res.status };
 };
