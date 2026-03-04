@@ -31,7 +31,7 @@ const Order = () => {
 
   return (
     <DashboardLayout title="Order Details">
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="w-full">
         {/* Loading State */}
         {isLoading ? (
           <div className="space-y-4">
@@ -44,18 +44,23 @@ const Order = () => {
           </div>
         ) : (
           <>
-            {/* Back Button */}
+            {/* Back Button - Full Width */}
             <button
               onClick={() => window.history.back()}
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-6"
             >
               ← Back to History
             </button>
 
+            {/* TWO COLUMN GRID */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {/* LEFT COLUMN — Hero + Timeline */}
+              <div className="space-y-5">
+
             {/* Hero Card */}
             <div className="relative bg-gradient-to-br
               from-gray-900 via-gray-800 to-gray-900
-              rounded-3xl p-6 text-white overflow-hidden">
+              rounded-3xl p-6 text-white overflow-hidden w-full">
               {/* Glows */}
               <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
@@ -100,43 +105,6 @@ const Order = () => {
                   <p className="text-gray-400 text-xs mb-1">Total Price</p>
                   <p className="text-3xl font-bold text-white">
                     Rs {booking?.battery?.price || 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Battery Info Card */}
-            <div className="bg-white rounded-2xl border
-              border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-50">
-                <h3 className="text-sm font-semibold text-gray-900">Battery Information</h3>
-              </div>
-              <div className="divide-y divide-gray-50">
-                <div className="px-5 py-4 flex items-center
-                  justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-50
-                      flex items-center justify-center">
-                      <ThunderboltFilled className="text-blue-500 text-xs" />
-                    </div>
-                    <p className="text-sm text-gray-500">Battery Brand</p>
-                  </div>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {booking?.battery?.company?.name || 'N/A'}
-                  </p>
-                </div>
-
-                <div className="px-5 py-4 flex items-center
-                  justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-purple-50
-                      flex items-center justify-center">
-                      <span className="text-sm">🚗</span>
-                    </div>
-                    <p className="text-sm text-gray-500">Vehicle Type</p>
-                  </div>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {booking?.battery?.vehicle?.name || 'N/A'}
                   </p>
                 </div>
               </div>
@@ -190,6 +158,46 @@ const Order = () => {
                 </div>
               </div>
             </div>
+              </div>
+
+              {/* RIGHT COLUMN — Battery Info + Status + Order Meta + Navigate */}
+              <div className="space-y-5">
+                {/* Battery Info Card */}
+                <div className="bg-white rounded-2xl border
+                  border-gray-100 shadow-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-gray-50">
+                    <h3 className="text-sm font-semibold text-gray-900">Battery Information</h3>
+                  </div>
+                  <div className="divide-y divide-gray-50">
+                    <div className="px-5 py-4 flex items-center
+                      justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50
+                          flex items-center justify-center">
+                          <ThunderboltFilled className="text-blue-500 text-xs" />
+                        </div>
+                        <p className="text-sm text-gray-500">Battery Brand</p>
+                      </div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {booking?.battery?.company?.name || 'N/A'}
+                      </p>
+                    </div>
+
+                    <div className="px-5 py-4 flex items-center
+                      justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-purple-50
+                          flex items-center justify-center">
+                          <span className="text-sm">🚗</span>
+                        </div>
+                        <p className="text-sm text-gray-500">Vehicle Type</p>
+                      </div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {booking?.battery?.vehicle?.name || 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
             {/* Status Grid Card */}
             <div className="bg-white rounded-2xl border
@@ -230,6 +238,40 @@ const Order = () => {
               </div>
             </div>
 
+            {/* Order Meta Card */}
+            <div className="bg-white rounded-2xl border
+              border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-50">
+                <h3 className="text-sm font-semibold text-gray-900">Order Info</h3>
+              </div>
+              <div className="divide-y divide-gray-50">
+                <div className="px-5 py-4 flex items-center
+                  justify-between">
+                  <p className="text-sm text-gray-500">Order ID</p>
+                  <p className="text-sm font-bold text-gray-900">
+                    #{booking?.pk}
+                  </p>
+                </div>
+
+                <div className="px-5 py-4 flex items-center
+                  justify-between">
+                  <p className="text-sm text-gray-500">Total Charged</p>
+                  <p className="text-sm font-bold text-gray-900">
+                    Rs {booking?.battery?.price || 0}
+                  </p>
+                </div>
+
+                <div className="px-5 py-4 flex items-center
+                  justify-between">
+                  <p className="text-sm text-gray-500">Station</p>
+                  <p className="text-sm font-bold text-gray-900 truncate max-w-[180px]
+                    text-right">
+                    {station?.name || 'N/A'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Navigate to Station Button */}
             {station?.latitude && station?.longitude && (
               <a
@@ -246,6 +288,8 @@ const Order = () => {
                 Navigate to Station
               </a>
             )}
+              </div>
+            </div>
 
             {/* Bottom padding */}
             <div className="h-4" />
