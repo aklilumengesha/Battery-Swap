@@ -36,7 +36,7 @@ const Signin = () => {
     }
     
     signin(
-      { email, password, userType },
+      { email, password },
       {
         onSuccess: () => {
           // Check for redirect parameter

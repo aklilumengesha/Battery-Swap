@@ -1,7 +1,7 @@
 import datetime
 from rest_framework import views, status, generics
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from django.contrib.auth import authenticate, login
 from user.models import Order, User
@@ -31,6 +31,8 @@ class ManageUser(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SignInView(views.APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request, *args, **kwargs):
         data = request.data
         user = authenticate(
@@ -92,10 +94,8 @@ class SignInView(views.APIView):
 
 
 class SignUpView(views.APIView):
-    # permission_classes = [
-    #     IsAuthenticated,
-    # ]
-
+    permission_classes = [AllowAny]
+    
     def post(self, request, *args, **kwargs):
         # try:
         serializer = SignupSerializer(data=request.data)
@@ -296,3 +296,4 @@ class GetOrder(views.APIView):
                 data={"success": False},
                 status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
             )
+
