@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { BatteryCard, StationSkeletonList, SubscriptionBanner } from "../../components";
+import { BatteryCard } from "../../components";
 import { useNearbyStations, useBookings, useStationWebSocket } from "../../features/stations";
 import { useAuthQuery } from "../../features/auth";
 import { useMySubscription } from "../../features/subscription";
@@ -239,15 +239,20 @@ const Home = () => {
         {/* Stations Section - Redesigned */}
         <div id="stations-section" className="pt-6 border-t border-gray-200">
           {/* Section Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Available Stations</h2>
-              <p className="text-sm text-gray-500 mt-1">Find and book nearby charging stations</p>
+              <h2 className="text-lg font-bold text-gray-900">Nearby Stations</h2>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {nearbyStationsCount > 0
+                  ? `${nearbyStationsCount} stations found near you`
+                  : 'No stations found nearby'}
+              </p>
             </div>
             {nearbyStationsCount > 0 && (
-              <div className="bg-gray-100 px-3 py-1.5 rounded-full">
-                <span className="text-sm font-semibold text-gray-700">{nearbyStationsCount} found</span>
-              </div>
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-50 border border-green-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-xs text-green-600 font-medium">Live</span>
+              </span>
             )}
           </div>
 
@@ -261,7 +266,20 @@ const Home = () => {
               <p className="text-sm text-gray-500">Please enable location services to continue</p>
             </div>
           ) : loadingList ? (
-            <StationSkeletonList count={5} />
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100 animate-pulse">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="h-3.5 bg-gray-100 rounded w-1/3 mb-2" />
+                      <div className="h-3 bg-gray-100 rounded w-1/2" />
+                    </div>
+                    <div className="w-16 h-8 bg-gray-100 rounded-xl" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : error ? (
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-12 text-center shadow-sm border border-red-100">
               <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
@@ -289,25 +307,15 @@ const Home = () => {
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-12 text-center shadow-sm border border-gray-200">
-              <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
-                <ThunderboltFilled className="text-5xl text-gray-400" />
+          ) : null}
+
+          {!loadingList && nearbyStationsCount === 0 && (
+            <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+              <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
+                <EnvironmentOutlined className="text-gray-400 text-2xl" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No stations nearby</h3>
-              <p className="text-gray-600 mb-1">We couldn&apos;t find any battery swap stations in your area</p>
-              <p className="text-sm text-gray-500 mb-6">Try refreshing your location or check back later</p>
-              <button 
-                onClick={() => {
-                  if ("geolocation" in navigator) {
-                    getLocation((data: any) => setLocation(data));
-                  }
-                }}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl"
-              >
-                <ReloadOutlined />
-                Refresh Location
-              </button>
+              <p className="text-sm font-semibold text-gray-900">No stations nearby</p>
+              <p className="text-xs text-gray-400 mt-1">Try moving to a different location</p>
             </div>
           )}
         </div>
