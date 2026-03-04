@@ -18,7 +18,8 @@ import {
   ReloadOutlined,
   ArrowRightOutlined,
   SearchOutlined,
-  CreditCardOutlined
+  CreditCardOutlined,
+  CrownFilled
 } from "@ant-design/icons";
 
 const MapPreview = dynamic(() => import('../../components/map/MapPreview'), {
@@ -171,101 +172,53 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Stats Row - Redesigned with stagger animation */}
-        <div className="grid grid-cols-3 gap-4">
-          {/* Nearby Stations */}
-          <div 
-            className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-scale-in"
-            style={{ animationDelay: "100ms" }}
-          >
-            <div className="flex flex-col items-center text-center">
-              {/* Icon */}
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <EnvironmentOutlined className="text-white text-xl" />
+        {/* Subscription Banner */}
+        {!subscriptionLoading && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4">
+            <div className="p-5 flex items-center gap-4">
+              {/* Plan icon */}
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <CrownFilled className="text-white text-lg" />
               </div>
-              
-              {/* Value */}
-              <span className="text-3xl font-bold text-gray-900 mb-1">
-                {nearbyStationsCount}
-              </span>
-              
-              {/* Label */}
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                Nearby
-              </span>
-              <span className="text-xs text-gray-400 mt-0.5">
-                Stations
-              </span>
+
+              {/* Plan info */}
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-gray-400 mb-0.5">Current Plan</p>
+                <p className="text-sm font-bold text-gray-900">
+                  {subscription?.plan_details?.name 
+                    ? `${subscription.plan_details.name} Plan`
+                    : 'No Active Plan'}
+                </p>
+                {subscription && (
+                  <div className="flex items-center gap-1 mt-1">
+                    <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.min(
+                            ((subscription.swaps_used || 0) / (subscription.plan_details?.swap_limit_per_month || 1)) * 100,
+                            100
+                          )}%`
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-400 flex-shrink-0">
+                      {(subscription.plan_details?.swap_limit_per_month || 0) - (subscription.swaps_used || 0)} left
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Action button */}
+              <button
+                onClick={() => router.push(subscription ? routes.MY_PLAN : routes.PRICING)}
+                className="flex-shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-semibold hover:opacity-90 transition-opacity shadow-sm whitespace-nowrap"
+              >
+                {subscription ? 'Manage →' : 'Get Plan →'}
+              </button>
             </div>
           </div>
-
-          {/* Active Booking */}
-          <div 
-            className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-scale-in"
-            style={{ animationDelay: "200ms" }}
-          >
-            <div className="flex flex-col items-center text-center">
-              {/* Icon */}
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <ClockCircleOutlined className="text-white text-xl" />
-              </div>
-              
-              {/* Value */}
-              <span className="text-3xl font-bold text-gray-900 mb-1">
-                {activeBooking ? "1" : "0"}
-              </span>
-              
-              {/* Label */}
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                Active
-              </span>
-              <span className="text-xs text-gray-400 mt-0.5">
-                Booking
-              </span>
-            </div>
-          </div>
-
-          {/* Total Swaps */}
-          <div 
-            className="group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-md border border-gray-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-scale-in"
-            style={{ animationDelay: "300ms" }}
-          >
-            <div className="flex flex-col items-center text-center">
-              {/* Icon */}
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <ThunderboltFilled className="text-white text-xl" />
-              </div>
-              
-              {/* Value */}
-              <span className="text-3xl font-bold text-gray-900 mb-1">
-                {totalSwaps}
-              </span>
-              
-              {/* Label */}
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                Total
-              </span>
-              <span className="text-xs text-gray-400 mt-0.5">
-                Swaps
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Subscription Status Banner with scale-in animation */}
-        <div className="animate-scale-in" style={{ animationDelay: "400ms" }}>
-          <SubscriptionBanner
-            planName={subscription?.plan_details?.name ? `${subscription.plan_details.name} Plan` : 'No Active Plan'}
-            swapsRemaining={
-              subscription 
-                ? (subscription.plan_details?.swap_limit_per_month || 0) - (subscription.swaps_used || 0)
-                : 0
-            }
-            swapLimit={subscription?.plan_details?.swap_limit_per_month || 0}
-            isLoading={subscriptionLoading}
-            onUpgradeClick={() => router.push(subscription ? routes.MY_PLAN : routes.PRICING)}
-          />
-        </div>
+        )}
 
         {/* Map Preview - Show stations on map */}
         {location?.latitude && location?.longitude && (
