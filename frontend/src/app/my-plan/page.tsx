@@ -13,6 +13,7 @@ import {
   ArrowRightOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useMySubscription } from "../../features/subscription";
 import { routes } from "../../routes";
 
@@ -67,7 +68,7 @@ const MyPlanPage = () => {
   // Loading skeleton
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <DashboardLayout title="My Plan">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="animate-pulse">
             {/* Header skeleton */}
@@ -100,16 +101,17 @@ const MyPlanPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   // No subscription state
   if (!subscription) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center">
-          {/* Empty state SVG */}
+      <DashboardLayout title="My Plan">
+        <div className="flex items-center justify-center px-4 py-12">
+          <div className="max-w-md w-full text-center">
+            {/* Empty state SVG */}
           <svg
             className="w-64 h-64 mx-auto mb-8"
             viewBox="0 0 200 200"
@@ -147,8 +149,9 @@ const MyPlanPage = () => {
             View Plans
             <ArrowRightOutlined />
           </button>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
@@ -160,14 +163,8 @@ const MyPlanPage = () => {
   const swapsRemaining = Math.max(0, swapsLimit - swapsUsed);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <DashboardLayout title="My Plan">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">My Subscription</h1>
-          <p className="text-gray-600">Manage your plan and track your usage</p>
-        </div>
-
         {/* Section A: Current Plan Card */}
         <div className="bg-white rounded-2xl p-8 shadow-lg mb-8 border border-gray-100">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -405,7 +402,7 @@ const MyPlanPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </DashboardLayout>
   );
 };
 
