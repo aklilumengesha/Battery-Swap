@@ -36,3 +36,16 @@ export const useMyStats = () =>
       return null;
     },
   });
+
+export const useStationDetail = (id: string | number) =>
+  useQuery({
+    queryKey: ['producer', 'station', id],
+    queryFn: async () => {
+      const res = await ProducerService.getStation(id);
+      if (res.data?.success) {
+        return res.data.station;
+      }
+      return null;
+    },
+    enabled: !!id,
+  });

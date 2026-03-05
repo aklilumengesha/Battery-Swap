@@ -46,6 +46,20 @@ export const ProducerService = {
       };
     }>('power/stations/mine/stats/', { method: 'GET' }),
 
+  // Get single station details
+  getStation: (id: string | number) =>
+    base<{
+      success: boolean;
+      station: any;
+    }>(`power/station/get/${id}/`, { method: 'GET' }),
+
+  // Add battery to station
+  addBatteryToStation: (stationId: number, batteryId: number) =>
+    base(`power/station/batteries/${stationId}/`, {
+      method: 'PUT',
+      data: { battery: batteryId },
+    }),
+
   // Create a new station
   createStation: (data: {
     name: string;
