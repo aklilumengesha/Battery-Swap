@@ -263,3 +263,135 @@ class ManageStation(generics.RetrieveUpdateDestroyAPIView):
                 status=status.HTTP_403_FORBIDDEN
             )
         return super().delete(request, *args, **kwargs)
+
+
+
+class MyStations(views.APIView):
+    """Get all stations owned by the logged-in producer"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can access this'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from producer.models import Producer
+            producer = Producer.objects.get(user=request.user)
+            stations = Station.objects.filter(owner=producer)
+            
+            data = []
+            for station in stations:
+                batteries = station.batteries.all()
+                data.append({
+                    'pk': station.pk,
+                    'name': station.name,
+                    'latitude': station.latitude,
+                    'longitude': station.longitude,
+                    'total_batteries': batteries.count(),
+                    'available_batteries': batteries.count(),
+                })
+            
+            return Response({
+                'success': True,
+                'stations': data,
+                'total': len(data)
+            })
+        except Exception as e:
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class MyStationBookings(views.APIView):
+    """Get all bookings at producer's stations"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can access this'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from producer.models import Producer
+            from user.models import Order
+            
+            producer = Producer.objects.get(user=request.user)
+            stations = Station.objects.filter(owner=producer)
+            station_ids = stations.values_list('pk', flat=True)
+            
+            orders = Order.objects.filter(
+                station__pk__in=station_ids
+            ).select_related(
+                'battery', 'battery__vehicle', 'battery__company', 'station'
+            ).order_by('-booked_time')
+            
+            data = []
+            for order in orders:
+                data.append({
+                    'pk': order.pk,
+                    'station_name': order.station.name if order.station else None,
+                    'battery_price': order.battery.price if order.battery else 0,
+                    'vehicle': order.battery.vehicle.name if order.battery and order.battery.vehicle else None,
+                    'is_paid': order.is_paid,
+                    'is_collected': order.is_collected,
+                    'booked_time': order.booked_time,
+                })
+            
+            return Response({
+                'success': True,
+                'bookings': data,
+                'total': len(data)
+            })
+        except Exception as e:
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class MyStationStats(views.APIView):
+    """Get analytics for producer's stations"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can access this'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from producer.models import Producer
+            from user.models import Order
+            
+            producer = Producer.objects.get(user=request.user)
+            stations = Station.objects.filter(owner=producer)
+            station_ids = stations.values_list('pk', flat=True)
+            orders = Order.objects.filter(station__pk__in=station_ids)
+            
+            total_revenue = sum(
+                o.battery.price for o in orders if o.battery and o.is_paid
+            )
+            
+            return Response({
+                'success': True,
+                'stats': {
+                    'total_stations': stations.count(),
+                    'total_bookings': orders.count(),
+                    'total_revenue': total_revenue,
+                    'paid_bookings': orders.filter(is_paid=True).count(),
+                    'collected_bookings': orders.filter(is_collected=True).count(),
+                    'pending_bookings': orders.filter(is_collected=False).count(),
+                }
+            })
+        except Exception as e:
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )

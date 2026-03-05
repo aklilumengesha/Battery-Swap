@@ -12,6 +12,9 @@ from battery.views import (
     ManageStation,
     ManageVehicle,
     ManageVehicles,
+    MyStations,
+    MyStationBookings,
+    MyStationStats,
 )
 
 
@@ -20,6 +23,9 @@ urlpatterns = [
     path("batteries/list/", ListBatteries.as_view(), name="manage_batteries_list"),
     path("stations/", ManageStations.as_view(), name="manage_stations"),
     path("stations/find/", FindStations.as_view(), name="find_stations"),
+    path("stations/mine/", MyStations.as_view(), name="my_stations"),
+    path("stations/mine/bookings/", MyStationBookings.as_view(), name="my_station_bookings"),
+    path("stations/mine/stats/", MyStationStats.as_view(), name="my_station_stats"),
     path("vehicles/", ManageVehicles.as_view(), name="manage_vehicles"),
     path("vehicles/list/", ListVehicles.as_view(), name="list_vehicles"),
     path("battery/<int:pk>/", ManageBattery.as_view(), name="manage_battery"),
