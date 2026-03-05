@@ -49,3 +49,12 @@ export const useStationDetail = (id: string | number) =>
     },
     enabled: !!id,
   });
+
+export const useAllBatteries = () =>
+  useQuery({
+    queryKey: ['producer', 'batteries'],
+    queryFn: async () => {
+      const res = await ProducerService.getAllBatteries();
+      return res.data?.batteries || [];
+    },
+  });

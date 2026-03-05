@@ -69,6 +69,18 @@ export const ProducerService = {
     base('power/stations/', { method: 'POST', data }),
 
   // Get companies list
-  getCompanies: () =>
-    base('producer/companies/', { method: 'GET' }),
+  getCompanies: () => base('producer/companies/', { method: 'GET' }),
+
+  // Get all batteries
+  getAllBatteries: () =>
+    base<{
+      batteries: any[];
+    }>('power/batteries/list/', { method: 'GET' }),
+
+  // Get all vehicles
+  getVehicles: () => base('user/vehicles/', { method: 'GET' }),
+
+  // Create battery
+  createBattery: (data: { vehicle: number; company: number; price: number }) =>
+    base('power/batteries/', { method: 'POST', data }),
 };
