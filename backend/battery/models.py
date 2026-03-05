@@ -31,6 +31,13 @@ class Station(models.Model):
     name = models.CharField("Station Name", max_length=150, null=True)
     latitude = models.FloatField("Latitude")
     longitude = models.FloatField("Longitude")
+    owner = models.ForeignKey(
+        "producer.Producer",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="stations",
+    )
     batteries = models.ManyToManyField(
         "battery.Battery", related_name="Batteries", blank=True, symmetrical=False
     )
