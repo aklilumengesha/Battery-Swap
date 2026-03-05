@@ -18,14 +18,55 @@ from battery.serializers import (
 )
 
 
+# Helper functions for user type checking
+def is_producer(user):
+    return user.user_type == 'producer'
+
+
+def is_consumer(user):
+    return user.user_type == 'consumer'
+
+
 class ManageBatteries(generics.ListCreateAPIView):
     serializer_class = BatterySerializer
     queryset = Battery.objects.all()
+    
+    def post(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can create batteries'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().post(request, *args, **kwargs)
 
 
 class ManageBattery(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BatterySerializer
     queryset = Battery.objects.all()
+    
+    def put(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can update batteries'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().put(request, *args, **kwargs)
+    
+    def patch(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can update batteries'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().patch(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can delete batteries'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().delete(request, *args, **kwargs)
 
 
 class ListBatteries(views.APIView):
@@ -57,10 +98,24 @@ class ManageVehicle(generics.RetrieveUpdateDestroyAPIView):
 class ManageStations(generics.ListCreateAPIView):
     serializer_class = StationSerializer
     queryset = Station.objects.all()
+    
+    def post(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can create stations'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().post(request, *args, **kwargs)
 
 
 class ManageStationBatteries(views.APIView):
     def put(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can add batteries to stations'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
         station = Station.objects.get(pk=kwargs["pk"])
         battery_id = request.data.get("newBattery")
         battery = Battery.objects.get(pk=battery_id)
@@ -184,3 +239,27 @@ class Payments(views.APIView):
 class ManageStation(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = StationSerializer
     queryset = Station.objects.all()
+    
+    def put(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can update stations'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().put(request, *args, **kwargs)
+    
+    def patch(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can update stations'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().patch(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        if not is_producer(request.user):
+            return Response(
+                {'success': False, 'message': 'Only producers can delete stations'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().delete(request, *args, **kwargs)
