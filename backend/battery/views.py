@@ -250,29 +250,54 @@ class ManageStations(generics.ListCreateAPIView):
 
 
 class ManageStationBatteries(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
     def put(self, request, *args, **kwargs):
-        if not is_producer(request.user):
+        if request.user.user_type != 'producer':
             return Response(
-                {'success': False, 'message': 'Only producers can add batteries to stations'},
+                {'success': False, 'message': 'Only producers can manage station batteries'},
                 status=status.HTTP_403_FORBIDDEN
             )
         
-        station = Station.objects.get(pk=kwargs["pk"])
-        battery_id = request.data.get("newBattery")
-        battery = Battery.objects.get(pk=battery_id)
-        
-        station.batteries.add(battery)
-        station.save()
-        
-        # Broadcast battery added event via WebSocket
-        broadcast_battery_added(station, battery)
-        
-        return Response(status=status.HTTP_200_OK, data={"success": True})
-
-    # def get_queryset(self):
-    #     stations = Station.objects.all()
-    #     query_set = StationSerializer(stations, many=True)
-    #     return query_set
+        try:
+            station = Station.objects.get(pk=kwargs.get('pk'))
+            
+            # Accept both "battery" and "newBattery" for backward compatibility
+            battery_pk = (request.data.get('battery') or request.data.get('newBattery'))
+            
+            if not battery_pk:
+                return Response(
+                    {'success': False, 'message': 'battery field is required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            battery = Battery.objects.get(pk=battery_pk)
+            station.batteries.add(battery)
+            
+            # Broadcast battery added event via WebSocket
+            broadcast_battery_added(station, battery)
+            
+            return Response({
+                'success': True,
+                'message': f'Battery added to {station.name}',
+                'station_pk': station.pk,
+                'battery_pk': battery.pk,
+            })
+        except Station.DoesNotExist:
+            return Response(
+                {'success': False, 'message': 'Station not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Battery.DoesNotExist:
+            return Response(
+                {'success': False, 'message': 'Battery not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class FindStations(views.APIView):
@@ -405,6 +430,55 @@ class ManageStation(generics.RetrieveUpdateDestroyAPIView):
             )
         return super().delete(request, *args, **kwargs)
 
+
+class GetMyStation(views.APIView):
+    """Producer station detail - no lat/long needed"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        if request.user.user_type != 'producer':
+            return Response(
+                {'success': False, 'message': 'Only producers can access this'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            station = Station.objects.prefetch_related(
+                'batteries__vehicle',
+                'batteries__company'
+            ).get(pk=kwargs.get('pk'))
+            
+            batteries_data = []
+            for battery in station.batteries.all():
+                batteries_data.append({
+                    'pk': battery.pk,
+                    'price': battery.price,
+                    'vehicle': {
+                        'pk': battery.vehicle.pk,
+                        'name': battery.vehicle.name,
+                    } if battery.vehicle else None,
+                    'company': {
+                        'pk': battery.company.pk,
+                        'name': battery.company.name,
+                    } if battery.company else None,
+                })
+            
+            return Response({
+                'success': True,
+                'station': {
+                    'pk': station.pk,
+                    'name': station.name,
+                    'latitude': station.latitude,
+                    'longitude': station.longitude,
+                    'batteries': batteries_data,
+                    'total_batteries': len(batteries_data),
+                }
+            })
+        except Station.DoesNotExist:
+            return Response(
+                {'success': False, 'message': 'Station not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class MyStations(views.APIView):
