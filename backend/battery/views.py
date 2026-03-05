@@ -100,12 +100,62 @@ class ManageStations(generics.ListCreateAPIView):
     queryset = Station.objects.all()
     
     def post(self, request, *args, **kwargs):
-        if not is_producer(request.user):
+        if request.user.user_type != 'producer':
             return Response(
                 {'success': False, 'message': 'Only producers can create stations'},
                 status=status.HTTP_403_FORBIDDEN
             )
-        return super().post(request, *args, **kwargs)
+        
+        try:
+            from producer.models import Producer
+            producer = Producer.objects.get(user=request.user)
+            
+            name = request.data.get('name')
+            latitude = request.data.get('latitude')
+            longitude = request.data.get('longitude')
+            
+            if not name:
+                return Response(
+                    {'success': False, 'message': 'Station name is required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            if latitude is None or longitude is None:
+                return Response(
+                    {'success': False, 'message': 'latitude and longitude are required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            station = Station.objects.create(
+                name=name,
+                latitude=float(latitude),
+                longitude=float(longitude),
+                owner=producer
+            )
+            
+            return Response(
+                {
+                    'success': True,
+                    'message': 'Station created successfully',
+                    'station': {
+                        'pk': station.pk,
+                        'name': station.name,
+                        'latitude': station.latitude,
+                        'longitude': station.longitude,
+                    }
+                },
+                status=status.HTTP_201_CREATED
+            )
+        except Producer.DoesNotExist:
+            return Response(
+                {'success': False, 'message': 'Producer profile not found. Please contact support.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class ManageStationBatteries(views.APIView):
