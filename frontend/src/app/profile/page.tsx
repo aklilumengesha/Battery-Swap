@@ -1,18 +1,25 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useAuthQuery } from "../../features/auth";
 import { useBookings } from "../../features/stations";
+import { routes } from "../../routes";
 import {
   UserOutlined,
   MailOutlined,
   PhoneOutlined,
   EditOutlined,
   LogoutOutlined,
+  ShopOutlined,
+  CrownFilled,
+  ClockCircleOutlined,
+  ThunderboltFilled,
 } from "@ant-design/icons";
 
 const Profile = () => {
+  const router = useRouter();
   const { user, signout, updateProfile } = useAuthQuery();
   const { data: bookings = [] } = useBookings();
   
@@ -282,6 +289,69 @@ const Profile = () => {
                 bg-red-50 border border-red-100
                 text-sm text-red-600">
                 ✗ {errorMsg}
+              </div>
+            )}
+
+            {/* Producer Quick Links - only for producers */}
+            {user?.user_type === 'producer' && (
+              <div className="bg-white rounded-2xl border
+                border-gray-100 shadow-sm overflow-hidden">
+                <div className="px-6 py-5 border-b border-gray-50">
+                  <h3 className="text-sm font-semibold text-gray-900">Producer Tools</h3>
+                </div>
+                <div className="p-5 grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => router.push(routes.PRODUCER_DASHBOARD)}
+                    className="flex flex-col items-center gap-2 p-4 rounded-xl
+                      bg-gray-50 border border-gray-100
+                      hover:bg-gray-100 transition-colors
+                      cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-gray-900 flex items-center justify-center">
+                      <ShopOutlined className="text-white text-sm" />
+                    </div>
+                    <p className="text-xs font-semibold text-gray-700">Dashboard</p>
+                  </button>
+
+                  <button
+                    onClick={() => router.push(routes.PRODUCER_STATIONS)}
+                    className="flex flex-col items-center gap-2 p-4 rounded-xl
+                      bg-gray-50 border border-gray-100
+                      hover:bg-gray-100 transition-colors
+                      cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center">
+                      <ThunderboltFilled className="text-white text-sm" />
+                    </div>
+                    <p className="text-xs font-semibold text-gray-700">Stations</p>
+                  </button>
+
+                  <button
+                    onClick={() => router.push(routes.PRODUCER_BOOKINGS)}
+                    className="flex flex-col items-center gap-2 p-4 rounded-xl
+                      bg-gray-50 border border-gray-100
+                      hover:bg-gray-100 transition-colors
+                      cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-purple-500 flex items-center justify-center">
+                      <ClockCircleOutlined className="text-white text-sm" />
+                    </div>
+                    <p className="text-xs font-semibold text-gray-700">Bookings</p>
+                  </button>
+
+                  <button
+                    onClick={() => router.push(routes.PRODUCER_COMPANY)}
+                    className="flex flex-col items-center gap-2 p-4 rounded-xl
+                      bg-gray-50 border border-gray-100
+                      hover:bg-gray-100 transition-colors
+                      cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-orange-500 flex items-center justify-center">
+                      <CrownFilled className="text-white text-sm" />
+                    </div>
+                    <p className="text-xs font-semibold text-gray-700">My Company</p>
+                  </button>
+                </div>
               </div>
             )}
 
