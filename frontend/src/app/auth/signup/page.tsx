@@ -16,6 +16,7 @@ const Signup = () => {
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [vehicle, setvehicle] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [password, setpassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const didRedirect = useRef(false);
@@ -43,8 +44,18 @@ const Signup = () => {
   const handleSubmit = () => {
     message.config({ maxCount: 2 });
     
-    if (!name || !email || !vehicle || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       message.error("All fields are required");
+      return;
+    }
+    
+    if (userType === userTypes.consumer.key && !vehicle) {
+      message.error("Please select your vehicle");
+      return;
+    }
+    
+    if (userType === userTypes.producer.key && !companyName) {
+      message.error("Please enter your company name");
       return;
     }
     
@@ -71,7 +82,14 @@ const Signup = () => {
       return;
     }
     
-    signup({ name, email, vehicle, password, userType });
+    signup({ 
+      name, 
+      email, 
+      vehicle: userType === userTypes.consumer.key ? vehicle : undefined,
+      company_name: userType === userTypes.producer.key ? companyName : undefined,
+      password, 
+      userType 
+    });
   };
 
   return (
@@ -159,20 +177,34 @@ const Signup = () => {
               />
             </div>
 
-            <div>
-              <select
-                value={vehicle}
-                onChange={(e) => setvehicle(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-              >
-                <option value="">Select your vehicle</option>
-                {vehicles?.map((v: any) => (
-                  <option key={v.pk} value={v.pk}>
-                    {v.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {userType === userTypes.consumer.key && (
+              <div>
+                <select
+                  value={vehicle}
+                  onChange={(e) => setvehicle(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                >
+                  <option value="">Select your vehicle</option>
+                  {vehicles?.map((v: any) => (
+                    <option key={v.pk} value={v.pk}>
+                      {v.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {userType === userTypes.producer.key && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Company Name (e.g. PowerSwap Industries)"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-3">
               <input
