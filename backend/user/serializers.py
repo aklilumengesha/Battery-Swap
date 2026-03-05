@@ -30,22 +30,30 @@ class SignupSerializer(serializers.ModelSerializer):
         user = super().create(user_data)
         user.set_password(user.password)
         user.save()
+        
+        # Create user type-specific profiles
         if validated_data["user_type"] == "consumer":
-            try:
-                vehicle_id = validated_data.get("vehicle")
-                if not vehicle_id:
-                    raise serializers.ValidationError({"vehicle": "Vehicle is required for consumers"})
-                consumer = Consumer.objects.create(user=user)
-                consumer.vehicle = Vehicle.objects.get(pk=vehicle_id)
-                consumer.save()
-            except Exception as e:
-                print(e)
+            vehicle_id = validated_data.get("vehicle")
+            if vehicle_id:
+                try:
+                    vehicle = Vehicle.objects.get(pk=vehicle_id)
+                    Consumer.objects.get_or_create(
+                        user=user,
+                        defaults={'vehicle': vehicle}
+                    )
+                except Vehicle.DoesNotExist:
+                    print(f"Vehicle with pk={vehicle_id} does not exist")
+                except Exception as e:
+                    print(f"Error creating consumer profile: {e}")
+            else:
+                print("Warning: Consumer signup without vehicle")
+        
         elif validated_data["user_type"] == "producer":
+            # Handle company_name (string) or company (ID)
+            company_name = validated_data.get("company_name")
+            company_id = validated_data.get("company")
+            
             try:
-                # Handle company_name (string) or company (ID)
-                company_name = validated_data.get("company_name")
-                company_id = validated_data.get("company")
-                
                 if company_name:
                     # Create or get company by name
                     company, _ = Company.objects.get_or_create(
@@ -58,10 +66,14 @@ class SignupSerializer(serializers.ModelSerializer):
                     # Default company if neither provided
                     company, _ = Company.objects.get_or_create(name="My Company")
                 
-                producer = Producer.objects.create(user=user, company=company)
-                producer.save()
+                # Use get_or_create to avoid duplicates
+                Producer.objects.get_or_create(
+                    user=user,
+                    defaults={'company': company}
+                )
             except Exception as e:
-                print(e)
+                print(f"Error creating producer profile: {e}")
+        
         return user
 
     class Meta:
