@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from battery.utils import get_battery_data, get_station_data
 from battery.websocket_utils import broadcast_battery_added
 from consumer.models import Consumer
+from producer.models import Company
 from battery.models import Battery, Station, Vehicle
 from user.models import User
 from battery.serializers import (
@@ -27,17 +28,92 @@ def is_consumer(user):
     return user.user_type == 'consumer'
 
 
-class ManageBatteries(generics.ListCreateAPIView):
-    serializer_class = BatterySerializer
-    queryset = Battery.objects.all()
+class ManageBatteries(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        batteries = Battery.objects.select_related('vehicle', 'company').all()
+        data = []
+        for battery in batteries:
+            data.append({
+                'pk': battery.pk,
+                'price': battery.price,
+                'vehicle': {
+                    'pk': battery.vehicle.pk,
+                    'name': battery.vehicle.name,
+                } if battery.vehicle else None,
+                'company': {
+                    'pk': battery.company.pk,
+                    'name': battery.company.name,
+                } if battery.company else None,
+            })
+        return Response({
+            'success': True,
+            'batteries': data,
+            'total': len(data)
+        })
     
     def post(self, request, *args, **kwargs):
-        if not is_producer(request.user):
+        if request.user.user_type != 'producer':
             return Response(
                 {'success': False, 'message': 'Only producers can create batteries'},
                 status=status.HTTP_403_FORBIDDEN
             )
-        return super().post(request, *args, **kwargs)
+        
+        vehicle_pk = request.data.get('vehicle')
+        company_pk = request.data.get('company')
+        price = request.data.get('price')
+        
+        if not all([vehicle_pk, company_pk, price]):
+            return Response(
+                {'success': False, 'message': 'vehicle, company and price are required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            vehicle = Vehicle.objects.get(pk=vehicle_pk)
+            company = Company.objects.get(pk=company_pk)
+            
+            battery = Battery.objects.create(
+                vehicle=vehicle,
+                company=company,
+                price=float(price)
+            )
+            
+            return Response(
+                {
+                    'success': True,
+                    'message': 'Battery created successfully',
+                    'battery': {
+                        'pk': battery.pk,
+                        'price': battery.price,
+                        'vehicle': {
+                            'pk': vehicle.pk,
+                            'name': vehicle.name,
+                        },
+                        'company': {
+                            'pk': company.pk,
+                            'name': company.name,
+                        },
+                    }
+                },
+                status=status.HTTP_201_CREATED
+            )
+        except Vehicle.DoesNotExist:
+            return Response(
+                {'success': False, 'message': f'Vehicle with pk {vehicle_pk} not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Company.DoesNotExist:
+            return Response(
+                {'success': False, 'message': f'Company with pk {company_pk} not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class ManageBattery(generics.RetrieveUpdateDestroyAPIView):
@@ -70,14 +146,29 @@ class ManageBattery(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ListBatteries(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, *args, **kwargs):
-        batteries = Battery.objects.all()
+        batteries = Battery.objects.select_related('vehicle', 'company').all()
         data = []
         for battery in batteries:
-            data.append(get_battery_data(battery))
-        return Response(
-            data={"success": True, "batteries": data}, status=status.HTTP_200_OK
-        )
+            data.append({
+                'pk': battery.pk,
+                'price': battery.price,
+                'vehicle': {
+                    'pk': battery.vehicle.pk,
+                    'name': battery.vehicle.name,
+                } if battery.vehicle else None,
+                'company': {
+                    'pk': battery.company.pk,
+                    'name': battery.company.name,
+                } if battery.company else None,
+            })
+        return Response({
+            'success': True,
+            'batteries': data,
+            'total': len(data)
+        }, status=status.HTTP_200_OK)
 
 
 class ManageVehicles(generics.ListCreateAPIView):
