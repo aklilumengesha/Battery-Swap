@@ -13,4 +13,13 @@ export const routes = {
   ORDER_SUCCESS: "/order/success",
   ORDER_FAILURE: "/order/failure",
   STATION: (id) => `/station/${id}`,
+  
+  // Producer routes
+  PRODUCER_DASHBOARD: "/producer/dashboard",
+  PRODUCER_STATIONS: "/producer/stations",
+  PRODUCER_STATION_CREATE: "/producer/stations/create",
+  PRODUCER_STATION_DETAIL: (id: number | string) => `/producer/stations/${id}`,
+  PRODUCER_BATTERIES: "/producer/batteries",
+  PRODUCER_BOOKINGS: "/producer/bookings",
+  PRODUCER_COMPANY: "/producer/company",
 };
