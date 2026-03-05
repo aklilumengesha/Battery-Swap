@@ -141,7 +141,12 @@ export const useAuthQuery = () => {
       throw new Error(res.data.message || "Signin failed");
     },
     onSuccess: (data) => {
+      // Clear auth failure flag
+      sessionStorage.removeItem('authFailure');
+      
       message.success(data.message || "Signed in successfully!");
+      
+      // Save tokens and user
       Cache.setItem({
         accessToken: data.access,
         refreshToken: data.refresh,
@@ -151,8 +156,12 @@ export const useAuthQuery = () => {
       // Invalidate and refetch user data
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
       
-      // Redirect to home
-      window.location.replace(routes.HOME);
+      // Redirect based on user type
+      if (data.user?.user_type === 'producer') {
+        window.location.replace(routes.PRODUCER_DASHBOARD);
+      } else {
+        window.location.replace(routes.HOME);
+      }
     },
     onError: (error: Error) => {
       message.error(error.message || "Signin failed");
