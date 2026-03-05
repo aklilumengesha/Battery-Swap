@@ -9,6 +9,11 @@ export const useMyStations = () =>
       if (res.data?.success) {
         return res.data.stations || [];
       }
+      // If producer profile missing return empty instead of throwing error
+      if (res.data?.message?.includes('Producer matching query')) {
+        console.warn('Producer profile not found');
+        return [];
+      }
       return [];
     },
   });
@@ -55,6 +60,21 @@ export const useAllBatteries = () =>
     queryKey: ['producer', 'batteries'],
     queryFn: async () => {
       const res = await ProducerService.getAllBatteries();
+      // Now returns { success, batteries, total }
       return res.data?.batteries || [];
     },
   });
+
+export const useVehicles = () =>
+  useQuery({
+    queryKey: ['vehicles'],
+    queryFn: async () => {
+      const res = await ProducerService.getVehicles();
+      // Backend returns array directly, not wrapped in object
+      if (Array.isArray(res.data)) {
+        return res.data;
+      }
+      return res.data?.vehicles || res.data?.results || [];
+    },
+  });
+

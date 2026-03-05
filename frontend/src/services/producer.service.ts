@@ -51,7 +51,7 @@ export const ProducerService = {
     base<{
       success: boolean;
       station: any;
-    }>(`power/station/get/${id}/`, { method: 'GET' }),
+    }>(`power/stations/mine/${id}/`, { method: 'GET' }),
 
   // Add battery to station
   addBatteryToStation: (stationId: number, batteryId: number) =>
@@ -78,7 +78,7 @@ export const ProducerService = {
     }>('power/batteries/list/', { method: 'GET' }),
 
   // Get all vehicles
-  getVehicles: () => base('user/vehicles/', { method: 'GET' }),
+  getVehicles: () => base('power/vehicles/', { method: 'GET' }),
 
   // Create battery
   createBattery: (data: { vehicle: number; company: number; price: number }) =>
