@@ -429,26 +429,59 @@ const LandingPage = () => {
           {[...Array(2)].map((_, setIndex) => (
             <div key={setIndex} className="flex items-center gap-12">
               {[
-                { name: 'Tesla', letter: 'T' },
-                { name: 'Nissan', letter: 'N' },
-                { name: 'BMW', letter: 'B' },
-                { name: 'Hyundai', letter: 'H' },
-                { name: 'Kia', letter: 'K' },
-                { name: 'Audi', letter: 'A' },
-                { name: 'Ford', letter: 'F' },
-                { name: 'Volkswagen', letter: 'VW' },
-              ].map((brand) => (
+                {
+                  name: 'Tesla',
+                  color: '#CC0000',
+                  svg: 'https://cdn.simpleicons.org/tesla/CC0000'
+                },
+                {
+                  name: 'BMW',
+                  color: '#0066B1',
+                  svg: 'https://cdn.simpleicons.org/bmw/0066B1'
+                },
+                {
+                  name: 'Audi',
+                  color: '#BB0A30',
+                  svg: 'https://cdn.simpleicons.org/audi/BB0A30'
+                },
+                {
+                  name: 'Volkswagen',
+                  color: '#001E50',
+                  svg: 'https://cdn.simpleicons.org/volkswagen/001E50'
+                },
+                {
+                  name: 'Hyundai',
+                  color: '#002C5F',
+                  svg: 'https://cdn.simpleicons.org/hyundai/002C5F'
+                },
+                {
+                  name: 'Nissan',
+                  color: '#C3002F',
+                  svg: 'https://cdn.simpleicons.org/nissan/C3002F'
+                },
+                {
+                  name: 'Kia',
+                  color: '#05141F',
+                  svg: 'https://cdn.simpleicons.org/kia/05141F'
+                },
+                {
+                  name: 'Ford',
+                  color: '#003478',
+                  svg: 'https://cdn.simpleicons.org/ford/003478'
+                },
+              ].map((brand, brandIndex) => (
                 <div 
-                  key={`${setIndex}-${brand.name}`}
-                  className="flex items-center gap-3 flex-shrink-0 group"
+                  key={`${setIndex}-${brandIndex}`}
+                  className="flex items-center gap-3 flex-shrink-0 group cursor-pointer"
                 >
-                  {/* Brand icon */}
-                  <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-900 transition-colors duration-300">
-                    <span className="text-xs font-black text-gray-500 group-hover:text-white transition-colors duration-300">
-                      {brand.letter}
-                    </span>
+                  <div className="w-11 h-11 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center group-hover:shadow-md group-hover:scale-110 transition-all duration-300 p-2">
+                    <img
+                      src={brand.svg}
+                      alt={brand.name}
+                      className="w-full h-full object-contain"
+                    />
                   </div>
-                  <span className="text-lg font-bold text-gray-300 group-hover:text-gray-900 transition-colors duration-300 whitespace-nowrap">
+                  <span className="text-base font-semibold text-gray-400 group-hover:text-gray-900 transition-colors duration-300 whitespace-nowrap">
                     {brand.name}
                   </span>
                 </div>
