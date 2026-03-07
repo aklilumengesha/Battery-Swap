@@ -228,11 +228,11 @@ const LandingPage = () => {
 
             {/* Subtext */}
             <p 
-              className="text-xl md:text-2xl text-gray-500 mb-10 leading-relaxed max-w-2xl mx-auto animate-fade-in-up"
+              className="text-xl md:text-2xl text-gray-500 mb-10 leading-relaxed max-w-xl mx-auto animate-fade-in-up"
               style={{ animationDelay: '200ms' }}
             >
-              The fastest and most convenient way to keep your electric vehicle charged.
-              Join thousands of drivers who never worry about battery range.
+              Swap your EV battery in under 2 minutes.
+              No waiting. No charging. Just drive.
             </p>
 
             {/* CTA Buttons */}
@@ -270,25 +270,6 @@ const LandingPage = () => {
             >
               No credit card required · 7-day free trial · Cancel anytime
             </p>
-
-            {/* Stats counter row */}
-            <div 
-              className="grid grid-cols-3 gap-4 max-w-2xl mx-auto animate-fade-in-up"
-              style={{ animationDelay: '500ms' }}
-            >
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 text-center hover:shadow-md transition-shadow">
-                <p className="text-3xl font-bold text-gray-900 mb-1">500+</p>
-                <p className="text-sm text-gray-500">Swap Stations</p>
-              </div>
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 text-center hover:shadow-md transition-shadow">
-                <p className="text-3xl font-bold text-gray-900 mb-1">50K+</p>
-                <p className="text-sm text-gray-500">Happy Drivers</p>
-              </div>
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 text-center hover:shadow-md transition-shadow">
-                <p className="text-3xl font-bold text-gray-900 mb-1">&lt;2min</p>
-                <p className="text-sm text-gray-500">Avg Swap Time</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
