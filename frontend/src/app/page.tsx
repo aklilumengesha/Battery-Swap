@@ -800,6 +800,171 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header row - left aligned */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16">
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wider mb-4">
+                Testimonials
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                What our drivers
+                <br />
+                <span className="text-gray-400">are saying</span>
+              </h2>
+            </div>
+
+            {/* Rating summary pill */}
+            <div className="flex items-center gap-4 bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 self-start lg:self-auto">
+              <div>
+                <p className="text-3xl font-bold text-gray-900">4.9</p>
+                <div className="flex items-center gap-0.5 mt-0.5">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span key={i} className="text-yellow-400 text-sm">★</span>
+                  ))}
+                </div>
+              </div>
+              <div className="w-px h-10 bg-gray-200" />
+              <div>
+                <p className="text-sm font-semibold text-gray-900">2,000+</p>
+                <p className="text-xs text-gray-400">verified reviews</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Masonry-style card grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Card 1 - tall with highlight */}
+            <div className="bg-gray-900 rounded-3xl p-7 text-white flex flex-col justify-between min-h-[280px] hover:scale-[1.01] transition-transform duration-300 row-span-1">
+              <div>
+                <div className="flex items-center gap-0.5 mb-5">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span key={i} className="text-yellow-400 text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-gray-200 text-base leading-relaxed">
+                  "I used to plan every trip around charging stations. Now I just swap and go. Takes less time than stopping for coffee. Absolute game changer."
+                </p>
+              </div>
+              <div className="flex items-center gap-3 mt-6 pt-5 border-t border-white/10">
+                <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  S
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Samuel Tesfaye</p>
+                  <p className="text-xs text-gray-400">Tesla Model 3 · Addis Ababa</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2 - light */}
+            <div className="bg-gray-50 rounded-3xl border border-gray-100 p-7 flex flex-col justify-between hover:scale-[1.01] transition-transform duration-300">
+              <div>
+                <div className="flex items-center gap-0.5 mb-5">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span key={i} className="text-yellow-400 text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  "As a rideshare driver I cannot afford downtime. BatterySwap keeps me earning without long charging stops. Best investment I made."
+                </p>
+              </div>
+              <div className="flex items-center gap-3 mt-6 pt-5 border-t border-gray-100">
+                <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  D
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Dawit Bekele</p>
+                  <p className="text-xs text-gray-400">Kia EV6 · Rideshare driver</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3 - white with border */}
+            <div className="bg-white rounded-3xl border border-gray-200 p-7 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform duration-300">
+              <div>
+                <div className="flex items-center gap-0.5 mb-5">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span key={i} className="text-yellow-400 text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  "Finding a swap station is so easy. Real-time availability means I always know exactly where to go before I even leave home."
+                </p>
+              </div>
+              <div className="flex items-center gap-3 mt-6 pt-5 border-t border-gray-100">
+                <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-900 font-bold text-sm flex-shrink-0">
+                  M
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Meron Alemu</p>
+                  <p className="text-xs text-gray-400">Nissan Leaf · Daily commuter</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4 - wide spanning 2 cols */}
+            <div className="md:col-span-2 bg-white rounded-3xl border border-gray-100 shadow-sm p-7 flex flex-col md:flex-row items-start md:items-center gap-6 hover:scale-[1.005] transition-transform duration-300">
+              {/* Left quote */}
+              <div className="flex-1">
+                <div className="flex items-center gap-0.5 mb-4">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span key={i} className="text-yellow-400 text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  "The Premium plan is worth every birr. Unlimited swaps mean I never stress about battery levels on long trips across the city."
+                </p>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden md:block w-px h-20 bg-gray-100 flex-shrink-0" />
+
+              {/* Author + stats */}
+              <div className="flex flex-col gap-4 flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    H
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">Hana Girma</p>
+                    <p className="text-xs text-gray-400">BMW i3 · Premium member</p>
+                  </div>
+                </div>
+
+                {/* Mini stat */}
+                <div className="flex items-center gap-3">
+                  <div className="bg-green-50 rounded-xl px-3 py-2 text-center border border-green-100">
+                    <p className="text-lg font-bold text-green-600">47</p>
+                    <p className="text-xs text-gray-400">swaps done</p>
+                  </div>
+                  <div className="bg-blue-50 rounded-xl px-3 py-2 text-center border border-blue-100">
+                    <p className="text-lg font-bold text-blue-600">3mo</p>
+                    <p className="text-xs text-gray-400">member</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 5 - single col stat card */}
+            <div className="bg-gray-50 rounded-3xl border border-gray-100 p-7 flex flex-col justify-center items-center text-center hover:scale-[1.01] transition-transform duration-300">
+              <div className="w-14 h-14 rounded-2xl bg-gray-900 flex items-center justify-center mb-4">
+                <ThunderboltFilled className="text-yellow-400 text-xl" />
+              </div>
+              <p className="text-4xl font-bold text-gray-900 mb-1">50K+</p>
+              <p className="text-sm font-semibold text-gray-700 mb-1">Happy Drivers</p>
+              <p className="text-xs text-gray-400">and growing every day</p>
+              <div className="flex items-center gap-1.5 mt-4 px-3 py-1.5 rounded-full bg-green-50 border border-green-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-xs text-green-600 font-medium">Active right now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Subscription Preview */}
       <section className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
