@@ -631,6 +631,175 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* For Producers Section */}
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* LEFT — Content */}
+            <div>
+              {/* Label */}
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold uppercase tracking-wider mb-6">
+                <ThunderboltFilled className="text-yellow-500 text-xs" />
+                For Station Owners
+              </span>
+
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
+                Own a station?
+                <br />
+                <span className="text-gray-400">Start earning today.</span>
+              </h2>
+
+              <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-md">
+                Join our growing network of battery swap station owners. List your station, manage your inventory, and earn revenue from every swap.
+              </p>
+
+              {/* Feature list */}
+              <div className="space-y-4 mb-10">
+                {[
+                  {
+                    icon: <RocketOutlined />,
+                    title: 'Easy Station Setup',
+                    desc: 'List your station in minutes. Add location, batteries, and go live instantly.'
+                  },
+                  {
+                    icon: <ClockCircleOutlined />,
+                    title: 'Real-Time Dashboard',
+                    desc: 'Monitor bookings, battery inventory, and revenue from one dashboard.'
+                  },
+                  {
+                    icon: <SafetyOutlined />,
+                    title: 'Guaranteed Payments',
+                    desc: 'Get paid automatically for every successful swap at your station.'
+                  },
+                  {
+                    icon: <EnvironmentOutlined />,
+                    title: 'Wide Reach',
+                    desc: 'Your station listed to thousands of nearby EV drivers instantly.'
+                  },
+                ].map((feature, i) => (
+                  <div key={i} className="flex items-start gap-4 group">
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-600 group-hover:bg-gray-900 group-hover:text-white transition-all duration-300 mt-0.5">
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900 mb-0.5">
+                        {feature.title}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {feature.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => router.push(routes.SIGNUP)}
+                  className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition-all duration-200 hover:scale-105 shadow-sm group"
+                >
+                  <ThunderboltFilled className="text-yellow-400" />
+                  Become a Producer
+                  <ArrowRightOutlined className="text-xs group-hover:translate-x-1 transition-transform" />
+                </button>
+                <p className="text-xs text-gray-400">Free to list · No upfront cost</p>
+              </div>
+            </div>
+
+            {/* RIGHT — Visual dashboard preview */}
+            <div className="relative">
+              {/* Glow behind card */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl blur-2xl scale-95 opacity-70" />
+
+              {/* Main dark card */}
+              <div className="relative bg-gray-900 rounded-3xl p-6 shadow-2xl overflow-hidden">
+                {/* Grid bg */}
+                <div 
+                  className="absolute inset-0 opacity-[0.04]"
+                  style={{
+                    backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+                    backgroundSize: '24px 24px'
+                  }} 
+                />
+
+                {/* Dashboard header */}
+                <div className="relative z-10 flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Producer Dashboard</p>
+                    <p className="text-white font-bold">My Stations</p>
+                  </div>
+                  <span className="flex items-center gap-1.5 text-xs bg-green-500/20 text-green-400 border border-green-500/30 px-3 py-1.5 rounded-full font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                    3 Live
+                  </span>
+                </div>
+
+                {/* Mock station cards */}
+                <div className="relative z-10 space-y-3 mb-6">
+                  {[
+                    { name: 'Beach Side Station', batteries: 43, revenue: 'Rs 12,400', status: 'green' },
+                    { name: 'Mall Road Station', batteries: 38, revenue: 'Rs 9,800', status: 'green' },
+                    { name: 'Airport Hub', batteries: 12, revenue: 'Rs 3,200', status: 'yellow' },
+                  ].map((station, i) => (
+                    <div 
+                      key={i}
+                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-colors duration-200"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                        <ThunderboltFilled className="text-white text-xs" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-white truncate">
+                          {station.name}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {station.batteries} batteries
+                        </p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-xs font-bold text-white">
+                          {station.revenue}
+                        </p>
+                        <div className="flex items-center gap-1 justify-end">
+                          <span className={`w-1.5 h-1.5 rounded-full ${station.status === 'green' ? 'bg-green-400' : 'bg-yellow-400'}`} />
+                          <span className="text-xs text-gray-400">
+                            {station.status === 'green' ? 'Active' : 'Low'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Revenue summary */}
+                <div className="relative z-10 bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-400">Total Revenue</p>
+                    <p className="text-xl font-bold text-white">Rs 25,400</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-green-400 font-semibold">↑ 18% this month</p>
+                    <p className="text-xs text-gray-400">vs last month</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating badge */}
+              <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 border border-gray-100 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                  <CheckCircleFilled className="text-green-500" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-900">New booking!</p>
+                  <p className="text-xs text-gray-400">Beach Side Station</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Subscription Preview */}
       <section className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
