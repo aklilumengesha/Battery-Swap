@@ -330,34 +330,98 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section id="features" className="py-20">
+      {/* Features */}
+      <section id="features" className="py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section header */}
           <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold uppercase tracking-wider mb-4">
+              Why Choose Us
+            </span>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Why Choose BatterySwap?
+              Built for Speed
+              <br />
+              <span className="text-gray-400">and Reliability</span>
             </h2>
-            <p className="text-xl text-gray-600">
-              Everything you need for worry-free electric vehicle charging
-            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-8 border border-gray-100 hover:border-gray-300 hover:shadow-lg transition-all duration-300 group"
-              >
-                <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-all">
-                  {feature.icon}
+
+          {/* Feature grid - asymmetric */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {/* Large feature card */}
+            <div className="lg:col-span-2 relative bg-gray-900 rounded-3xl p-8 text-white overflow-hidden group hover:scale-[1.01] transition-transform duration-300">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/3 rounded-full blur-2xl" />
+              
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-6">
+                  <ThunderboltFilled className="text-yellow-400 text-xl" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {feature.description}
+                <h3 className="text-2xl font-bold mb-3">Instant Battery Swap</h3>
+                <p className="text-gray-400 leading-relaxed mb-6 max-w-md">
+                  No more waiting hours for your EV to charge. Our swap stations replace your battery in under 2 minutes, keeping you on the road.
                 </p>
+                <div className="flex items-center gap-6">
+                  <div>
+                    <p className="text-3xl font-bold">&lt;2min</p>
+                    <p className="text-xs text-gray-400">Swap Time</p>
+                  </div>
+                  <div className="w-px h-10 bg-white/10" />
+                  <div>
+                    <p className="text-3xl font-bold">24/7</p>
+                    <p className="text-xs text-gray-400">Available</p>
+                  </div>
+                  <div className="w-px h-10 bg-white/10" />
+                  <div>
+                    <p className="text-3xl font-bold">500+</p>
+                    <p className="text-xs text-gray-400">Stations</p>
+                  </div>
+                </div>
               </div>
-            ))}
+            </div>
+
+            {/* Small feature card 1 */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
+                <SafetyOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Certified Safe</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                All batteries are tested and certified to the highest safety standards.
+              </p>
+            </div>
+
+            {/* Small feature card 2 */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
+                <ClockCircleOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Real-Time Updates</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Live station availability so you always find a charged battery nearby.
+              </p>
+            </div>
+
+            {/* Small feature card 3 */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
+                <RocketOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Flexible Plans</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Monthly plans that fit your driving habits — from casual to heavy daily use.
+              </p>
+            </div>
+
+            {/* Wide bottom card */}
+            <div className="md:col-span-2 lg:col-span-1 bg-gray-50 rounded-3xl border border-gray-100 p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
+                <EnvironmentOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Wide Coverage</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Stations available at major roads, malls, and business districts.
+              </p>
+            </div>
           </div>
         </div>
       </section>
