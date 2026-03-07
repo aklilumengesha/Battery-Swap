@@ -168,108 +168,245 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className={`relative pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden transition-all duration-300 ${barDismissed ? 'pt-32' : 'pt-44'}`}>
-        {/* Animated background orbs */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Top right orb */}
-          <div 
-            className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-gray-100 via-gray-200 to-transparent opacity-60 blur-3xl animate-pulse" 
-            style={{ animationDuration: '4s' }} 
-          />
-          {/* Bottom left orb */}
-          <div 
-            className="absolute -bottom-20 -left-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-gray-100 via-gray-50 to-transparent opacity-40 blur-3xl animate-pulse"
-            style={{ animationDuration: '6s' }} 
-          />
-          {/* Center subtle glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-gradient-to-r from-transparent via-gray-100 to-transparent opacity-30 blur-3xl" />
-          {/* Grid pattern overlay */}
-          <div 
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`,
-              backgroundSize: '60px 60px'
-            }} 
-          />
-        </div>
+      <section 
+        className={`relative overflow-hidden transition-all duration-300 ${barDismissed ? 'pt-16' : 'pt-28'}`}
+      >
+        {/* Full bleed background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Animated badge */}
-            <div 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900 text-white text-sm font-medium mb-8 animate-fade-in-up shadow-lg"
-              style={{ animationDelay: '0ms' }}
-            >
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+        {/* Dot grid */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: `radial-gradient(circle, #000 1px, transparent 1px)`,
+            backgroundSize: '28px 28px'
+          }} 
+        />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_0.7fr] gap-0 items-center min-h-[88vh]">
+            
+            {/* ── LEFT ── */}
+            <div className="flex flex-col justify-center py-16 lg:py-0 lg:pr-16">
+              {/* Live badge */}
+              <div 
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-gray-900 text-white text-xs font-medium mb-8 w-fit animate-fade-in-up shadow-lg"
+                style={{ animationDelay: '0ms' }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                 <span className="text-green-400 font-semibold">Live</span>
-              </span>
-              <span className="w-px h-3.5 bg-white/20" />
-              <ThunderboltFilled className="text-yellow-400 text-xs" />
-              <span>Battery swap in under 2 minutes</span>
-              <ArrowRightOutlined className="text-xs text-gray-400" />
+                <span className="w-px h-3 bg-white/20" />
+                <span>500+ stations active now</span>
+              </div>
+
+              {/* Heading — 2 clean lines */}
+              <h1 
+                className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.0] tracking-tight mb-5 animate-fade-in-up whitespace-nowrap"
+                style={{ animationDelay: '100ms' }}
+              >
+                Power Your{' '}
+                <span className="text-gray-300">Journey.</span>
+              </h1>
+
+              {/* Sub heading */}
+              <p 
+                className="text-3xl md:text-4xl font-semibold text-gray-400 mb-5 animate-fade-in-up"
+                style={{ animationDelay: '150ms' }}
+              >
+                Swap in Seconds.
+              </p>
+
+              {/* Body */}
+              <p 
+                className="text-lg text-gray-400 mb-10 leading-relaxed max-w-md animate-fade-in-up"
+                style={{ animationDelay: '200ms' }}
+              >
+                Replace your EV battery in under 2 minutes. No cables. No waiting.
+              </p>
+
+              {/* Buttons */}
+              <div 
+                className="flex items-center gap-3 mb-10 animate-fade-in-up"
+                style={{ animationDelay: '300ms' }}
+              >
+                <button
+                  onClick={() => router.push(routes.SIGNUP)}
+                  className="group relative bg-gray-900 text-white px-7 py-3.5 rounded-2xl text-sm font-bold hover:bg-gray-700 transition-all duration-200 hover:scale-105 shadow-xl flex items-center gap-2 overflow-hidden"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                  <ThunderboltFilled className="text-yellow-400 text-xs relative z-10" />
+                  <span className="relative z-10">Start Free Trial</span>
+                </button>
+
+                <button
+                  onClick={() => router.push(routes.PRICING)}
+                  className="group text-gray-600 text-sm font-semibold flex items-center gap-1.5 hover:text-gray-900 transition-colors duration-200"
+                >
+                  See pricing
+                  <ArrowRightOutlined className="text-xs group-hover:translate-x-1 transition-transform duration-200" />
+                </button>
+              </div>
+
+              {/* Social proof */}
+              <div 
+                className="flex items-center gap-4 animate-fade-in-up"
+                style={{ animationDelay: '400ms' }}
+              >
+                <div className="flex -space-x-2">
+                  {['S','M','D','H','K'].map((l, i) => (
+                    <div 
+                      key={i}
+                      className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm"
+                      style={{ background: ['#111','#333','#555','#777','#999'][i] }}
+                    >
+                      {l}
+                    </div>
+                  ))}
+                </div>
+                <div className="h-8 w-px bg-gray-200" />
+                <div>
+                  <div className="flex gap-0.5 mb-0.5">
+                    {[1,2,3,4,5].map(i => (
+                      <span key={i} className="text-yellow-400 text-xs">★</span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-400">
+                    <span className="font-bold text-gray-900">50K+</span>{' '}
+                    happy drivers
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Main heading with stagger */}
-            <h1 
-              className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight animate-fade-in-up"
-              style={{ animationDelay: '100ms' }}
-            >
-              Power Your Journey,
-              <br />
-              <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-gray-900 via-gray-600 to-gray-900 bg-clip-text text-transparent">
-                  Swap in Seconds
-                </span>
-                {/* Underline accent */}
-                <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gray-900 to-transparent rounded-full opacity-20" />
-              </span>
-            </h1>
-
-            {/* Subtext */}
-            <p 
-              className="text-xl md:text-2xl text-gray-500 mb-10 leading-relaxed max-w-xl mx-auto animate-fade-in-up"
+            {/* ── RIGHT — Phone mockup ── */}
+            <div 
+              className="relative flex justify-center lg:justify-start items-end pl-0 lg:pl-4 animate-fade-in-up"
               style={{ animationDelay: '200ms' }}
             >
-              Swap your EV battery in under 2 minutes.
-              No waiting. No charging. Just drive.
-            </p>
+              {/* Ground glow */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-gray-400/20 blur-3xl rounded-full pointer-events-none" />
 
-            {/* CTA Buttons */}
-            <div 
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-8 animate-fade-in-up"
-              style={{ animationDelay: '300ms' }}
-            >
-              {/* Primary button with glow */}
-              <button
-                onClick={() => router.push(routes.SIGNUP)}
-                className="relative group bg-black text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-2xl overflow-hidden"
+              {/* Phone wrapper — angled */}
+              <div 
+                className="relative"
+                style={{
+                  transform: 'perspective(1000px) rotateY(-8deg) rotateX(2deg)',
+                  transformStyle: 'preserve-3d'
+                }}
               >
-                {/* Button shimmer effect */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                <span className="relative flex items-center gap-2">
-                  <RocketOutlined />
-                  Start Free Trial
-                </span>
-              </button>
+                {/* Phone shell */}
+                <div className="w-[260px] sm:w-[280px] bg-gray-950 rounded-[2.8rem] shadow-[0_40px_80px_rgba(0,0,0,0.35)] border border-gray-700/60 overflow-hidden">
+                  {/* Notch bar */}
+                  <div className="bg-gray-950 px-5 pt-4 pb-2 flex items-center justify-between">
+                    <span className="text-white/80 text-xs font-medium">9:41</span>
+                    <div className="w-14 h-4 bg-black rounded-full" />
+                    <div className="w-4 h-2.5 border border-white/30 rounded-sm relative overflow-hidden">
+                      <div className="absolute left-0 top-0 bottom-0 w-[80%] bg-green-400" />
+                    </div>
+                  </div>
 
-              {/* Secondary button */}
-              <button
-                onClick={() => router.push(routes.PRICING)}
-                className="group bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-semibold border-2 border-gray-200 hover:border-gray-900 transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
-              >
-                View Pricing
-                <ArrowRightOutlined className="text-sm group-hover:translate-x-1 transition-transform duration-200" />
-              </button>
+                  {/* Screen content */}
+                  <div className="bg-gray-950 px-3 pb-8 space-y-2.5">
+                    {/* Hero greeting card */}
+                    <div className="bg-gray-900 rounded-2xl p-4">
+                      <p className="text-gray-400 text-[11px] mb-0.5">Good morning</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-white font-bold text-base">Samuel ⚡</p>
+                        <span className="text-[10px] text-green-400 font-semibold bg-green-400/10 px-2 py-0.5 rounded-full border border-green-400/20">
+                          Online
+                        </span>
+                      </div>
+
+                      {/* Inline stats */}
+                      <div className="grid grid-cols-3 gap-1.5 mt-3">
+                        {[
+                          { v: '5', l: 'Nearby' },
+                          { v: '1', l: 'Active' },
+                          { v: '12', l: 'Swaps' },
+                        ].map((s, i) => (
+                          <div 
+                            key={i}
+                            className="bg-white/5 border border-white/10 rounded-xl p-2 text-center"
+                          >
+                            <p className="text-white font-bold text-sm">{s.v}</p>
+                            <p className="text-gray-500 text-[10px]">{s.l}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Plan card */}
+                    <div className="bg-gradient-to-r from-purple-900/40 to-purple-800/20 border border-purple-500/20 rounded-2xl p-3.5 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm">👑</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-white text-xs font-semibold">Premium Plan</p>
+                        <div className="w-full h-1 bg-gray-700 rounded-full mt-1.5 overflow-hidden">
+                          <div className="w-[88%] h-full bg-purple-500 rounded-full" />
+                        </div>
+                      </div>
+                      <p className="text-purple-300 text-xs font-bold flex-shrink-0">88 left</p>
+                    </div>
+
+                    {/* Stations */}
+                    <div>
+                      <p className="text-gray-500 text-[11px] px-1 mb-1.5">Nearby Stations</p>
+                      <div className="space-y-1.5">
+                        {[
+                          { n: 'Beach Side', d: '0.3km', b: 43, hot: true },
+                          { n: 'Mall Road', d: '0.8km', b: 38, hot: false },
+                          { n: 'Tech Park', d: '1.2km', b: 12, hot: false },
+                        ].map((st, i) => (
+                          <div 
+                            key={i}
+                            className={`rounded-2xl p-3 flex items-center gap-2.5 ${
+                              i === 0 ? 'bg-white/10 border border-white/15' : 'bg-gray-900'
+                            }`}
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-gray-700 flex items-center justify-center flex-shrink-0">
+                              <ThunderboltFilled className="text-white text-[10px]" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white text-xs font-semibold truncate">{st.n}</p>
+                              <p className="text-gray-500 text-[10px]">{st.d} away</p>
+                            </div>
+                            <span 
+                              className={`text-xs font-bold px-2 py-0.5 rounded-lg ${
+                                st.b > 20 ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                              }`}
+                            >
+                              {st.b}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating pill — swap complete */}
+                <div className="absolute -left-14 top-1/3 bg-white rounded-2xl shadow-2xl p-3 border border-gray-100 flex items-center gap-2.5 animate-[float_3s_ease-in-out_infinite]">
+                  <div className="w-7 h-7 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                    <CheckCircleFilled className="text-green-500 text-xs" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-gray-900 whitespace-nowrap">Swap Complete!</p>
+                    <p className="text-[10px] text-gray-400 whitespace-nowrap">2 min 14 sec</p>
+                  </div>
+                </div>
+
+                {/* Floating pill — live stations */}
+                <div 
+                  className="absolute -right-10 bottom-28 bg-gray-900 rounded-2xl shadow-2xl px-3 py-2.5 border border-gray-700 flex items-center gap-2 animate-[float_4s_ease-in-out_infinite]"
+                  style={{ animationDelay: '1.5s' }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0" />
+                  <p className="text-xs font-semibold text-white whitespace-nowrap">500+ live</p>
+                </div>
+              </div>
             </div>
 
-            {/* Trust badges */}
-            <p 
-              className="text-sm text-gray-400 mb-12 animate-fade-in-up"
-              style={{ animationDelay: '400ms' }}
-            >
-              No credit card required · 7-day free trial · Cancel anytime
-            </p>
           </div>
         </div>
       </section>
