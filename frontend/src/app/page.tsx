@@ -17,6 +17,7 @@ import { routes } from "../routes";
 const LandingPage = () => {
   const router = useRouter();
   const [scrolled, setScrolled] = React.useState(false);
+  const [barDismissed, setBarDismissed] = React.useState(false);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -85,8 +86,46 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
+      {/* Announcement Bar */}
+      {!barDismissed && (
+        <div className="fixed top-0 left-0 right-0 z-[60] bg-gray-900 text-white">
+          <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-center gap-3 relative">
+            {/* Shimmer animation */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] animate-[shimmer_3s_ease-in-out_infinite]" />
+            </div>
+
+            <div className="relative flex items-center gap-3 flex-wrap justify-center">
+              {/* Badge */}
+              <span className="flex items-center gap-1 bg-white/15 border border-white/20 px-2.5 py-0.5 rounded-full text-xs font-bold text-yellow-400 flex-shrink-0">
+                <ThunderboltFilled className="text-xs" />
+                NEW
+              </span>
+
+              <p className="text-xs sm:text-sm text-gray-200 text-center">
+                🎉 50 new stations added across Addis Ababa this month — 
+                <button
+                  onClick={() => router.push(routes.SIGNUP)}
+                  className="font-semibold text-white underline underline-offset-2 ml-1 hover:text-gray-300 transition-colors"
+                >
+                  Claim your free trial →
+                </button>
+              </p>
+            </div>
+
+            {/* Dismiss button */}
+            <button
+              onClick={() => setBarDismissed(true)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center text-gray-400 hover:text-white text-xs flex-shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 nav-slide-down ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100' : 'bg-transparent border-b border-transparent'}`}>
+      <nav className={`fixed left-0 right-0 z-50 transition-all duration-300 nav-slide-down ${barDismissed ? 'top-0' : 'top-[38px]'} ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100' : 'bg-transparent border-b border-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div 
@@ -129,7 +168,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className={`relative pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden transition-all duration-300 ${barDismissed ? 'pt-32' : 'pt-44'}`}>
         {/* Animated background orbs */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Top right orb */}
