@@ -18,6 +18,7 @@ const LandingPage = () => {
   const router = useRouter();
   const [scrolled, setScrolled] = React.useState(false);
   const [barDismissed, setBarDismissed] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState(0);
   
   const statsRef = React.useRef<HTMLDivElement>(null);
   const [statsVisible, setStatsVisible] = React.useState(false);
@@ -730,96 +731,280 @@ const LandingPage = () => {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 relative overflow-hidden">
+      <section id="features" className="py-24 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section header */}
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold uppercase tracking-wider mb-4">
+          {/* Header */}
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wider mb-4">
               Why Choose Us
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
               Built for Speed{' '}
               <span className="text-gray-400">and Reliability</span>
             </h2>
           </div>
 
-          {/* Feature grid - asymmetric */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Large feature card */}
-            <div className="lg:col-span-2 relative bg-gray-900 rounded-3xl p-8 text-white overflow-hidden group hover:scale-[1.01] transition-transform duration-300">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/3 rounded-full blur-2xl" />
-              
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-6">
-                  <ThunderboltFilled className="text-yellow-400 text-xl" />
-                </div>
-                <h3 className="text-2xl font-bold mb-3">Instant Battery Swap</h3>
-                <p className="text-gray-400 leading-relaxed mb-6 max-w-md">
-                  No more waiting hours for your EV to charge. Our swap stations replace your battery in under 2 minutes, keeping you on the road.
-                </p>
-                <div className="flex items-center gap-6">
-                  <div>
-                    <p className="text-3xl font-bold">&lt;2min</p>
-                    <p className="text-xs text-gray-400">Swap Time</p>
+          {/* Tab buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+            {[
+              {
+                id: 0,
+                label: 'Instant Swap',
+                icon: <ThunderboltFilled />,
+                color: 'text-yellow-500',
+                activeBg: 'bg-yellow-50 border-yellow-200',
+              },
+              {
+                id: 1,
+                label: 'Certified Safe',
+                icon: <SafetyOutlined />,
+                color: 'text-blue-500',
+                activeBg: 'bg-blue-50 border-blue-200',
+              },
+              {
+                id: 2,
+                label: 'Real-Time',
+                icon: <ClockCircleOutlined />,
+                color: 'text-purple-500',
+                activeBg: 'bg-purple-50 border-purple-200',
+              },
+              {
+                id: 3,
+                label: 'Flexible Plans',
+                icon: <RocketOutlined />,
+                color: 'text-green-500',
+                activeBg: 'bg-green-50 border-green-200',
+              },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? `${tab.activeBg} ${tab.color} shadow-sm scale-105`
+                    : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                <span className={`text-sm ${activeTab === tab.id ? tab.color : 'text-gray-400'}`}>
+                  {tab.icon}
+                </span>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab content panel */}
+          <div className="relative">
+            {[
+              {
+                title: 'Instant Battery Swap',
+                desc: 'Replace your depleted battery with a fully charged one in under 2 minutes. No charging cables, no adapters, no waiting around.',
+                iconColor: 'text-yellow-500',
+                iconBg: 'bg-yellow-50',
+                borderColor: 'border-yellow-100',
+                icon: <ThunderboltFilled />,
+                stats: [
+                  { value: '<2min', label: 'Avg Swap Time', color: 'text-yellow-500', bg: 'bg-yellow-50' },
+                  { value: '24/7', label: 'Always Open', color: 'text-yellow-500', bg: 'bg-yellow-50' },
+                  { value: '500+', label: 'Stations', color: 'text-yellow-500', bg: 'bg-yellow-50' },
+                ],
+                visual: (
+                  <div className="flex flex-col gap-3">
+                    {/* Swap progress animation */}
+                    <div className="bg-gray-900 rounded-2xl p-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <p className="text-white text-sm font-semibold">Swap in Progress</p>
+                        <span className="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full font-semibold border border-green-400/20">
+                          Active
+                        </span>
+                      </div>
+                      {/* Progress bar */}
+                      <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden mb-2">
+                        <div className="h-full w-[75%] bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-full animate-pulse" />
+                      </div>
+                      <div className="flex justify-between">
+                        <p className="text-xs text-gray-400">Battery replaced</p>
+                        <p className="text-xs text-yellow-400 font-bold">1:24 remaining</p>
+                      </div>
+                    </div>
+                    {/* Before/after */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-red-50 border border-red-100 rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-red-500 mb-1">4%</p>
+                        <p className="text-xs text-gray-500">Battery before</p>
+                      </div>
+                      <div className="bg-green-50 border border-green-100 rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-green-500 mb-1">100%</p>
+                        <p className="text-xs text-gray-500">Battery after</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-px h-10 bg-white/10" />
-                  <div>
-                    <p className="text-3xl font-bold">24/7</p>
-                    <p className="text-xs text-gray-400">Available</p>
+                ),
+              },
+              {
+                title: 'Certified Safe Batteries',
+                desc: 'Every battery in our network is inspected, tested, and certified before each swap. We partner only with ISO-certified manufacturers.',
+                iconColor: 'text-blue-500',
+                iconBg: 'bg-blue-50',
+                borderColor: 'border-blue-100',
+                icon: <SafetyOutlined />,
+                stats: [
+                  { value: '100%', label: 'Inspected', color: 'text-blue-500', bg: 'bg-blue-50' },
+                  { value: 'ISO', label: 'Certified', color: 'text-blue-500', bg: 'bg-blue-50' },
+                  { value: '0', label: 'Incidents', color: 'text-blue-500', bg: 'bg-blue-50' },
+                ],
+                visual: (
+                  <div className="flex flex-col gap-3">
+                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+                      <p className="text-sm font-bold text-gray-900 mb-4">Safety Checklist</p>
+                      <div className="space-y-3">
+                        {[
+                          'Voltage test passed',
+                          'Temperature check normal',
+                          'Cell integrity verified',
+                          'ISO certification valid',
+                          'Ready for swap',
+                        ].map((item, i) => (
+                          <div key={i} className="flex items-center gap-3">
+                            <CheckCircleFilled className="text-blue-500 text-sm flex-shrink-0" />
+                            <p className="text-sm text-gray-700">{item}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="bg-gray-900 rounded-xl px-5 py-4 flex items-center gap-3">
+                      <SafetyOutlined className="text-blue-400 text-xl flex-shrink-0" />
+                      <div>
+                        <p className="text-white text-xs font-semibold">Zero safety incidents</p>
+                        <p className="text-gray-400 text-xs">Since platform launch</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-px h-10 bg-white/10" />
-                  <div>
-                    <p className="text-3xl font-bold">500+</p>
-                    <p className="text-xs text-gray-400">Stations</p>
+                ),
+              },
+              {
+                title: 'Real-Time Availability',
+                desc: 'Live battery counts update every minute. See exactly how many batteries are available at each station before you leave home.',
+                iconColor: 'text-purple-500',
+                iconBg: 'bg-purple-50',
+                borderColor: 'border-purple-100',
+                icon: <ClockCircleOutlined />,
+                stats: [
+                  { value: 'Live', label: 'Updates', color: 'text-purple-500', bg: 'bg-purple-50' },
+                  { value: '99.8%', label: 'Uptime', color: 'text-purple-500', bg: 'bg-purple-50' },
+                  { value: '1min', label: 'Refresh Rate', color: 'text-purple-500', bg: 'bg-purple-50' },
+                ],
+                visual: (
+                  <div className="flex flex-col gap-3">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-1">
+                      Live Station Feed
+                    </p>
+                    {[
+                      { name: 'Beach Side Station', count: 43, pct: 86 },
+                      { name: 'Mall Road Station', count: 38, pct: 76 },
+                      { name: 'Tech Park Hub', count: 12, pct: 24 },
+                      { name: 'Airport Station', count: 50, pct: 100 },
+                    ].map((st, i) => (
+                      <div key={i} className="bg-white border border-gray-100 rounded-xl px-4 py-3 shadow-sm">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-xs font-semibold text-gray-900">{st.name}</p>
+                          <span
+                            className={`text-xs font-bold px-2 py-0.5 rounded-lg ${
+                              st.pct > 50 ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600'
+                            }`}
+                          >
+                            {st.count} left
+                          </span>
+                        </div>
+                        <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${st.pct > 50 ? 'bg-green-400' : 'bg-yellow-400'}`}
+                            style={{ width: `${st.pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Small feature card 1 */}
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
-              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
-                <SafetyOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Certified Safe</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                All batteries are tested and certified to the highest safety standards.
-              </p>
-            </div>
-
-            {/* Small feature card 2 */}
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
-              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
-                <ClockCircleOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Real-Time Updates</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Live station availability so you always find a charged battery nearby.
-              </p>
-            </div>
-
-            {/* Small feature card 3 */}
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
-              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
-                <RocketOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Flexible Plans</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Monthly plans that fit your driving habits — from casual to heavy daily use.
-              </p>
-            </div>
-
-            {/* Wide bottom card */}
-            <div className="md:col-span-2 lg:col-span-1 bg-gray-50 rounded-3xl border border-gray-100 p-7 hover:shadow-lg transition-all duration-300 group hover:scale-[1.02]">
-              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mb-5 group-hover:bg-gray-900 transition-colors duration-300">
-                <EnvironmentOutlined className="text-gray-900 text-xl group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Wide Coverage</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Stations available at major roads, malls, and business districts.
-              </p>
-            </div>
+                ),
+              },
+              {
+                title: 'Flexible Plans for Every Driver',
+                desc: 'From casual weekend drivers to daily commuters — pick a plan that fits your lifestyle. Upgrade, downgrade, or cancel anytime.',
+                iconColor: 'text-green-500',
+                iconBg: 'bg-green-50',
+                borderColor: 'border-green-100',
+                icon: <RocketOutlined />,
+                stats: [
+                  { value: '3', label: 'Plans', color: 'text-green-500', bg: 'bg-green-50' },
+                  { value: 'Free', label: '7-day Trial', color: 'text-green-500', bg: 'bg-green-50' },
+                  { value: 'Easy', label: 'Cancel', color: 'text-green-500', bg: 'bg-green-50' },
+                ],
+                visual: (
+                  <div className="flex flex-col gap-3">
+                    {[
+                      { name: 'Basic', price: 'Free', swaps: '5 swaps/mo', color: 'border-gray-200' },
+                      {
+                        name: 'Standard',
+                        price: 'Rs 499',
+                        swaps: '30 swaps/mo',
+                        color: 'border-blue-200',
+                        highlight: true,
+                      },
+                      { name: 'Premium', price: 'Rs 999', swaps: 'Unlimited swaps', color: 'border-purple-200' },
+                    ].map((plan, i) => (
+                      <div
+                        key={i}
+                        className={`rounded-xl px-5 py-4 border flex items-center justify-between ${
+                          plan.highlight ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-100'
+                        }`}
+                      >
+                        <div>
+                          <p className={`text-sm font-bold ${plan.highlight ? 'text-white' : 'text-gray-900'}`}>
+                            {plan.name}
+                          </p>
+                          <p className={`text-xs ${plan.highlight ? 'text-gray-400' : 'text-gray-500'}`}>
+                            {plan.swaps}
+                          </p>
+                        </div>
+                        <p className={`text-sm font-bold ${plan.highlight ? 'text-green-400' : 'text-gray-900'}`}>
+                          {plan.price}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              },
+            ].map(
+              (content, i) =>
+                activeTab === i && (
+                  <div
+                    key={i}
+                    className="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden animate-fade-in-up"
+                  >
+                    {/* Left — text */}
+                    <div className={`p-10 border-r ${content.borderColor}`}>
+                      <div
+                        className={`w-12 h-12 rounded-2xl ${content.iconBg} flex items-center justify-center text-xl ${content.iconColor} mb-6`}
+                      >
+                        {content.icon}
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">{content.title}</h3>
+                      <p className="text-gray-500 leading-relaxed mb-8">{content.desc}</p>
+                      {/* Stats row */}
+                      <div className="flex items-center gap-6">
+                        {content.stats.map((stat, j) => (
+                          <div key={j} className="text-center">
+                            <p className={`text-2xl font-bold ${stat.color} mb-0.5`}>{stat.value}</p>
+                            <p className="text-xs text-gray-400">{stat.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {/* Right — visual */}
+                    <div className="p-8 bg-gray-50 flex flex-col justify-center">{content.visual}</div>
+                  </div>
+                )
+            )}
           </div>
         </div>
       </section>
