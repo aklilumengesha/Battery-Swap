@@ -75,7 +75,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,36 +114,127 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-6 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Animated background orbs */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Top right orb */}
+          <div 
+            className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-gray-100 via-gray-200 to-transparent opacity-60 blur-3xl animate-pulse" 
+            style={{ animationDuration: '4s' }} 
+          />
+          {/* Bottom left orb */}
+          <div 
+            className="absolute -bottom-20 -left-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-gray-100 via-gray-50 to-transparent opacity-40 blur-3xl animate-pulse"
+            style={{ animationDuration: '6s' }} 
+          />
+          {/* Center subtle glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-gradient-to-r from-transparent via-gray-100 to-transparent opacity-30 blur-3xl" />
+          {/* Grid pattern overlay */}
+          <div 
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`,
+              backgroundSize: '60px 60px'
+            }} 
+          />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+            {/* Animated badge */}
+            <div 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900 text-white text-sm font-medium mb-8 animate-fade-in-up shadow-lg"
+              style={{ animationDelay: '0ms' }}
+            >
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-green-400 font-semibold">Live</span>
+              </span>
+              <span className="w-px h-3.5 bg-white/20" />
+              <ThunderboltFilled className="text-yellow-400 text-xs" />
+              <span>Battery swap in under 2 minutes</span>
+              <ArrowRightOutlined className="text-xs text-gray-400" />
+            </div>
+
+            {/* Main heading with stagger */}
+            <h1 
+              className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight animate-fade-in-up"
+              style={{ animationDelay: '100ms' }}
+            >
               Power Your Journey,
-              <span className="bg-gradient-to-r from-black via-gray-700 to-gray-900 bg-clip-text text-transparent">
-                {" "}Swap in Seconds
+              <br />
+              <span className="relative inline-block">
+                <span className="bg-gradient-to-r from-gray-900 via-gray-600 to-gray-900 bg-clip-text text-transparent">
+                  Swap in Seconds
+                </span>
+                {/* Underline accent */}
+                <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gray-900 to-transparent rounded-full opacity-20" />
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
+
+            {/* Subtext */}
+            <p 
+              className="text-xl md:text-2xl text-gray-500 mb-10 leading-relaxed max-w-2xl mx-auto animate-fade-in-up"
+              style={{ animationDelay: '200ms' }}
+            >
               The fastest and most convenient way to keep your electric vehicle charged.
               Join thousands of drivers who never worry about battery range.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            {/* CTA Buttons */}
+            <div 
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-8 animate-fade-in-up"
+              style={{ animationDelay: '300ms' }}
+            >
+              {/* Primary button with glow */}
               <button
                 onClick={() => router.push(routes.SIGNUP)}
-                className="bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all hover:scale-105 shadow-lg"
+                className="relative group bg-black text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-2xl overflow-hidden"
               >
-                Start Free Trial
+                {/* Button shimmer effect */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative flex items-center gap-2">
+                  <RocketOutlined />
+                  Start Free Trial
+                </span>
               </button>
+
+              {/* Secondary button */}
               <button
                 onClick={() => router.push(routes.PRICING)}
-                className="bg-gray-100 text-gray-900 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-200 transition-all hover:scale-105"
+                className="group bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-semibold border-2 border-gray-200 hover:border-gray-900 transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
               >
                 View Pricing
+                <ArrowRightOutlined className="text-sm group-hover:translate-x-1 transition-transform duration-200" />
               </button>
             </div>
-            <p className="text-sm text-gray-500 mt-4">
-              No credit card required • 7-day free trial • Cancel anytime
+
+            {/* Trust badges */}
+            <p 
+              className="text-sm text-gray-400 mb-12 animate-fade-in-up"
+              style={{ animationDelay: '400ms' }}
+            >
+              No credit card required · 7-day free trial · Cancel anytime
             </p>
+
+            {/* Stats counter row */}
+            <div 
+              className="grid grid-cols-3 gap-4 max-w-2xl mx-auto animate-fade-in-up"
+              style={{ animationDelay: '500ms' }}
+            >
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 text-center hover:shadow-md transition-shadow">
+                <p className="text-3xl font-bold text-gray-900 mb-1">500+</p>
+                <p className="text-sm text-gray-500">Swap Stations</p>
+              </div>
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 text-center hover:shadow-md transition-shadow">
+                <p className="text-3xl font-bold text-gray-900 mb-1">50K+</p>
+                <p className="text-sm text-gray-500">Happy Drivers</p>
+              </div>
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 text-center hover:shadow-md transition-shadow">
+                <p className="text-3xl font-bold text-gray-900 mb-1">&lt;2min</p>
+                <p className="text-sm text-gray-500">Avg Swap Time</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
