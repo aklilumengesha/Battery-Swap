@@ -19,6 +19,8 @@ const LandingPage = () => {
   const [scrolled, setScrolled] = React.useState(false);
   const [barDismissed, setBarDismissed] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
+  const [activeSlide, setActiveSlide] = React.useState(0);
+  const totalSlides = 2;
   
   const statsRef = React.useRef<HTMLDivElement>(null);
   const [statsVisible, setStatsVisible] = React.useState(false);
@@ -1178,166 +1180,312 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Testimonials */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header row - left aligned */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16">
+          {/* Header row */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+            {/* Left */}
             <div>
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wider mb-4">
-                Testimonials
-              </span>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                What our drivers say
+              </p>
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                What our drivers
-                <br />
-                <span className="text-gray-400">are saying</span>
+                Trusted by{' '}
+                <span className="text-gray-400">50,000+ drivers</span>
               </h2>
             </div>
 
-            {/* Rating summary pill */}
-            <div className="flex items-center gap-4 bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 self-start lg:self-auto">
-              <div>
-                <p className="text-3xl font-bold text-gray-900">4.9</p>
-                <div className="flex items-center gap-0.5 mt-0.5">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="text-yellow-400 text-sm">★</span>
-                  ))}
+            {/* Right — Google rating card */}
+            <div className="flex items-center gap-6 bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 self-start lg:self-auto flex-shrink-0">
+              {/* Google logo */}
+              <div className="flex-shrink-0">
+                <div className="flex items-center gap-0.5">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-6 h-6"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      fill="#4285F4"
+                    />
+                    <path
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      fill="#34A853"
+                    />
+                    <path
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                      fill="#FBBC05"
+                    />
+                    <path
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      fill="#EA4335"
+                    />
+                  </svg>
+                  <span className="text-base font-semibold text-gray-700">Google</span>
                 </div>
               </div>
-              <div className="w-px h-10 bg-gray-200" />
+              <div className="w-px h-8 bg-gray-200" />
               <div>
-                <p className="text-sm font-semibold text-gray-900">2,000+</p>
-                <p className="text-xs text-gray-400">verified reviews</p>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-2xl font-bold text-gray-900">4.9</span>
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <span key={i} className="text-yellow-400 text-sm">★</span>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400">2,000+ reviews</p>
               </div>
             </div>
           </div>
 
-          {/* Masonry-style card grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Card 1 - tall with highlight */}
-            <div className="bg-gray-900 rounded-3xl p-7 text-white flex flex-col justify-between min-h-[280px] hover:scale-[1.01] transition-transform duration-300 row-span-1">
-              <div>
-                <div className="flex items-center gap-0.5 mb-5">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="text-yellow-400 text-sm">★</span>
-                  ))}
-                </div>
-                <p className="text-gray-200 text-base leading-relaxed">
-                  "I used to plan every trip around charging stations. Now I just swap and go. Takes less time than stopping for coffee. Absolute game changer."
-                </p>
+          {/* Carousel track */}
+          <div className="relative overflow-hidden">
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+            >
+              {/* Slide 1 */}
+              <div className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  {
+                    quote: "BatterySwap changed how I use my EV completely. I just swap and go — takes less time than stopping for coffee.",
+                    name: "Samuel Tesfaye",
+                    role: "Tesla Model 3",
+                    time: "2 weeks ago",
+                    letter: "S",
+                    color: "bg-blue-500",
+                    verified: true,
+                  },
+                  {
+                    quote: "As a rideshare driver I cannot afford downtime. BatterySwap keeps me earning. Best investment I have made.",
+                    name: "Dawit Bekele",
+                    role: "Kia EV6",
+                    time: "1 month ago",
+                    letter: "D",
+                    color: "bg-red-500",
+                    verified: true,
+                  },
+                  {
+                    quote: "Under 2 minutes and I was back on the road with a full battery. I was skeptical at first but now I am a believer.",
+                    name: "Meron Alemu",
+                    role: "Nissan Leaf",
+                    time: "3 weeks ago",
+                    letter: "M",
+                    color: "bg-green-500",
+                    verified: true,
+                  },
+                  {
+                    quote: "The live availability feature is brilliant. Never once arrived at an empty station. Zero range anxiety now.",
+                    name: "Hana Girma",
+                    role: "BMW i3",
+                    time: "1 month ago",
+                    letter: "H",
+                    color: "bg-purple-500",
+                    verified: true,
+                  },
+                ].map((t, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    {/* Top row */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
+                          {t.letter}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1">
+                            <p className="text-sm font-bold text-gray-900 leading-none">{t.name}</p>
+                            {t.verified && (
+                              <CheckCircleFilled className="text-blue-500 text-xs" />
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-400 mt-0.5">{t.time}</p>
+                        </div>
+                      </div>
+                      {/* Google G */}
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-5 h-5 flex-shrink-0"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                          fill="#4285F4"
+                        />
+                        <path
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                          fill="#34A853"
+                        />
+                        <path
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                          fill="#FBBC05"
+                        />
+                        <path
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                          fill="#EA4335"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Stars */}
+                    <div className="flex gap-0.5 mb-3">
+                      {[1, 2, 3, 4, 5].map(j => (
+                        <span key={j} className="text-yellow-400 text-sm">★</span>
+                      ))}
+                    </div>
+
+                    {/* Quote */}
+                    <p className="text-sm text-gray-600 leading-relaxed flex-1 mb-4">{t.quote}</p>
+
+                    {/* Bottom */}
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+                      <span className="text-xs text-gray-400">{t.role}</span>
+                      <span className="text-xs font-semibold text-blue-500 cursor-pointer hover:underline">
+                        Read more
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center gap-3 mt-6 pt-5 border-t border-white/10">
-                <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                  S
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-white">Samuel Tesfaye</p>
-                  <p className="text-xs text-gray-400">Tesla Model 3 · Addis Ababa</p>
-                </div>
+
+              {/* Slide 2 */}
+              <div className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  {
+                    quote: "Unlimited swaps on the Premium plan means zero range anxiety. I drive more than ever before and love every mile.",
+                    name: "Kidus Haile",
+                    role: "Hyundai Ioniq",
+                    time: "2 months ago",
+                    letter: "K",
+                    color: "bg-orange-500",
+                    verified: true,
+                  },
+                  {
+                    quote: "Setup took 3 minutes. First swap took 90 seconds. I genuinely cannot go back to waiting hours at a charger.",
+                    name: "Ayana Teshome",
+                    role: "Audi e-tron",
+                    time: "6 weeks ago",
+                    letter: "A",
+                    color: "bg-teal-500",
+                    verified: true,
+                  },
+                  {
+                    quote: "The producer dashboard is incredibly well built. I listed my station in 10 minutes and had my first booking the same day.",
+                    name: "Yonas Mekonnen",
+                    role: "Station Owner",
+                    time: "1 month ago",
+                    letter: "Y",
+                    color: "bg-indigo-500",
+                    verified: true,
+                  },
+                  {
+                    quote: "Customer support is excellent. Had a question at midnight and got a response within minutes. Truly impressive service.",
+                    name: "Tigist Bekele",
+                    role: "Ford Mustang EV",
+                    time: "3 weeks ago",
+                    letter: "T",
+                    color: "bg-pink-500",
+                    verified: true,
+                  },
+                ].map((t, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
+                          {t.letter}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1">
+                            <p className="text-sm font-bold text-gray-900 leading-none">{t.name}</p>
+                            {t.verified && (
+                              <CheckCircleFilled className="text-blue-500 text-xs" />
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-400 mt-0.5">{t.time}</p>
+                        </div>
+                      </div>
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-5 h-5 flex-shrink-0"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                          fill="#4285F4"
+                        />
+                        <path
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                          fill="#34A853"
+                        />
+                        <path
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                          fill="#FBBC05"
+                        />
+                        <path
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                          fill="#EA4335"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex gap-0.5 mb-3">
+                      {[1, 2, 3, 4, 5].map(j => (
+                        <span key={j} className="text-yellow-400 text-sm">★</span>
+                      ))}
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed flex-1 mb-4">{t.quote}</p>
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+                      <span className="text-xs text-gray-400">{t.role}</span>
+                      <span className="text-xs font-semibold text-blue-500 cursor-pointer hover:underline">
+                        Read more
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
+          </div>
 
-            {/* Card 2 - light */}
-            <div className="bg-gray-50 rounded-3xl border border-gray-100 p-7 flex flex-col justify-between hover:scale-[1.01] transition-transform duration-300">
-              <div>
-                <div className="flex items-center gap-0.5 mb-5">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="text-yellow-400 text-sm">★</span>
-                  ))}
-                </div>
-                <p className="text-gray-600 text-base leading-relaxed">
-                  "As a rideshare driver I cannot afford downtime. BatterySwap keeps me earning without long charging stops. Best investment I made."
-                </p>
-              </div>
-              <div className="flex items-center gap-3 mt-6 pt-5 border-t border-gray-100">
-                <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                  D
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Dawit Bekele</p>
-                  <p className="text-xs text-gray-400">Kia EV6 · Rideshare driver</p>
-                </div>
-              </div>
+          {/* Carousel controls */}
+          <div className="flex items-center justify-between mt-8">
+            {/* Dot indicators */}
+            <div className="flex items-center gap-2">
+              {[0, 1].map(i => (
+                <button
+                  key={i}
+                  onClick={() => setActiveSlide(i)}
+                  className={`rounded-full transition-all duration-300 ${
+                    activeSlide === i
+                      ? 'w-6 h-2.5 bg-gray-900'
+                      : 'w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
             </div>
 
-            {/* Card 3 - white with border */}
-            <div className="bg-white rounded-3xl border border-gray-200 p-7 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform duration-300">
-              <div>
-                <div className="flex items-center gap-0.5 mb-5">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="text-yellow-400 text-sm">★</span>
-                  ))}
-                </div>
-                <p className="text-gray-600 text-base leading-relaxed">
-                  "Finding a swap station is so easy. Real-time availability means I always know exactly where to go before I even leave home."
-                </p>
-              </div>
-              <div className="flex items-center gap-3 mt-6 pt-5 border-t border-gray-100">
-                <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-900 font-bold text-sm flex-shrink-0">
-                  M
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Meron Alemu</p>
-                  <p className="text-xs text-gray-400">Nissan Leaf · Daily commuter</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 4 - wide spanning 2 cols */}
-            <div className="md:col-span-2 bg-white rounded-3xl border border-gray-100 shadow-sm p-7 flex flex-col md:flex-row items-start md:items-center gap-6 hover:scale-[1.005] transition-transform duration-300">
-              {/* Left quote */}
-              <div className="flex-1">
-                <div className="flex items-center gap-0.5 mb-4">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="text-yellow-400 text-sm">★</span>
-                  ))}
-                </div>
-                <p className="text-gray-600 text-base leading-relaxed">
-                  "The Premium plan is worth every birr. Unlimited swaps mean I never stress about battery levels on long trips across the city."
-                </p>
-              </div>
-
-              {/* Divider */}
-              <div className="hidden md:block w-px h-20 bg-gray-100 flex-shrink-0" />
-
-              {/* Author + stats */}
-              <div className="flex flex-col gap-4 flex-shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                    H
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">Hana Girma</p>
-                    <p className="text-xs text-gray-400">BMW i3 · Premium member</p>
-                  </div>
-                </div>
-
-                {/* Mini stat */}
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-50 rounded-xl px-3 py-2 text-center border border-green-100">
-                    <p className="text-lg font-bold text-green-600">47</p>
-                    <p className="text-xs text-gray-400">swaps done</p>
-                  </div>
-                  <div className="bg-blue-50 rounded-xl px-3 py-2 text-center border border-blue-100">
-                    <p className="text-lg font-bold text-blue-600">3mo</p>
-                    <p className="text-xs text-gray-400">member</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 5 - single col stat card */}
-            <div className="bg-gray-50 rounded-3xl border border-gray-100 p-7 flex flex-col justify-center items-center text-center hover:scale-[1.01] transition-transform duration-300">
-              <div className="w-14 h-14 rounded-2xl bg-gray-900 flex items-center justify-center mb-4">
-                <ThunderboltFilled className="text-yellow-400 text-xl" />
-              </div>
-              <p className="text-4xl font-bold text-gray-900 mb-1">50K+</p>
-              <p className="text-sm font-semibold text-gray-700 mb-1">Happy Drivers</p>
-              <p className="text-xs text-gray-400">and growing every day</p>
-              <div className="flex items-center gap-1.5 mt-4 px-3 py-1.5 rounded-full bg-green-50 border border-green-100">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-xs text-green-600 font-medium">Active right now</span>
-              </div>
+            {/* Prev / Next buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setActiveSlide(prev => Math.max(0, prev - 1))}
+                disabled={activeSlide === 0}
+                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 hover:border-gray-900 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                ←
+              </button>
+              <button
+                onClick={() => setActiveSlide(prev => Math.min(totalSlides - 1, prev + 1))}
+                disabled={activeSlide === totalSlides - 1}
+                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 hover:border-gray-900 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                →
+              </button>
             </div>
           </div>
         </div>
