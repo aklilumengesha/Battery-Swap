@@ -574,39 +574,7 @@ const LandingPage = () => {
             ))}
           </div>
 
-          {/* Bottom ticker strip */}
-          <div className="mt-8 bg-gray-900 rounded-2xl px-6 py-4 flex items-center gap-4 overflow-hidden relative">
-            {/* Fade right edge */}
-            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-900 to-transparent z-10 pointer-events-none" />
 
-            <span className="flex-shrink-0 flex items-center gap-2 text-xs font-bold text-white bg-white/15 border border-white/20 px-3 py-1.5 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              LIVE
-            </span>
-
-            {/* Scrolling ticker text */}
-            <div className="flex gap-12 overflow-hidden flex-1">
-              <div className="flex gap-12 animate-[scroll_15s_linear_infinite] w-max">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center gap-8 flex-shrink-0">
-                    {[
-                      '⚡ 47 swaps in the last minute',
-                      '📍 Beach Side Station — 43 batteries available',
-                      '🚗 New station opened: Tech Park',
-                      '🔋 Mall Road Station — fully stocked',
-                      '✅ 99.8% network uptime today',
-                      '🎉 Downtown Hub — most popular today',
-                    ].map((item, j) => (
-                      <span key={j} className="text-xs text-gray-400 whitespace-nowrap flex items-center gap-2">
-                        {item}
-                        <span className="text-gray-600">•</span>
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
