@@ -340,6 +340,125 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Live Stats Ticker */}
+      <section className="py-16 bg-gray-50 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section label */}
+          <div className="flex items-center justify-center gap-2 mb-10">
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              Live Platform Stats
+            </span>
+          </div>
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                value: '500+',
+                label: 'Active Stations',
+                sub: 'Across the network',
+                icon: <EnvironmentOutlined />,
+                color: 'text-blue-500',
+                bg: 'bg-blue-50',
+              },
+              {
+                value: '12,400',
+                label: 'Swaps Today',
+                sub: 'And counting',
+                icon: <ThunderboltFilled />,
+                color: 'text-yellow-500',
+                bg: 'bg-yellow-50',
+                live: true,
+              },
+              {
+                value: '50K+',
+                label: 'Active Drivers',
+                sub: 'Across all plans',
+                icon: <RocketOutlined />,
+                color: 'text-purple-500',
+                bg: 'bg-purple-50',
+              },
+              {
+                value: '99.8%',
+                label: 'Uptime',
+                sub: 'Last 30 days',
+                icon: <SafetyOutlined />,
+                color: 'text-green-500',
+                bg: 'bg-green-50',
+              },
+            ].map((stat, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group"
+              >
+                {/* Icon + live badge row */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center text-base ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+                    {stat.icon}
+                  </div>
+                  {stat.live && (
+                    <span className="flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                      Live
+                    </span>
+                  )}
+                </div>
+
+                {/* Value */}
+                <p className="text-3xl font-bold text-gray-900 mb-1 tabular-nums">
+                  {stat.value}
+                </p>
+
+                {/* Label */}
+                <p className="text-sm font-semibold text-gray-700 mb-0.5">
+                  {stat.label}
+                </p>
+
+                {/* Sub */}
+                <p className="text-xs text-gray-400">
+                  {stat.sub}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom ticker strip */}
+          <div className="mt-8 bg-gray-900 rounded-2xl px-6 py-4 flex items-center gap-4 overflow-hidden relative">
+            {/* Fade right edge */}
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-900 to-transparent z-10 pointer-events-none" />
+
+            <span className="flex-shrink-0 flex items-center gap-2 text-xs font-bold text-white bg-white/15 border border-white/20 px-3 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              LIVE
+            </span>
+
+            {/* Scrolling ticker text */}
+            <div className="flex gap-12 overflow-hidden flex-1">
+              <div className="flex gap-12 animate-[scroll_15s_linear_infinite] w-max">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-8 flex-shrink-0">
+                    {[
+                      '⚡ 47 swaps in the last minute',
+                      '📍 Beach Side Station — 43 batteries available',
+                      '🚗 New station opened: Tech Park',
+                      '🔋 Mall Road Station — fully stocked',
+                      '✅ 99.8% network uptime today',
+                      '🎉 Downtown Hub — most popular today',
+                    ].map((item, j) => (
+                      <span key={j} className="text-xs text-gray-400 whitespace-nowrap flex items-center gap-2">
+                        {item}
+                        <span className="text-gray-600">•</span>
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section id="how-it-works" className="py-24 bg-gray-50 relative overflow-hidden">
         {/* Background decoration */}
