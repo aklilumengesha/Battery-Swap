@@ -293,6 +293,53 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Trusted By Section */}
+      <section className="py-12 border-y border-gray-100 bg-white overflow-hidden relative">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+          <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest">
+            Compatible with leading EV brands
+          </p>
+        </div>
+
+        {/* Scrolling logo track */}
+        <div className="flex gap-12 animate-[scroll_20s_linear_infinite] w-max">
+          {/* Render logos twice for seamless loop */}
+          {[...Array(2)].map((_, setIndex) => (
+            <div key={setIndex} className="flex items-center gap-12">
+              {[
+                { name: 'Tesla', letter: 'T' },
+                { name: 'Nissan', letter: 'N' },
+                { name: 'BMW', letter: 'B' },
+                { name: 'Hyundai', letter: 'H' },
+                { name: 'Kia', letter: 'K' },
+                { name: 'Audi', letter: 'A' },
+                { name: 'Ford', letter: 'F' },
+                { name: 'Volkswagen', letter: 'VW' },
+              ].map((brand) => (
+                <div 
+                  key={`${setIndex}-${brand.name}`}
+                  className="flex items-center gap-3 flex-shrink-0 group"
+                >
+                  {/* Brand icon */}
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-900 transition-colors duration-300">
+                    <span className="text-xs font-black text-gray-500 group-hover:text-white transition-colors duration-300">
+                      {brand.letter}
+                    </span>
+                  </div>
+                  <span className="text-lg font-bold text-gray-300 group-hover:text-gray-900 transition-colors duration-300 whitespace-nowrap">
+                    {brand.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* How It Works */}
       <section id="how-it-works" className="py-24 bg-gray-50 relative overflow-hidden">
         {/* Background decoration */}
