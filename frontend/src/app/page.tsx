@@ -738,8 +738,7 @@ const LandingPage = () => {
               Why Choose Us
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Built for Speed
-              <br />
+              Built for Speed{' '}
               <span className="text-gray-400">and Reliability</span>
             </h2>
           </div>
