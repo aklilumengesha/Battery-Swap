@@ -255,33 +255,77 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-20 bg-gray-50">
+      <section id="how-it-works" className="py-24 bg-gray-50 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section header */}
           <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-200 text-gray-700 text-xs font-semibold uppercase tracking-wider mb-4">
+              Simple Process
+            </span>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               How It Works
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">
               Three simple steps to never run out of power
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {steps.map((step, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                <div className="text-6xl font-bold text-gray-100 mb-4">
-                  {step.number}
+
+          {/* Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {/* Connector line between steps */}
+            <div className="hidden md:block absolute top-10 left-1/6 right-1/6 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent z-0" />
+            
+            {/* Step 1 */}
+            <div className="relative z-10 flex flex-col items-center text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 rounded-2xl bg-gray-900 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <EnvironmentOutlined className="text-white text-3xl" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {step.description}
-                </p>
+                <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-xs font-bold text-gray-900 shadow-sm">
+                  1
+                </span>
               </div>
-            ))}
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Find a Station</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                Use our app to locate the nearest battery swap station. Hundreds of stations available across the city.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative z-10 flex flex-col items-center text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 rounded-2xl bg-gray-900 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <ThunderboltFilled className="text-white text-3xl" />
+                </div>
+                <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-xs font-bold text-gray-900 shadow-sm">
+                  2
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Swap Your Battery</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                Exchange your depleted battery for a fully charged one in under 2 minutes. No waiting, no charging.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative z-10 flex flex-col items-center text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 rounded-2xl bg-gray-900 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <RocketOutlined className="text-white text-3xl" />
+                </div>
+                <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-xs font-bold text-gray-900 shadow-sm">
+                  3
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Back on the Road</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                Hit the road with a full charge. Track your usage and plan your next swap from the dashboard.
+              </p>
+            </div>
           </div>
         </div>
       </section>
