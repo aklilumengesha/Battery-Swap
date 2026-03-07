@@ -18,6 +18,15 @@ const LandingPage = () => {
   const router = useRouter();
   const [scrolled, setScrolled] = React.useState(false);
   const [barDismissed, setBarDismissed] = React.useState(false);
+  
+  const statsRef = React.useRef<HTMLDivElement>(null);
+  const [statsVisible, setStatsVisible] = React.useState(false);
+  const [counts, setCounts] = React.useState({
+    stations: 0,
+    swaps: 0,
+    drivers: 0,
+    uptime: 0,
+  });
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +35,68 @@ const LandingPage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Intersection observer to trigger on scroll
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !statsVisible) {
+          setStatsVisible(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [statsVisible]);
+
+  // Counter animation when visible
+  React.useEffect(() => {
+    if (!statsVisible) return;
+
+    const targets = {
+      stations: 500,
+      swaps: 12400,
+      drivers: 50000,
+      uptime: 99.8,
+    };
+
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const interval = duration / steps;
+    let step = 0;
+
+    const timer = setInterval(() => {
+      step++;
+      const progress = step / steps;
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      setCounts({
+        stations: Math.round(targets.stations * eased),
+        swaps: Math.round(targets.swaps * eased),
+        drivers: Math.round(targets.drivers * eased),
+        uptime: Math.round(targets.uptime * eased * 10) / 10,
+      });
+
+      if (step >= steps) {
+        clearInterval(timer);
+        // Snap to exact final values
+        setCounts({
+          stations: targets.stations,
+          swaps: targets.swaps,
+          drivers: targets.drivers,
+          uptime: targets.uptime,
+        });
+      }
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [statsVisible]);
 
   const features = [
     {
@@ -503,10 +574,10 @@ const LandingPage = () => {
           </div>
 
           {/* Stats grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div ref={statsRef} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               {
-                value: '500+',
+                value: counts.stations >= 500 ? '500+' : `${counts.stations}`,
                 label: 'Active Stations',
                 sub: 'Across the network',
                 icon: <EnvironmentOutlined />,
@@ -514,7 +585,7 @@ const LandingPage = () => {
                 bg: 'bg-blue-50',
               },
               {
-                value: '12,400',
+                value: counts.swaps >= 12400 ? '12,400' : counts.swaps.toLocaleString(),
                 label: 'Swaps Today',
                 sub: 'And counting',
                 icon: <ThunderboltFilled />,
@@ -523,7 +594,11 @@ const LandingPage = () => {
                 live: true,
               },
               {
-                value: '50K+',
+                value: counts.drivers >= 50000
+                  ? '50K+'
+                  : counts.drivers >= 1000
+                  ? `${(counts.drivers / 1000).toFixed(1)}K`
+                  : `${counts.drivers}`,
                 label: 'Active Drivers',
                 sub: 'Across all plans',
                 icon: <RocketOutlined />,
@@ -531,7 +606,7 @@ const LandingPage = () => {
                 bg: 'bg-purple-50',
               },
               {
-                value: '99.8%',
+                value: counts.uptime >= 99.8 ? '99.8%' : `${counts.uptime}%`,
                 label: 'Uptime',
                 sub: 'Last 30 days',
                 icon: <SafetyOutlined />,
