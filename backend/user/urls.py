@@ -12,6 +12,12 @@ from user.views import (
     Orders,
     SignInView,
     SignUpView,
+    AdminDashboardStats,
+    AdminListUsers,
+    AdminToggleUser,
+    AdminListProducers,
+    AdminListStations,
+    AdminListBookings,
 )
 
 
@@ -25,4 +31,11 @@ urlpatterns = [
     path("orders/", Orders.as_view(), name="user_orders"),
     path("order/<int:pk>/", GetOrder.as_view(), name="user_order"),
     path("order/collect/<int:pk>/", CollectOrder.as_view(), name="order_collect"),
+    # Admin endpoints
+    path('admin/stats/', AdminDashboardStats.as_view(), name='admin_stats'),
+    path('admin/users/', AdminListUsers.as_view(), name='admin_users'),
+    path('admin/users/<int:pk>/toggle/', AdminToggleUser.as_view(), name='admin_toggle_user'),
+    path('admin/producers/', AdminListProducers.as_view(), name='admin_producers'),
+    path('admin/stations/', AdminListStations.as_view(), name='admin_stations'),
+    path('admin/bookings/', AdminListBookings.as_view(), name='admin_bookings'),
 ]

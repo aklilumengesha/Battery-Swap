@@ -1,5 +1,6 @@
 import datetime
 from rest_framework import views, status, generics
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -297,3 +298,262 @@ class GetOrder(views.APIView):
                 status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
             )
 
+
+
+# ============================================
+# ADMIN VIEWS
+# ============================================
+
+def is_admin(user):
+    return user.is_staff or \
+           getattr(user, 'user_type', '') == 'admin'
+
+
+class AdminDashboardStats(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from battery.models import Station, Battery
+            from producer.models import Producer
+            
+            total_users = User.objects.count()
+            total_producers = Producer.objects.count()
+            total_consumers = User.objects.filter(user_type='consumer').count()
+            total_stations = Station.objects.count()
+            total_batteries = Battery.objects.count()
+            total_orders = Order.objects.count()
+            paid_orders = Order.objects.filter(is_paid=True).count()
+            total_revenue = sum(
+                o.battery.price 
+                for o in Order.objects.filter(is_paid=True).select_related('battery')
+                if o.battery
+            )
+            
+            return Response({
+                'success': True,
+                'stats': {
+                    'total_users': total_users,
+                    'total_producers': total_producers,
+                    'total_consumers': total_consumers,
+                    'total_stations': total_stations,
+                    'total_batteries': total_batteries,
+                    'total_orders': total_orders,
+                    'paid_orders': paid_orders,
+                    'total_revenue': total_revenue,
+                }
+            })
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AdminListUsers(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            users = User.objects.all().order_by('-date_joined')
+            data = []
+            for u in users:
+                data.append({
+                    'pk': u.pk,
+                    'name': u.name,
+                    'email': u.email,
+                    'user_type': u.user_type,
+                    'date_joined': u.date_joined,
+                    'is_active': u.is_active,
+                })
+            
+            return Response({
+                'success': True,
+                'users': data,
+                'total': len(data)
+            })
+        except Exception as e:
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AdminToggleUser(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def patch(self, request, pk):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            user = User.objects.get(pk=pk)
+            user.is_active = not user.is_active
+            user.save()
+            
+            return Response({
+                'success': True,
+                'is_active': user.is_active,
+                'message': f'User {"activated" if user.is_active else "deactivated"}'
+            })
+        except User.DoesNotExist:
+            return Response(
+                {'success': False, 'message': 'User not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class AdminListProducers(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from producer.models import Producer
+            from battery.models import Station
+            
+            producers = Producer.objects.select_related('user', 'company').all()
+            data = []
+            for p in producers:
+                stations = Station.objects.filter(owner=p)
+                orders = Order.objects.filter(station__in=stations)
+                revenue = sum(
+                    o.battery.price 
+                    for o in orders.select_related('battery')
+                    if o.battery and o.is_paid
+                )
+                
+                data.append({
+                    'pk': p.pk,
+                    'name': p.user.name,
+                    'email': p.user.email,
+                    'company': p.company.name if p.company else '—',
+                    'total_stations': stations.count(),
+                    'total_bookings': orders.count(),
+                    'total_revenue': revenue,
+                    'is_active': p.user.is_active,
+                    'date_joined': p.user.date_joined,
+                })
+            
+            return Response({
+                'success': True,
+                'producers': data,
+                'total': len(data)
+            })
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AdminListStations(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from battery.models import Station
+            
+            stations = Station.objects.select_related(
+                'owner__user', 'owner__company'
+            ).prefetch_related('batteries').all()
+            
+            data = []
+            for s in stations:
+                data.append({
+                    'pk': s.pk,
+                    'name': s.name,
+                    'latitude': s.latitude,
+                    'longitude': s.longitude,
+                    'total_batteries': s.batteries.count(),
+                    'owner_name': s.owner.user.name if s.owner else '—',
+                    'owner_company': s.owner.company.name if s.owner and s.owner.company else '—',
+                })
+            
+            return Response({
+                'success': True,
+                'stations': data,
+                'total': len(data)
+            })
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AdminListBookings(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            orders = Order.objects.select_related(
+                'battery__vehicle',
+                'battery__company',
+                'station',
+                'station__owner__user',
+            ).order_by('-booked_time')[:100]
+            
+            data = []
+            for o in orders:
+                data.append({
+                    'pk': o.pk,
+                    'station_name': o.station.name if o.station else '—',
+                    'producer_name': o.station.owner.user.name if o.station and o.station.owner else '—',
+                    'vehicle': o.battery.vehicle.name if o.battery and o.battery.vehicle else '—',
+                    'price': o.battery.price if o.battery else 0,
+                    'is_paid': o.is_paid,
+                    'is_collected': o.is_collected,
+                    'booked_time': o.booked_time,
+                })
+            
+            return Response({
+                'success': True,
+                'bookings': data,
+                'total': len(data)
+            })
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
