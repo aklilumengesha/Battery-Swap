@@ -68,7 +68,7 @@ const tryRefreshToken = async (): Promise<boolean> => {
  * NOTE: This function returns { data, status } for ALL responses (including errors).
  * It does NOT throw on non-2xx status codes. Error handling is done at the service layer.
  */
-const base = async <T = any>(
+export const base = async <T = any>(
   url: string,
   options: RequestOptions
 ): Promise<ApiResponse<T>> => {

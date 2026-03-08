@@ -83,4 +83,11 @@ export const ProducerService = {
   // Create battery
   createBattery: (data: { vehicle: number; company: number; price: number }) =>
     base('power/batteries/', { method: 'POST', data }),
+
+  // Update company name
+  updateCompany: (data: { company_name: string }) =>
+    base<{ success: boolean; message: string }>('producer/update-company/', {
+      method: 'PATCH',
+      data,
+    }),
 };
