@@ -157,7 +157,9 @@ export const useAuthQuery = () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.all });
       
       // Redirect based on user type
-      if (data.user?.user_type === 'producer') {
+      if (data.user?.user_type === 'admin' || data.user?.is_staff === true) {
+        window.location.replace(routes.ADMIN_DASHBOARD);
+      } else if (data.user?.user_type === 'producer') {
         window.location.replace(routes.PRODUCER_DASHBOARD);
       } else {
         window.location.replace(routes.HOME);

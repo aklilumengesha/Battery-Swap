@@ -22,4 +22,11 @@ export const routes = {
   PRODUCER_BATTERIES: "/producer/batteries",
   PRODUCER_BOOKINGS: "/producer/bookings",
   PRODUCER_COMPANY: "/producer/company",
+  
+  // Admin routes
+  ADMIN_DASHBOARD: '/admin-panel/dashboard',
+  ADMIN_USERS: '/admin-panel/users',
+  ADMIN_PRODUCERS: '/admin-panel/producers',
+  ADMIN_STATIONS: '/admin-panel/stations',
+  ADMIN_BOOKINGS: '/admin-panel/bookings',
 };
