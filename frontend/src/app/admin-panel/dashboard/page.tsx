@@ -5,6 +5,7 @@ import AdminRoute from '@/components/layout/AdminRoute';
 import {
   useAdminStats,
   useAdminBookings,
+  useRevenueChart,
 } from '@/features/admin/hooks/useAdminQuery';
 import {
   UserOutlined,
@@ -19,6 +20,7 @@ import {
 export default function AdminDashboardPage() {
   const { data: stats, isLoading: loadingStats } = useAdminStats();
   const { data: bookings = [], isLoading: loadingBookings } = useAdminBookings();
+  const { data: chartData, isLoading: loadingChart } = useRevenueChart();
 
   const recentBookings = bookings.slice(0, 8);
 
@@ -151,6 +153,147 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Revenue Chart */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900">Revenue — Last 30 Days</h3>
+                <p className="text-xs text-gray-400 mt-0.5">Daily revenue from paid bookings</p>
+              </div>
+              {!loadingChart && chartData && (
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-xs text-gray-400">30-day total</p>
+                    <p className="text-sm font-bold text-gray-900">
+                      Rs {chartData.summary.total_revenue}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-gray-400">Daily avg</p>
+                    <p className="text-sm font-bold text-green-600">
+                      Rs {chartData.summary.avg_daily_revenue}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6">
+              {loadingChart ? (
+                <div className="h-48 bg-gray-50 rounded-xl animate-pulse" />
+              ) : !chartData ? (
+                <div className="h-48 flex items-center justify-center">
+                  <p className="text-sm text-gray-400">No revenue data yet</p>
+                </div>
+              ) : (
+                <>
+                  {/* Bar Chart */}
+                  <div className="flex items-end gap-1 h-48 w-full">
+                    {chartData.chart.map((day: any, i: number) => {
+                      const maxRevenue = Math.max(
+                        ...chartData.chart.map((d: any) => d.revenue)
+                      );
+                      const heightPct =
+                        maxRevenue > 0 ? (day.revenue / maxRevenue) * 100 : 0;
+                      const isToday = i === chartData.chart.length - 1;
+                      const isPeak =
+                        chartData.summary.peak_day?.date === day.date;
+
+                      return (
+                        <div
+                          key={day.date}
+                          className="flex-1 flex flex-col items-center justify-end gap-1 group relative"
+                        >
+                          {/* Tooltip */}
+                          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-2 py-1.5 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                            <p className="font-semibold">Rs {day.revenue}</p>
+                            <p className="text-gray-400">{day.bookings} bookings</p>
+                            <p className="text-gray-400">
+                              {new Date(day.date).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                              })}
+                            </p>
+                          </div>
+
+                          {/* Bar */}
+                          <div
+                            className={`w-full rounded-t-md transition-all duration-500 ${
+                              isPeak
+                                ? 'bg-green-500'
+                                : isToday
+                                ? 'bg-gray-900'
+                                : day.revenue > 0
+                                ? 'bg-gray-300 group-hover:bg-gray-500'
+                                : 'bg-gray-100'
+                            }`}
+                            style={{
+                              height: `${Math.max(
+                                heightPct,
+                                day.revenue > 0 ? 4 : 2
+                              )}%`,
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* X-axis labels */}
+                  <div className="flex items-center gap-1 mt-2 w-full">
+                    {chartData.chart.map((day: any, i: number) => {
+                      const showLabel =
+                        i === 0 || i === 7 || i === 14 || i === 21 || i === 29;
+                      return (
+                        <div key={day.date} className="flex-1 text-center">
+                          {showLabel && (
+                            <p className="text-xs text-gray-400">
+                              {new Date(day.date).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                              })}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Legend */}
+                  <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-50">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-sm bg-green-500" />
+                      <span className="text-xs text-gray-500">Peak day</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-sm bg-gray-900" />
+                      <span className="text-xs text-gray-500">Today</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-sm bg-gray-300" />
+                      <span className="text-xs text-gray-500">Past days</span>
+                    </div>
+                    {chartData.summary.peak_day && (
+                      <div className="ml-auto text-xs text-gray-400">
+                        Peak:{' '}
+                        <span className="font-semibold text-gray-700">
+                          Rs {chartData.summary.peak_day.revenue}
+                        </span>{' '}
+                        on{' '}
+                        {new Date(
+                          chartData.summary.peak_day.date
+                        ).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Recent Bookings Table */}
