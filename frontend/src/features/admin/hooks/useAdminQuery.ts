@@ -82,3 +82,44 @@ export const useAdminBookings = () =>
       return [];
     },
   });
+
+
+export const useAdminSubscriptions = () =>
+  useQuery({
+    queryKey: ['admin', 'subscriptions'],
+    queryFn: async () => {
+      const res = await AdminService.getSubscriptions();
+      if (res.data?.success) {
+        return res.data.subscriptions || [];
+      }
+      return [];
+    },
+  });
+
+export const useAdminBookingsPaginated = (
+  page: number,
+  pageSize: number = 20
+) =>
+  useQuery({
+    queryKey: ['admin', 'bookings', 'paginated', page, pageSize],
+    queryFn: async () => {
+      const res = await AdminService.getBookingsPaginated(page, pageSize);
+      if (res.data?.success) {
+        return res.data;
+      }
+      return null;
+    },
+    placeholderData: (prev) => prev,
+  });
+
+export const useRevenueChart = () =>
+  useQuery({
+    queryKey: ['admin', 'revenue', 'chart'],
+    queryFn: async () => {
+      const res = await AdminService.getRevenueChart();
+      if (res.data?.success) {
+        return res.data;
+      }
+      return null;
+    },
+  });

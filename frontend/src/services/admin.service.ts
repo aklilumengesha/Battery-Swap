@@ -86,4 +86,63 @@ export const AdminService = {
       }>;
       total: number;
     }>('user/admin/bookings/', { method: 'GET' }),
+
+  getSubscriptions: () =>
+    base<{
+      success: boolean;
+      subscriptions: Array<{
+        pk: number;
+        user_name: string;
+        user_email: string;
+        plan_name: string;
+        plan_price: number;
+        is_active: boolean;
+        created_at: string;
+        expires_at: string | null;
+      }>;
+      total: number;
+    }>('user/admin/subscriptions/', { method: 'GET' }),
+
+  getBookingsPaginated: (page: number = 1, pageSize: number = 20) =>
+    base<{
+      success: boolean;
+      bookings: Array<{
+        pk: number;
+        station_name: string;
+        producer_name: string;
+        vehicle: string;
+        price: number;
+        is_paid: boolean;
+        is_collected: boolean;
+        booked_time: string;
+      }>;
+      total: number;
+      page: number;
+      page_size: number;
+      total_pages: number;
+      has_next: boolean;
+      has_prev: boolean;
+    }>(`user/admin/bookings/paginated/?page=${page}&page_size=${pageSize}`, {
+      method: 'GET',
+    }),
+
+  getRevenueChart: () =>
+    base<{
+      success: boolean;
+      chart: Array<{
+        date: string;
+        revenue: number;
+        bookings: number;
+      }>;
+      summary: {
+        total_revenue: number;
+        total_bookings: number;
+        peak_day: {
+          date: string;
+          revenue: number;
+          bookings: number;
+        } | null;
+        avg_daily_revenue: number;
+      };
+    }>('user/admin/revenue/chart/', { method: 'GET' }),
 };
