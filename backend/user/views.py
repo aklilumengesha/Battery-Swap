@@ -557,3 +557,173 @@ class AdminListBookings(APIView):
                 {'success': False, 'message': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+
+class AdminListSubscriptions(APIView):
+    """List all subscriptions platform-wide"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from subscription.models import SubscriptionPlan, UserSubscription
+            
+            subs = UserSubscription.objects.select_related(
+                'user', 'plan'
+            ).order_by('-created_at')
+            
+            data = []
+            for s in subs:
+                data.append({
+                    'pk': s.pk,
+                    'user_name': s.user.name if s.user else '—',
+                    'user_email': s.user.email if s.user else '—',
+                    'plan_name': s.plan.name if s.plan else '—',
+                    'plan_price': s.plan.price if s.plan else 0,
+                    'is_active': s.is_active,
+                    'created_at': s.created_at,
+                    'expires_at': s.end_date,
+                })
+            
+            return Response({
+                'success': True,
+                'subscriptions': data,
+                'total': len(data)
+            })
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AdminListBookingsPaginated(APIView):
+    """Paginated bookings for admin"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            page = int(request.query_params.get('page', 1))
+            page_size = int(request.query_params.get('page_size', 20))
+            offset = (page - 1) * page_size
+            
+            total = Order.objects.count()
+            orders = Order.objects.select_related(
+                'battery__vehicle',
+                'battery__company',
+                'station',
+                'station__owner__user',
+            ).order_by('-booked_time')[offset:offset + page_size]
+            
+            data = []
+            for o in orders:
+                data.append({
+                    'pk': o.pk,
+                    'station_name': o.station.name if o.station else '—',
+                    'producer_name': o.station.owner.user.name if o.station and o.station.owner else '—',
+                    'vehicle': o.battery.vehicle.name if o.battery and o.battery.vehicle else '—',
+                    'price': o.battery.price if o.battery else 0,
+                    'is_paid': o.is_paid,
+                    'is_collected': o.is_collected,
+                    'booked_time': o.booked_time,
+                })
+            
+            return Response({
+                'success': True,
+                'bookings': data,
+                'total': total,
+                'page': page,
+                'page_size': page_size,
+                'total_pages': (total + page_size - 1) // page_size,
+                'has_next': (offset + page_size) < total,
+                'has_prev': page > 1,
+            })
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AdminRevenueChart(APIView):
+    """Daily revenue for last 30 days"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        if not is_admin(request.user):
+            return Response(
+                {'success': False, 'message': 'Admin access required'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            from datetime import datetime, timedelta
+            from django.utils import timezone
+            
+            # Last 30 days
+            end = timezone.now()
+            start = end - timedelta(days=29)
+            
+            # Build daily buckets
+            daily = {}
+            for i in range(30):
+                day = (start + timedelta(days=i)).strftime('%Y-%m-%d')
+                daily[day] = {
+                    'date': day,
+                    'revenue': 0,
+                    'bookings': 0,
+                }
+            
+            # Fill with real data
+            paid_orders = Order.objects.filter(
+                is_paid=True,
+                booked_time__gte=start,
+                booked_time__lte=end,
+            ).select_related('battery')
+            
+            for o in paid_orders:
+                day = o.booked_time.strftime('%Y-%m-%d')
+                if day in daily:
+                    daily[day]['revenue'] += (o.battery.price if o.battery else 0)
+                    daily[day]['bookings'] += 1
+            
+            chart_data = list(daily.values())
+            
+            # Summary stats
+            total_revenue = sum(d['revenue'] for d in chart_data)
+            total_bookings = sum(d['bookings'] for d in chart_data)
+            peak_day = max(chart_data, key=lambda x: x['revenue']) if chart_data else None
+            
+            return Response({
+                'success': True,
+                'chart': chart_data,
+                'summary': {
+                    'total_revenue': total_revenue,
+                    'total_bookings': total_bookings,
+                    'peak_day': peak_day,
+                    'avg_daily_revenue': round(total_revenue / 30, 2),
+                }
+            })
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+            return Response(
+                {'success': False, 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

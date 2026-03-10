@@ -18,6 +18,9 @@ from user.views import (
     AdminListProducers,
     AdminListStations,
     AdminListBookings,
+    AdminListSubscriptions,
+    AdminListBookingsPaginated,
+    AdminRevenueChart,
 )
 
 
@@ -38,4 +41,7 @@ urlpatterns = [
     path('admin/producers/', AdminListProducers.as_view(), name='admin_producers'),
     path('admin/stations/', AdminListStations.as_view(), name='admin_stations'),
     path('admin/bookings/', AdminListBookings.as_view(), name='admin_bookings'),
+    path('admin/subscriptions/', AdminListSubscriptions.as_view(), name='admin_subscriptions'),
+    path('admin/bookings/paginated/', AdminListBookingsPaginated.as_view(), name='admin_bookings_paginated'),
+    path('admin/revenue/chart/', AdminRevenueChart.as_view(), name='admin_revenue_chart'),
 ]
