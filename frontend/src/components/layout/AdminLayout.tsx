@@ -53,6 +53,13 @@ const navItems = [
     color: 'text-yellow-500',
     activeBg: 'bg-yellow-500',
   },
+  {
+    label: 'Subscriptions',
+    href: routes.ADMIN_SUBSCRIPTIONS,
+    icon: <CrownFilled />,
+    color: 'text-purple-500',
+    activeBg: 'bg-purple-500',
+  },
 ];
 
 export default function AdminLayout({

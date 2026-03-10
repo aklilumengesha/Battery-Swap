@@ -29,4 +29,5 @@ export const routes = {
   ADMIN_PRODUCERS: '/admin-panel/producers',
   ADMIN_STATIONS: '/admin-panel/stations',
   ADMIN_BOOKINGS: '/admin-panel/bookings',
+  ADMIN_SUBSCRIPTIONS: '/admin-panel/subscriptions',
 };
