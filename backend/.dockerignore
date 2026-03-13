@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Environment files
+.env
+.env.local
+
+# Database
+*.sqlite3
+db.sqlite3
+
+# Static and media (will be collected/uploaded separately)
+staticfiles/
+media/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Test files
+*.test.py
+test_*.py
+
+# Scripts (except entrypoint)
+*.sh
+!scripts/entrypoint.sh
+
+# Windows
+Thumbs.db
+
+# macOS
+.DS_Store
