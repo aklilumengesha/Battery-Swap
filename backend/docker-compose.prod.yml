@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  django:
+    build:
+      target: runtime
+    environment:
+      DJANGO_SETTINGS_MODULE: batteryswap.settings.production
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             daphne -b 0.0.0.0 -p 8000 batteryswap.asgi:application"
+    volumes:
+      - static_files:/app/staticfiles
+      - media_files:/app/media
+    # Do NOT mount source code in production — use baked image only
+
+  celery_worker:
+    environment:
+      DJANGO_SETTINGS_MODULE: batteryswap.settings.production
+
+  celery_beat:
+    environment:
+      DJANGO_SETTINGS_MODULE: batteryswap.settings.production
+
+volumes:
+  postgres_data:
+  static_files:
+  media_files:
