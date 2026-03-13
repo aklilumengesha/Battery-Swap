@@ -1,8 +1,8 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
+*.pyo
+*.pyd
 .Python
 *.egg-info/
 dist/
@@ -11,48 +11,34 @@ build/
 # Virtual environments
 venv/
 env/
-ENV/
+.venv/
 
-# Environment files
+# Environment secrets
 .env
 .env.local
+.env.*.local
 
-# Database
-*.sqlite3
-db.sqlite3
-
-# Static and media (will be collected/uploaded separately)
-staticfiles/
-media/
-
-# Logs
-logs/
-*.log
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Git
+# Version control
 .git/
 .gitignore
 
-# Documentation
-*.md
-!README.md
+# IDE files
+.vscode/
+.idea/
+*.swp
 
-# Test files
-*.test.py
-test_*.py
+# Test artifacts
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
 
-# Scripts (except entrypoint)
-*.sh
-!scripts/entrypoint.sh
+# Django artifacts
+staticfiles/
+media/
+*.log
+logs/
 
-# Windows
-Thumbs.db
-
-# macOS
-.DS_Store
+# Frontend (not needed in backend image)
+frontend/
+node_modules/
