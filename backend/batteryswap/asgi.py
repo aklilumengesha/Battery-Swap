@@ -13,7 +13,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from battery.routing import websocket_urlpatterns
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'batteryswap.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'batteryswap.settings.development')
 
 # Initialize Django ASGI application early to ensure the AppRegistry
 # is populated before importing code that may import ORM models.
