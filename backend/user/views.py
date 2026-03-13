@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from django.contrib.auth import authenticate, login
-from user.models import Order, User
+from user.models import Order, CustomUser
 from consumer.models import Consumer
 from producer.models import Company, Producer
 from battery.models import Battery, Station, Vehicle
@@ -23,12 +23,12 @@ from user.utils import generate_token_pairs, get_order_data
 
 class ManageUsers(generics.ListCreateAPIView):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
 
 
 class ManageUser(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
 
 
 class SignInView(views.APIView):
@@ -187,7 +187,7 @@ class Orders(views.APIView):
             print(request.data)
             battery = Battery.objects.get(pk=request.data.get("battery"))
             station = Station.objects.get(pk=request.data.get("station"))
-            user = User.objects.get(pk=request.user.pk)
+            user = CustomUser.objects.get(pk=request.user.pk)
 
             station.batteries.remove(battery)
             station.booked_batteries.add(battery)
@@ -323,9 +323,9 @@ class AdminDashboardStats(APIView):
             from battery.models import Station, Battery
             from producer.models import Producer
             
-            total_users = User.objects.count()
+            total_users = CustomUser.objects.count()
             total_producers = Producer.objects.count()
-            total_consumers = User.objects.filter(user_type='consumer').count()
+            total_consumers = CustomUser.objects.filter(user_type='consumer').count()
             total_stations = Station.objects.count()
             total_batteries = Battery.objects.count()
             total_orders = Order.objects.count()
@@ -369,7 +369,7 @@ class AdminListUsers(APIView):
             )
         
         try:
-            users = User.objects.all().order_by('-date_joined')
+            users = CustomUser.objects.all().order_by('-date_joined')
             data = []
             for u in users:
                 data.append({
@@ -404,7 +404,7 @@ class AdminToggleUser(APIView):
             )
         
         try:
-            user = User.objects.get(pk=pk)
+            user = CustomUser.objects.get(pk=pk)
             user.is_active = not user.is_active
             user.save()
             
@@ -413,7 +413,7 @@ class AdminToggleUser(APIView):
                 'is_active': user.is_active,
                 'message': f'User {"activated" if user.is_active else "deactivated"}'
             })
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return Response(
                 {'success': False, 'message': 'User not found'},
                 status=status.HTTP_404_NOT_FOUND

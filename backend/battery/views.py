@@ -10,7 +10,7 @@ from battery.websocket_utils import broadcast_battery_added
 from consumer.models import Consumer
 from producer.models import Company
 from battery.models import Battery, Station, Vehicle
-from user.models import User
+from user.models import CustomUser
 from battery.serializers import (
     BatterySerializer,
     NewBatteriesSerializer,

@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from battery.models import Vehicle
 from consumer.models import Consumer
-from user.models import User
+from user.models import CustomUser
 
 
 class ManageConsumer(APIView):
@@ -95,7 +95,7 @@ class ManageConsumer(APIView):
     def delete(self, request, *args, **kwargs):
         try:
             consumer = Consumer.objects.get(user=request.user)
-            user = User.objects.get(pk=request.user.pk)
+            user = CustomUser.objects.get(pk=request.user.pk)
             consumer.delete()
             user.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
