@@ -1,59 +1,56 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 from .managers import CustomUserManager
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractUser):
+    """
+    Custom User model extending Django's AbstractUser.
+    Keeps all existing fields and adds avatar and last_active.
+    """
     USER_TYPE_CHOICES = [
         ("consumer", "Consumer"),
         ("producer", "Producer"),
         ("admin", "Admin"),
     ]
 
-    email = models.EmailField(
-        unique=True,
-        verbose_name="email address",
+    # Existing fields from initial migration (already in database)
+    name = models.CharField("Name", max_length=100)
+    email = models.EmailField("Email", max_length=100, unique=True)
+    username = models.CharField("Username", max_length=100, unique=True)
+    phone = models.CharField("Phone", max_length=11, null=True)
+    user_type = models.CharField("User Type", max_length=10)
+    is_active = models.BooleanField(default=True)
+    is_email_verified = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    orders = models.ManyToManyField(
+        "Order", related_name="Orders", blank=True
     )
-    name = models.CharField(
-        max_length=150,
-        verbose_name="full name",
-    )
-    phone = models.CharField(
-        max_length=20,
-        blank=True,
-        verbose_name="phone number",
-    )
+    
+    # NEW fields to be added by migration
     avatar = models.ImageField(
         upload_to="avatars/",
         blank=True,
         null=True,
         verbose_name="profile picture",
     )
-    user_type = models.CharField(
-        max_length=20,
-        choices=USER_TYPE_CHOICES,
-        default="consumer",
-        verbose_name="user type",
-    )
-    is_active = models.BooleanField(default=True, verbose_name="active")
-    is_staff = models.BooleanField(default=False, verbose_name="staff status")
-    date_joined = models.DateTimeField(default=timezone.now, verbose_name="date joined")
     last_active = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name="last active",
     )
 
-    objects = CustomUserManager()
-
+    # Use email as username field
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name"]
+    
+    # Override with custom manager
+    objects = CustomUserManager()
 
     class Meta:
-        verbose_name = "user"
-        verbose_name_plural = "users"
-        db_table = "users"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
 
     def __str__(self):
         return self.email
@@ -63,6 +60,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.name.split()[0] if self.name else self.email
+
+
+# Alias for backwards compatibility
+CustomUser = User
 
 
 class Order(models.Model):

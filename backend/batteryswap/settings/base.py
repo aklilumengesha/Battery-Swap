@@ -38,7 +38,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = env("DEBUG")
 
-AUTH_USER_MODEL = "user.CustomUser"
+AUTH_USER_MODEL = "user.User"
 
 CORS_ORIGIN_ALLOW_ALL = False
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
