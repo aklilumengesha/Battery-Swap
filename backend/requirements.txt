@@ -23,3 +23,6 @@ sqlparse==0.5.2
 urllib3==2.2.3
 whitenoise==6.8.2
 tzdata==2025.1
+django-environ==0.11.2
+django-redis==5.4.0
+Pillow>=11.0.0        # for ImageField avatar (11.0+ supports Python 3.14)
